@@ -1,0 +1,110 @@
+name: stage_mj02
+course: 数据挖掘
+stage: 2
+title: 数据探索与特征理解
+order_in_practice: 2
+difficulty: beginner
+
+description: |
+  pandas 数据探索(Summary stats/分布/缺失)、matplotlib/seaborn 可视化、
+  皮尔逊相关系数、特征分布分析。
+
+learning_objectives:
+  - 掌握 pandas describe/info 读取数据概况
+  - 掌握直方图/箱线图/散点图绘制
+  - 掌握皮尔逊相关系数计算与热力图
+  - 能够识别数据中的模式与异常
+
+handbook_word_count: 1700
+
+chapters:
+  - title: "pandas 数据探索"
+    content: |
+      ## 2.1 数据读取与概况
+
+      ```python
+      import pandas as pd
+      import numpy as np
+
+      df = pd.read_csv('data.csv')
+
+      # 基本信息
+      df.info()          # 类型、非空数、内存
+      df.describe()     # 统计描述(count/mean/std/min/25%/50%/75%/max)
+      df.shape           # (行数, 列数)
+      df.dtypes          # 各列数据类型
+      df.head(5)         # 前5行
+
+      # 缺失值分析
+      df.isnull().sum()           # 每列缺失数
+      df.isnull().mean()          # 每列缺失率
+      df.isnull().sum().sum()     # 总缺失数
+      ```
+
+  - title: "数据可视化"
+    content: |
+      ## 2.2 matplotlib/seaborn 基础
+
+      ```python
+      import matplotlib.pyplot as plt
+      import seaborn as sns
+
+      # 直方图
+      plt.figure(figsize=(8, 4))
+      df['age'].hist(bins=30, edgecolor='black')
+      plt.title('Age Distribution')
+      plt.xlabel('Age')
+      plt.ylabel('Frequency')
+      plt.show()
+
+      # 箱线图
+      sns.boxplot(x='gender', y='income', data=df)
+      plt.title('Income by Gender')
+      plt.show()
+
+      # 散点图
+      plt.figure(figsize=(8, 5))
+      plt.scatter(df['sqft'], df['price'], alpha=0.5)
+      plt.xlabel('Square Feet')
+      plt.ylabel('Price')
+      plt.title('Price vs Square Feet')
+      plt.show()
+      ```
+
+  - title: "相关性分析"
+    content: |
+      ## 2.3 皮尔逊相关系数
+
+      ```python
+      # 计算相关系数矩阵
+      corr = df.corr(method='pearson')
+
+      # 热力图
+      import seaborn as sns
+      plt.figure(figsize=(10, 8))
+      sns.heatmap(corr, annot=True, fmt='.2f', cmap='coolwarm',
+                  center=0, square=True, linewidths=0.5)
+      plt.title('Correlation Heatmap')
+      plt.tight_layout()
+      plt.show()
+
+      # 找高相关特征对
+      high_corr_pairs = []
+      for i in range(len(corr.columns)):
+          for j in range(i+1, len(corr.columns)):
+              if abs(corr.iloc[i, j]) > 0.8:
+                  high_corr_pairs.append((corr.columns[i], corr.columns[j], corr.iloc[i, j]))
+      print(high_corr_pairs)
+      ```
+
+      ## 2.4 相关性解读
+
+      | 相关系数 | 解读 |
+      |---------|------|
+      | 0.8~1.0 | 强正相关 |
+      | 0.5~0.8 | 中等正相关 |
+      | 0.2~0.5 | 弱正相关 |
+      | -0.2~0.2 | 几乎无关 |
+      | -0.5~-0.2 | 弱负相关 |
+      | -0.8~-0.5 | 中等负相关 |
+      | -1.0~-0.8 | 强负相关 |

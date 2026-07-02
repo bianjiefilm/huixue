@@ -1,0 +1,311 @@
+[
+  {
+    "path": "/api/projects",
+    "method": "GET",
+    "description": "获取项目实训列表，支持筛选",
+    "request": {
+      "queryParams": [
+        {"name": "industry", "type": "string", "required": false, "description": "行业ID (e.g., 'finance', 'all')"},
+        {"name": "mode", "type": "string", "required": false, "description": "实训模式ID (e.g., 'drag', 'code', 'all')"},
+        {"name": "difficulty", "type": "string", "required": false, "description": "难度ID (e.g., 'easy', 'medium', 'all')"},
+        {"name": "keyword", "type": "string", "required": false, "description": "搜索关键词"},
+        {"name": "pageSize", "type": "number", "required": false, "default": 12, "description": "每页数量"},
+        {"name": "current", "type": "number", "required": false, "default": 1, "description": "当前页码"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "number", "example": 200},
+          "msg": {"type": "string", "example": "success"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "projects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string", "example": "1"},
+                    "title": {"type": "string", "example": "智能客服对话系统"},
+                    "description": {"type": "string", "example": "基于自然语言处理技术..."},
+                    "coverImage": {"type": "string", "example": "https://picsum.photos/400/200?random=1"},
+                    "industry": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}, "example": {"id": "internet", "name": "互联网"}},
+                    "trainingType": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}, "example": {"id": "code", "name": "编码式"}},
+                    "difficulty": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}, "example": {"id": "medium", "name": "中级"}},
+                    "enrollCount": {"type": "number", "example": 1234},
+                    "duration": {"type": "string", "example": "4周"},
+                    "tags": {"type": "array", "items": {"type": "string"}, "example": ["大数据", "Python", "自然语言处理"]},
+                    "createdAt": {"type": "string", "format": "date", "example": "2023-05-10"},
+                    "isPopular": {"type": "boolean", "example": true},
+                    "isNew": {"type": "boolean", "example": false}
+                  }
+                }
+              },
+              "total": {"type": "number", "example": 30},
+              "industries": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}}},
+              "trainingTypes": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}}},
+              "difficultyLevels": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}}}
+            }
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/projects/{id}",
+    "method": "GET",
+    "description": "获取项目实训详情",
+    "request": {
+      "pathParams": [
+        {"name": "id", "type": "string", "required": true, "description": "项目实训ID"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "number", "example": 200},
+          "msg": {"type": "string", "example": "success"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string", "example": "1"},
+              "title": {"type": "string", "example": "智能客服对话系统"},
+              "description": {"type": "string", "example": "基于自然语言处理技术..."},
+              "coverImage": {"type": "string", "example": "https://picsum.photos/800/400?random=1"},
+              "industry": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}, "example": {"id": "internet", "name": "互联网"}},
+              "trainingType": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}, "example": {"id": "code", "name": "编码式"}},
+              "difficulty": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}, "example": {"id": "medium", "name": "中级"}},
+              "enrollCount": {"type": "number", "example": 1234},
+              "duration": {"type": "string", "example": "4周"},
+              "tags": {"type": "array", "items": {"type": "string"}, "example": ["大数据", "Python", "自然语言处理", "机器学习"]},
+              "createdAt": {"type": "string", "format": "date", "example": "2023-05-10"},
+              "isPopular": {"type": "boolean", "example": true},
+              "isNew": {"type": "boolean", "example": false},
+              "goals": {"type": "array", "items": {"type": "string"}, "example": ["掌握NLP核心概念", "熟悉对话系统开发流程"]},
+              "syllabus": {"type": "array", "items": {"type": "object", "properties": {"title": {"type": "string"}, "items": {"type": "array", "items": {"type": "string"}}}}},
+              "requirements": {"type": "array", "items": {"type": "string"}, "example": ["具备Python基础", "了解机器学习基本原理"]},
+              "manualSections": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "content": {"type": "string"}}}},
+              "challenges": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "description": {"type": "string"}, "difficulty": {"type": "string"}, "type": {"type": "string"}, "points": {"type": "number"}, "status": {"type": "string", "required": false}}}},
+              "isMLProject": {"type": "boolean", "example": true},
+              "environment_type": {"type": "string", "enum": ["jupyter", "visual", "ml"], "required": false, "example": "jupyter"}
+            }
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 404, "description": "项目实训未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/datasets",
+    "method": "GET",
+    "description": "获取指定实训项目的数据集列表",
+    "request": {
+       "queryParams": [
+         {"name": "projectId", "type": "string", "required": true, "description": "关联的项目实训ID"}
+       ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "number", "example": 200},
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "number", "example": 1},
+                "name": {"type": "string", "example": "train_data.csv"},
+                "path": {"type": "string", "example": "/data/train_data.csv"},
+                "size": {"type": "string", "example": "2.5MB"},
+                "description": {"type": "string", "example": "训练数据集..."}
+              }
+            }
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 404, "description": "项目未找到或无数据集"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/training-manual",
+    "method": "GET",
+    "description": "获取指定实训项目或类型的操作手册",
+    "request": {
+      "queryParams": [
+        {"name": "projectId", "type": "string", "required": false, "description": "项目实训ID (优先)"},
+        {"name": "type", "type": "string", "required": false, "description": "手册类型 (e.g., 'finance', 'default')"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "number", "example": 200},
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {"type": "string", "example": "智能制造应用-轮胎质量相关性分析"},
+              "description": {"type": "string", "example": "本实训通过对生产数据的分析..."},
+              "tasks": {"type": "array", "items": {"type": "string"}},
+              "steps": {"type": "array", "items": {"type": "object", "properties": {"title": {"type": "string"}, "content": {"type": "string"}}}}
+            }
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 404, "description": "手册未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/classrooms/{classroomId}/projects",
+    "method": "POST",
+    "description": "将项目实训添加到课堂",
+    "request": {
+      "pathParams": [
+        {"name": "classroomId", "type": "string", "required": true, "description": "目标课堂ID"}
+      ],
+      "body": {
+        "type": "object",
+        "properties": {
+          "projectId": {"type": "string", "description": "要添加的项目实训ID"}
+        },
+        "required": ["projectId"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string", "example": "实训项目添加成功"}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 401, "description": "未授权"},
+      {"status": 403, "description": "无权限操作该课堂"},
+      {"status": 404, "description": "课堂或项目未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/projects/{projectId}/workflow",
+    "method": "POST",
+    "description": "保存拖拽式实训的工作流",
+    "request": {
+      "pathParams": [
+        {"name": "projectId", "type": "string", "required": true, "description": "项目实训ID"}
+      ],
+      "body": {
+        "type": "object",
+        "properties": {
+          "userId": {"type": "string", "description": "用户ID"},
+          "workflowType": {"type": "string", "enum": ["visual", "ml"], "description": "工作流类型"},
+          "workflowData": {"type": "object", "description": "工作流定义 (JSON 或特定格式)"}
+        },
+        "required": ["userId", "workflowType", "workflowData"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string", "example": "工作流保存成功"},
+          "workflowId": {"type": "string", "example": "wf-proj1-user1-123"}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 401, "description": "未授权"},
+      {"status": 404, "description": "项目未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/projects/{projectId}/workflow",
+    "method": "GET",
+    "description": "获取用户在指定项目下的工作流",
+    "request": {
+      "pathParams": [
+        {"name": "projectId", "type": "string", "required": true, "description": "项目实训ID"}
+      ],
+       "queryParams": [
+         {"name": "userId", "type": "string", "required": true, "description": "用户ID"},
+         {"name": "workflowType", "type": "string", "enum": ["visual", "ml"], "required": true, "description": "工作流类型"}
+       ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "workflowId": {"type": "string", "example": "wf-proj1-user1-123"},
+          "workflowData": {"type": "object", "description": "工作流定义"},
+          "lastSavedAt": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 401, "description": "未授权"},
+      {"status": 404, "description": "项目或工作流未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+   {
+    "path": "/api/projects/{projectId}/run",
+    "method": "POST",
+    "description": "运行机器学习工作流",
+    "request": {
+      "pathParams": [
+        {"name": "projectId", "type": "string", "required": true, "description": "项目实训ID"}
+      ],
+      "body": {
+        "type": "object",
+        "properties": {
+          "userId": {"type": "string", "description": "用户ID"},
+          "workflowId": {"type": "string", "description": "要运行的工作流ID (可选，否则运行最新保存的)"}
+        },
+        "required": ["userId"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string", "example": "工作流已开始运行"},
+          "runId": {"type": "string", "example": "run-proj1-user1-456"}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 401, "description": "未授权"},
+      {"status": 404, "description": "项目或工作流未找到"},
+      {"status": 500, "description": "服务器内部错误"},
+      {"status": 503, "description": "计算资源不足"}
+    ]
+  }
+] 

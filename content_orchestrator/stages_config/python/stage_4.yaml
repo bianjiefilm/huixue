@@ -1,0 +1,44 @@
+stage_id: stage_4
+course: python
+course_db_id: 100
+title: 字符串处理
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 字符串基本操作（索引、切片、len）
+- 字符串常用方法（upper/lower/replace/split/join/strip/find/count）
+- f-string格式化
+- 字符串是不可变对象
+- 字符与ASCII码
+- 子串查找与统计
+- 四、常见模式与技巧
+- 字符串拼接模式
+- 遍历字符串
+- 大小写转换链
+- 五、评测标准
+expected_handbook_min_chars: 4000
+expected_questions_count: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```python标注
+- 表格用于对比
+prerequisites:
+- 1
+- 2
+topics_to_avoid:
+- 正则表达式
+- 字节串bytes
+- 编码转换
+- 格式化输出详解(format)
+baseline_code_hint: 一个统计字符串中字母出现频率的函数
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'

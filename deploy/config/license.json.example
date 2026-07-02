@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "machine_code": "请运行 setup_gitee_license.py 生成",
+  "expire_date": "2026-12-31",
+  "message": "授权正常",
+  "created": "2025-01-10",
+  "note": "此文件仅供本地参考，实际授权存储在 Gitee 私有仓库"
+}

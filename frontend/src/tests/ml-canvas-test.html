@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>机器学习画布 Mock API 测试</title>
+  
+  <!-- 加载基础库 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/dist/dayjs.min.js"></script>
+  <script>
+    // 确保 dayjs 可以全局使用
+    window.dayjs = dayjs;
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mockjs@1.1.0/dist/mock.min.js"></script>
+  
+  <!-- 加载Ant Design Vue -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ant-design-vue@3.2.20/dist/antd.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@3.2.20/dist/antd.min.js"></script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .test-section {
+      margin-bottom: 30px;
+    }
+    .test-item {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #f0f0f0;
+      border-radius: 4px;
+    }
+    .success {
+      color: #52c41a;
+    }
+    .error {
+      color: #ff4d4f;
+    }
+    .request-info {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-family: monospace;
+      max-height: 200px;
+      overflow: auto;
+    }
+    .response-data {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-family: monospace;
+      max-height: 300px;
+      overflow: auto;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin: 0;
+    }
+    
+    /* 添加消息提示样式 */
+    .message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+      z-index: 9999;
+    }
+    
+    .message-success {
+      background-color: #f6ffed;
+      border: 1px solid #b7eb8f;
+      color: #52c41a;
+    }
+    
+    .message-error {
+      background-color: #fff2f0;
+      border: 1px solid #ffccc7;
+      color: #ff4d4f;
+    }
+    
+    .message-info {
+      background-color: #e6f7ff;
+      border: 1px solid #91d5ff;
+      color: #1890ff;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="header">
+        <h1>ML-Canvas API 测试页面</h1>
+        <p>这个页面用于测试ML-Canvas组件的API调用功能。</p>
+        <a-button type="primary" @click="runAllTests">运行所有测试</a-button>
+        <a-tag color="blue" style="margin-left: 10px;">总共测试: {{ totalTests }}</a-tag>
+        <a-tag color="green" style="margin-left: 10px;">成功: {{ successTests }}</a-tag>
+        <a-tag color="red" style="margin-left: 10px;">失败: {{ failedTests }}</a-tag>
+      </div>
+
+      <div class="test-section">
+        <h2>1. 节点类型API</h2>
+        <a-button @click="runTest('getNodeTypes')">运行测试</a-button>
+        
+        <div class="test-item" v-if="testResults.getNodeTypes">
+          <h3>
+            <a-tag :color="testResults.getNodeTypes.success ? 'green' : 'red'">
+              {{ testResults.getNodeTypes.success ? '成功' : '失败' }}
+            </a-tag>
+            获取节点类型列表
+          </h3>
+          <div class="request-info">
+            <p><strong>请求:</strong> GET /api/ml/node-types</p>
+          </div>
+          <div class="response-data">
+            <pre>{{ JSON.stringify(testResults.getNodeTypes.data, null, 2) }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>2. 工作流模板API</h2>
+        <a-button @click="runTest('getWorkflowTemplates')">运行测试</a-button>
+        
+        <div class="test-item" v-if="testResults.getWorkflowTemplates">
+          <h3>
+            <a-tag :color="testResults.getWorkflowTemplates.success ? 'green' : 'red'">
+              {{ testResults.getWorkflowTemplates.success ? '成功' : '失败' }}
+            </a-tag>
+            获取工作流模板列表
+          </h3>
+          <div class="request-info">
+            <p><strong>请求:</strong> GET /api/ml/workflow-templates</p>
+          </div>
+          <div class="response-data">
+            <pre>{{ JSON.stringify(testResults.getWorkflowTemplates.data, null, 2) }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>3. 用户工作流API</h2>
+        
+        <a-space>
+          <a-button @click="runTest('getUserWorkflows')">获取用户工作流</a-button>
+          <a-button @click="runTest('getWorkflowDetail')">获取工作流详情</a-button>
+          <a-button @click="runTest('saveWorkflow')">保存工作流</a-button>
+          <a-button @click="runTest('executeWorkflow')">执行工作流</a-button>
+          <a-button @click="runTest('deleteWorkflow')">删除工作流</a-button>
+        </a-space>
+        
+        <div class="test-item" v-if="testResults.getUserWorkflows">
+          <h3>
+            <a-tag :color="testResults.getUserWorkflows.success ? 'green' : 'red'">
+              {{ testResults.getUserWorkflows.success ? '成功' : '失败' }}
+            </a-tag>
+            获取用户工作流列表
+          </h3>
+          <div class="request-info">
+            <p><strong>请求:</strong> GET /api/ml/workflows?userId=1</p>
+          </div>
+          <div class="response-data">
+            <pre>{{ JSON.stringify(testResults.getUserWorkflows.data, null, 2) }}</pre>
+          </div>
+        </div>
+        
+        <div class="test-item" v-if="testResults.getWorkflowDetail">
+          <h3>
+            <a-tag :color="testResults.getWorkflowDetail.success ? 'green' : 'red'">
+              {{ testResults.getWorkflowDetail.success ? '成功' : '失败' }}
+            </a-tag>
+            获取工作流详情
+          </h3>
+          <div class="request-info">
+            <p><strong>请求:</strong> GET /api/ml/workflows/101</p>
+          </div>
+          <div class="response-data">
+            <pre>{{ JSON.stringify(testResults.getWorkflowDetail.data, null, 2) }}</pre>
+          </div>
+        </div>
+        
+        <div class="test-item" v-if="testResults.saveWorkflow">
+          <h3>
+            <a-tag :color="testResults.saveWorkflow.success ? 'green' : 'red'">
+              {{ testResults.saveWorkflow.success ? '成功' : '失败' }}
+            </a-tag>
+            保存工作流
+          </h3>
+          <div class="request-info">
+            <p><strong>请求:</strong> POST /api/ml/workflows</p>
+            <pre>{{ JSON.stringify(testResults.saveWorkflow.request, null, 2) }}</pre>
+          </div>
+          <div class="response-data">
+            <pre>{{ JSON.stringify(testResults.saveWorkflow.data, null, 2) }}</pre>
+          </div>
+        </div>
+        
+        <div class="test-item" v-if="testResults.executeWorkflow">
+          <h3>
+            <a-tag :color="testResults.executeWorkflow.success ? 'green' : 'red'">
+              {{ testResults.executeWorkflow.success ? '成功' : '失败' }}
+            </a-tag>
+            执行工作流
+          </h3>
+          <div class="request-info">
+            <p><strong>请求:</strong> POST /api/ml/workflows/execute</p>
+            <pre>{{ JSON.stringify(testResults.executeWorkflow.request, null, 2) }}</pre>
+          </div>
+          <div class="response-data">
+            <pre>{{ JSON.stringify(testResults.executeWorkflow.data, null, 2) }}</pre>
+          </div>
+        </div>
+        
+        <div class="test-item" v-if="testResults.deleteWorkflow">
+          <h3>
+            <a-tag :color="testResults.deleteWorkflow.success ? 'green' : 'red'">
+              {{ testResults.deleteWorkflow.success ? '成功' : '失败' }}
+            </a-tag>
+            删除工作流
+          </h3>
+          <div class="request-info">
+            <p><strong>请求:</strong> DELETE /api/ml/workflows/101</p>
+          </div>
+          <div class="response-data">
+            <pre>{{ JSON.stringify(testResults.deleteWorkflow.data, null, 2) }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 自定义消息提示 -->
+    <div v-if="message.visible" :class="['message', `message-${message.type}`]">
+      {{ message.content }}
+    </div>
+  </div>
+
+  <script type="module">
+    import '../mock/index.ts';
+
+    const { createApp, ref, computed, reactive, onMounted } = Vue;
+    
+    // 检查 Ant Design Vue 是否可用
+    if (typeof antd === 'undefined') {
+      console.error('Ant Design Vue 未正确加载');
+    }
+    
+    const App = {
+      setup() {
+        // 自定义消息提示
+        const message = reactive({
+          visible: false,
+          content: '',
+          type: 'info', // success, error, info
+          timer: null
+        });
+        
+        // 显示消息
+        const showMessage = (content, type = 'info') => {
+          if (message.timer) {
+            clearTimeout(message.timer);
+          }
+          
+          message.content = content;
+          message.type = type;
+          message.visible = true;
+          
+          message.timer = setTimeout(() => {
+            message.visible = false;
+          }, 3000);
+        };
+        
+        const nodeTypes = ref([]);
+        const workflowTemplates = ref([]);
+        const userWorkflows = ref([]);
+        const responses = reactive({});
+        const loadingStates = reactive({});
+        
+        const testResults = reactive({});
+        
+        const totalTests = computed(() => {
+          return Object.keys(testResults).length;
+        });
+        
+        const successTests = computed(() => {
+          return Object.values(testResults).filter(result => result.success).length;
+        });
+        
+        const failedTests = computed(() => {
+          return Object.values(testResults).filter(result => !result.success).length;
+        });
+        
+        // API调用测试函数
+        const runTest = async (testName) => {
+          try {
+            switch (testName) {
+              case 'getNodeTypes': {
+                const response = await axios.get('/api/ml/node-types');
+                testResults[testName] = {
+                  success: response.data.code === 200 && response.data.data.nodeTypes.length > 0,
+                  data: response.data
+                };
+                break;
+              }
+              
+              case 'getWorkflowTemplates': {
+                const response = await axios.get('/api/ml/workflow-templates');
+                testResults[testName] = {
+                  success: response.data.code === 200 && response.data.data.length > 0,
+                  data: response.data
+                };
+                break;
+              }
+              
+              case 'getUserWorkflows': {
+                const response = await axios.get('/api/ml/workflows?userId=1');
+                testResults[testName] = {
+                  success: response.data.code === 200 && Array.isArray(response.data.data),
+                  data: response.data
+                };
+                break;
+              }
+              
+              case 'getWorkflowDetail': {
+                const response = await axios.get('/api/ml/workflows/101');
+                testResults[testName] = {
+                  success: response.data.code === 200 && response.data.data.id === '101',
+                  data: response.data
+                };
+                break;
+              }
+              
+              case 'saveWorkflow': {
+                const newWorkflow = {
+                  name: '测试工作流-' + Date.now(),
+                  description: '通过单元测试创建的工作流',
+                  userId: '1',
+                  nodes: [
+                    { id: 'node1', type: 'dataSource', position: {x: 100, y: 100} },
+                    { id: 'node2', type: 'linearRegression', position: {x: 300, y: 100} }
+                  ],
+                  edges: [
+                    { id: 'edge1', source: 'node1', target: 'node2' }
+                  ]
+                };
+                
+                const response = await axios.post('/api/ml/workflows', newWorkflow);
+                testResults[testName] = {
+                  success: response.data.code === 200 && response.data.data,
+                  data: response.data,
+                  request: newWorkflow
+                };
+                break;
+              }
+              
+              case 'executeWorkflow': {
+                const response = await axios.post('/api/ml/workflows/execute', { workflowId: '101' });
+                testResults[testName] = {
+                  success: response.data.code === 200 && response.data.data.executionId,
+                  data: response.data,
+                  request: { workflowId: '101' }
+                };
+                break;
+              }
+              
+              case 'deleteWorkflow': {
+                // 先获取工作流列表，确保有数据可删除
+                await axios.get('/api/ml/workflows?userId=1');
+                
+                const response = await axios.delete('/api/ml/workflows/101');
+                testResults[testName] = {
+                  success: response.data.code === 200,
+                  data: response.data
+                };
+                break;
+              }
+            }
+            
+            showMessage(`${testName} 测试完成`, 'success');
+          } catch (error) {
+            console.error(`测试 ${testName} 失败:`, error);
+            testResults[testName] = {
+              success: false,
+              error: error.message,
+              data: error.response?.data
+            };
+            showMessage(`${testName} 测试失败: ${error.message}`, 'error');
+          }
+        };
+        
+        // 运行所有测试
+        const runAllTests = async () => {
+          const tests = [
+            'getNodeTypes',
+            'getWorkflowTemplates',
+            'getUserWorkflows',
+            'getWorkflowDetail',
+            'saveWorkflow',
+            'executeWorkflow',
+            'deleteWorkflow'
+          ];
+          
+          showMessage('开始运行所有测试...', 'info');
+          
+          for (const test of tests) {
+            await runTest(test);
+          }
+          
+          showMessage('所有测试已完成', 'success');
+        };
+        
+        return {
+          message,
+          testResults,
+          totalTests,
+          successTests,
+          failedTests,
+          runTest,
+          runAllTests
+        };
+      }
+    };
+    
+    const app = createApp(App);
+    
+    // 使用全局可用的 antd
+    if (typeof antd !== 'undefined') {
+      app.use(antd);
+    }
+    
+    app.mount('#app');
+  </script>
+</body>
+</html> 

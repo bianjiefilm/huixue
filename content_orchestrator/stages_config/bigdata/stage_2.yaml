@@ -1,0 +1,39 @@
+stage_id: stage_2
+course: bigdata
+course_db_id: 101
+title: HDFS分布式文件系统
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- HDFS架构（NameNode/DataNode/SecondaryNameNode）
+- Block块存储机制与副本策略
+- HDFS读写流程
+- HDFS命令行操作（hdfs dfs -xxx）
+- 文件权限与安全
+- 四、常见模式与技巧
+- 小文件处理策略
+- 数据均衡与扩容
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 1
+topics_to_avoid:
+- Java API编程
+- NameNode元数据内幕
+- HDFS高可用（HA）配置
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个统计HDFS文件大小的命令行操作

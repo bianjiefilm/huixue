@@ -1,0 +1,38 @@
+stage_id: stage_3
+course: bigdata
+course_db_id: 101
+title: HDFS操作与JavaAPI
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- HDFS Java API（FileSystem/FSDataInputStream/FSDataOutputStream）
+- 文件上传下载操作
+- 目录操作与权限管理
+- 序列化（Writable接口）
+- 四、常见模式与技巧
+- 连接池复用
+- 异常处理
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 2
+topics_to_avoid:
+- 分布式缓存（DistributedCache）
+- HDFS安全模式
+- HDFS压缩编解码
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个使用Java API读取HDFS文件内容的程序

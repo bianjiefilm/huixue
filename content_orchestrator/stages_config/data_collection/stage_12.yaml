@@ -1,0 +1,45 @@
+stage_id: 12
+course: data_collection
+course_db_id: 4
+stage_name: 综合项目与评估
+difficulty: advanced
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 综合项目：数据采集完整管道
+- 数据质量评估（完整性/准确性/时效性/可用性）
+- 采集效率评估与优化策略
+- 数据安全与合规要求
+- 项目成果展示与文档编写
+- 最佳实践总结
+- 行业应用案例（舆情监控/价格采集/竞品分析）
+- 课程知识体系回顾
+- 四、常见模式与技巧
+- 数据采集项目复盘方法
+- 采集结果的讲故事能力
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_questions: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主，回顾整个课程知识体系
+- 表格总结各工具适用场景
+prerequisites:
+- 关卡1: 数据采集概述与工具选型
+- 关卡2: HTTP 协议与请求基础
+- 关卡3: HTML 解析与 BeautifulSoup
+- 关卡4: 正则表达式与数据提取
+- 关卡5: 动态页面处理
+- 关卡6: API 数据采集
+- 关卡7: 数据存储与清洗
+- 关卡8: 反爬机制与应对策略
+- 关卡9: 异步采集与并发控制
+- 关卡10: 分布式采集初步
+- 关卡11: 数据采集项目实战
+topics_to_avoid: []
+codex_review_required: true
+baseline_code_template: 一个综合数据采集管道的设计文档和核心代码框架

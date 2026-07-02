@@ -1,0 +1,38 @@
+stage_id: stage_1
+course: spark
+course_db_id: 102
+title: Spark概述与环境搭建
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 大数据计算框架演进（MR→Spark）
+- Spark核心组件（Spark Core/SQL/Streaming/MLlib/GraphX）
+- Spark架构（Driver/Executor/Cluster Manager）
+- Spark部署模式（Local/Standalone/YARN/Kubernetes）
+- Spark Shell与spark-submit
+- 四、常见模式与技巧
+- 依赖管理（spark.jars）
+- 日志配置与调试
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites: []
+topics_to_avoid:
+- RDD编程细节
+- Spark SQL语法
+- 集群运维命令
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个使用spark-submit提交WordCount任务的命令

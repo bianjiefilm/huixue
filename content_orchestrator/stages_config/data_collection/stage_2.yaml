@@ -1,0 +1,37 @@
+stage_id: 2
+course: data_collection
+course_db_id: 4
+stage_name: HTTP 协议与请求基础
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- HTTP 协议基础（请求/响应模型、状态码）
+- requests 库核心 API（GET/POST/HEAD/OPTIONS）
+- 请求头（Headers）设置与自定义
+- Cookie 与 Session 管理
+- 认证方式（Basic Auth、Bearer Token、API Key）
+- 代理设置与超时控制
+- 响应对象解析（状态码、Headers、Body）
+- 常见网络错误处理
+- 四、常见模式与技巧
+- 重试机制实现（urllib3 retry / tenacity）
+- 请求频率控制与礼貌采集
+- 五、评测标准
+expected_handbook_min_chars: 3000
+expected_questions: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主，代码块用```标注，包含实际 HTTP 请求示例
+- 对比 GET/POST 差异，展示不同状态码含义
+prerequisites: []
+topics_to_avoid:
+- 具体反爬绕过技术（放入关卡8）
+- 异步请求（httpx，放入关卡9）
+- JavaScript 执行相关（放入关卡5）
+codex_review_required: true
+baseline_code_template: 一个解析HTTP响应状态码并返回友好提示的Python函数

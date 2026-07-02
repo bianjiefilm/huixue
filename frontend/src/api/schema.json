@@ -1,0 +1,120 @@
+{
+  "components": {
+    "schemas": {
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "type": {"type": "string", "enum": ["judge", "choice", "practice"]},
+          "difficulty": {"type": "number"},
+          "coins": {"type": "number"},
+          "skills": {"type": "array", "items": {"type": "string"}},
+          "completed": {"type": "boolean", "required": false},
+          "description": {"type": "string", "required": false}
+        }
+      },
+      "TestCase": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "input": {"type": "string"},
+          "expectedOutput": {"type": "string"},
+          "hidden": {"type": "boolean", "required": false}
+        }
+      },
+      "CodeFile": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "path": {"type": "string"},
+          "isDirectory": {"type": "boolean"},
+          "content": {"type": "string", "required": false},
+          "children": {"type": "array", "items": {"$ref": "#/components/schemas/CodeFile"}, "required": false},
+          "readOnly": {"type": "boolean", "required": false},
+          "language": {"type": "string", "required": false}
+        }
+      },
+      "CodingChallenge": {
+        "allOf": [
+          {"$ref": "#/components/schemas/Task"},
+          {
+            "type": "object",
+            "properties": {
+              "taskContent": {"type": "string"},
+              "referenceAnswer": {"type": "string", "required": false},
+              "testCases": {"type": "array", "items": {"$ref": "#/components/schemas/TestCase"}},
+              "codeFiles": {"type": "array", "items": {"$ref": "#/components/schemas/CodeFile"}},
+              "envType": {"type": "string", "enum": ["code", "html", "command", "desktop"]}
+            }
+          }
+        ]
+      },
+      "Classroom": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "teacherName": {"type": "string"},
+          "studentCount": {"type": "number"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "credits": {"type": "number", "required": false},
+          "startDate": {"type": "string", "format": "date-time", "required": false},
+          "endDate": {"type": "string", "format": "date-time", "required": false}
+        }
+      },
+      "CourseItem": {
+          "type": "object",
+          "properties": {
+              "id": {"type": "string"},
+              "name": {"type": "string"},
+              "chapter": {"type": "string", "required": false},
+              "type": {"type": "string", "enum": ["practice", "training"]},
+              "status": {"type": "string", "enum": ["unpublished", "learning", "makeup", "completed", "ended"]},
+              "startDate": {"type": "string", "format": "date-time", "required": false},
+              "endDate": {"type": "string", "format": "date-time", "required": false},
+              "createTime": {"type": "string", "format": "date-time"},
+              "remainingTime": {"type": "string", "required": false},
+              "learningCount": {"type": "number"},
+              "completedCount": {"type": "number"},
+              "notStartedCount": {"type": "number"},
+              "industry": {"type": "string", "required": false},
+              "trainingType": {"type": "string", "required": false},
+              "introduction": {"type": "string", "required": false},
+              "order": {"type": "number"},
+              "isRequired": {"type": "boolean", "required": false}
+          }
+      },
+      "PartialCourseItem": {
+          "type": "object",
+          "properties": {
+              "name": {"type": "string", "required": false},
+              "chapter": {"type": "string", "required": false},
+              "type": {"type": "string", "enum": ["practice", "training"], "required": false},
+              "order": {"type": "number", "required": false},
+              "isRequired": {"type": "boolean", "required": false}
+          }
+      },
+      "MicroCourse": {
+          "type": "object",
+          "properties": {
+              "id": {"type": "string"},
+              "title": {"type": "string"},
+              "cover": {"type": "string"},
+              "type": {"type": "string"},
+              "level": {"type": "string"},
+              "popularity": {"type": "number"},
+              "views": {"type": "number"},
+              "direction": {"type": "string", "required": false},
+              "category": {"type": "string", "required": false},
+              "introduction": {"type": "string", "required": false},
+              "coins": {"type": "number", "required": false},
+              "skills": {"type": "array", "items": {"type": "string"}, "required": false},
+              "tasks": {"type": "array", "items": {"$ref": "#/components/schemas/Task"}, "required": false}
+          }
+      }
+    }
+  }
+} 

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学情分析页面调试测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-panel { 
+            background: #f0f8ff; 
+            padding: 15px; 
+            border: 2px solid #ddd; 
+            border-radius: 5px; 
+            margin: 10px 0; 
+        }
+        .tabs { margin: 20px 0; }
+        .tab-button { 
+            padding: 10px 20px; 
+            margin: 0 5px; 
+            border: 1px solid #ccc; 
+            background: white; 
+            cursor: pointer; 
+        }
+        .tab-button.active { 
+            background: #1890ff; 
+            color: white; 
+            border-color: #1890ff; 
+        }
+        .search-box { 
+            padding: 8px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            width: 300px; 
+            margin: 10px 0; 
+        }
+        .content { 
+            padding: 20px; 
+            border: 1px solid #eee; 
+            border-radius: 4px; 
+            min-height: 200px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 学情分析页面调试测试</h1>
+    
+    <div class="debug-panel">
+        <h3>调试信息面板</h3>
+        <p><strong>课堂ID:</strong> <span id="classroomId">1</span></p>
+        <p><strong>教师ID:</strong> <span id="teacherId">1</span></p>
+        <p><strong>当前标签:</strong> <span id="activeTab">overview</span></p>
+        <p><strong>搜索关键词:</strong> <span id="searchKeyword"></span></p>
+        <p><strong>加载状态:</strong> <span id="loading">false</span></p>
+        <p><strong>时间戳:</strong> <span id="timestamp"></span></p>
+        <p><strong>操作计数:</strong> <span id="operationCount">0</span></p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-button active" data-tab="overview">学情总览</button>
+        <button class="tab-button" data-tab="required">必修课程统计</button>
+        <button class="tab-button" data-tab="optional">拓展课程统计</button>
+    </div>
+
+    <input type="text" class="search-box" placeholder="按姓名或学号搜索" id="searchInput">
+
+    <div class="content" id="content">
+        <h3>学情总览内容</h3>
+        <p>这里显示学情总览的图表和统计信息...</p>
+    </div>
+
+    <script>
+        let operationCount = 0;
+        let activeTab = 'overview';
+        let searchKeyword = '';
+        
+        // 更新调试信息
+        function updateDebugInfo() {
+            document.getElementById('activeTab').textContent = activeTab;
+            document.getElementById('searchKeyword').textContent = searchKeyword;
+            document.getElementById('timestamp').textContent = new Date().toLocaleString();
+            document.getElementById('operationCount').textContent = operationCount;
+        }
+        
+        // 初始化
+        function init() {
+            console.log('🎯 学情分析调试页面已加载');
+            updateDebugInfo();
+            
+            // 标签页切换事件
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    operationCount++;
+                    console.log('📑 标签页切换:', this.dataset.tab);
+                    
+                    // 移除所有active类
+                    document.querySelectorAll('.tab-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // 添加active类到当前按钮
+                    this.classList.add('active');
+                    
+                    // 更新活动标签
+                    activeTab = this.dataset.tab;
+                    
+                    // 更新内容
+                    updateContent();
+                    updateDebugInfo();
+                });
+            });
+            
+            // 搜索框事件
+            document.getElementById('searchInput').addEventListener('input', function() {
+                operationCount++;
+                searchKeyword = this.value;
+                console.log('🔍 搜索输入:', searchKeyword);
+                updateDebugInfo();
+            });
+            
+            // 模拟API调用
+            simulateApiCall();
+        }
+        
+        // 更新内容区域
+        function updateContent() {
+            const content = document.getElementById('content');
+            let html = '';
+            
+            switch(activeTab) {
+                case 'overview':
+                    html = `
+                        <h3>学情总览内容</h3>
+                        <p>这里显示学情总览的图表和统计信息...</p>
+                        <p>课程完成情况饼图、学生在线情况环图等</p>
+                    `;
+                    break;
+                case 'required':
+                    html = `
+                        <h3>必修课程统计内容</h3>
+                        <p>这里显示必修课程的学生成绩表格...</p>
+                        <p>包含实践完成数、实训平均分等统计信息</p>
+                    `;
+                    break;
+                case 'optional':
+                    html = `
+                        <h3>拓展课程统计内容</h3>
+                        <p>这里显示拓展课程的学生成绩表格...</p>
+                        <p>包含拓展课程的完成情况和成绩统计</p>
+                    `;
+                    break;
+            }
+            
+            content.innerHTML = html;
+        }
+        
+        // 模拟API调用
+        function simulateApiCall() {
+            console.log('🔄 模拟API调用开始');
+            
+            // 模拟异步API调用
+            setTimeout(() => {
+                operationCount++;
+                console.log('✅ API调用完成');
+                document.getElementById('loading').textContent = 'false';
+                updateDebugInfo();
+            }, 1000);
+            
+            document.getElementById('loading').textContent = 'true';
+            updateDebugInfo();
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // 全局错误处理
+        window.addEventListener('error', function(e) {
+            console.error('❌ JavaScript错误:', e.error);
+        });
+        
+        console.log('🚀 学情分析调试页面初始化完成');
+    </script>
+</body>
+</html>

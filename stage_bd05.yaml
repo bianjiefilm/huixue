@@ -1,0 +1,135 @@
+name: stage_bd05
+course: 大数据
+stage: 5
+title: MapReduce 编程实战
+order_in_practice: 5
+difficulty: intermediate
+
+description: |
+  经典 MapReduce 算法: word count、倒排索引、top-K 频率、
+  共现矩阵; 含日志分析的业务案例。
+
+learning_objectives:
+  - 能给定文档列表, 实现 word count (返回 word→count dict)
+  - 能给定文档列表, 实现倒排索引 (返回 word→[doc_idx] dict)
+  - 能给定 word→count dict 与 k, 返回 top-k 频率词列表
+  - 能给定文档列表, 计算 word 共现次数 (pair→count dict)
+
+handbook_word_count: 2700
+
+chapters:
+  - title: "Word Count: 经典 MR 算法"
+    content: |
+      ## 1.1 Word Count 的 MR 思想
+
+      word_count 是 MR 入门必学经典:
+      - **Map**: 文档 → (word, 1) 对
+      - **Combine**: 同一 mapper 内 (word, count) 聚合
+      - **Reduce**: 跨 mapper 同 word 求和
+
+      Python 单机版思想:
+      - 遍历每个文档
+      - 对每个 word 累加计数
+      - 返回 dict[word, count]
+
+      工程实务: 真实 MR 把 documents 切片到多个 mapper, 但单机版思想相同。
+
+      ## 1.2 单词切分约定
+
+      本关简化规则:
+      - 用 Python 默认 split() 按空白拆分
+      - 大小写敏感 ("Hello" ≠ "hello")
+      - 不去标点 (假设输入已预处理)
+
+      工程实务: 实际 word_count 通常先做格式归一化 (复习 WX05 / WX07 字符串清洗)。
+
+      ## 1.3 Word Count 的扩展
+
+      简单 word_count 是基础, 实际业务常需要:
+      - **过滤停用词**: "the", "a", "of" 等高频但无信息词
+      - **大小写归一**: "Hello"/"hello" 统一
+      - **去标点**: "hello!" → "hello"
+
+      本关聚焦核心算法, 扩展是 NLP 范畴。
+
+  - title: "倒排索引与 Top-K"
+    content: |
+      ## 2.1 倒排索引 (Inverted Index)
+
+      搜索引擎的核心数据结构: word → [doc_id_list]。
+
+      给定文档列表 (每文档已 tokenize 为 word list), 构建索引的思想:
+      - 遍历 (doc_id, words) 对
+      - 对每个 word, 把 doc_id 加入该 word 的列表
+      - **去重**: 同 word 在同 doc 多次出现只记一次
+      - **升序**: 输出列表按 doc_id 升序
+
+      工程实务: Lucene / Elasticsearch / 百度搜索引擎都基于倒排索引, 是文本检索的基础设施。
+
+      ## 2.2 Top-K 频率词
+
+      给定 word→count dict 与 k, 返回出现次数最多的 k 个词。
+
+      排序规则 (本关):
+      - 频率降序优先
+      - 同频按字母升序 (确定性, 否则结果不稳定)
+
+      经典实现思想: sorted by (-count, word), 取前 k。
+
+      工程实务: top-K 是文本分析 / 推荐系统的基础。大数据规模有 heap 优化版可达 O(N log K), 本关用 O(N log N) 完整排序版。
+
+      ## 2.3 与 word_count 的组合
+
+      典型流水线:
+      1. word_count(documents) → counts dict
+      2. top_k_frequent(counts, k=5) → [top_5_words]
+
+      例: 1 万搜索日志 → 5 万词 → top 5 = ['the', 'and', 'of', 'a', 'to']。
+
+  - title: "共现矩阵与业务案例"
+    content: |
+      ## 3.1 共现矩阵 (Co-occurrence Matrix)
+
+      共现矩阵 captures 词对在同一文档/窗口内同时出现的次数。
+
+      简化定义 (本关): 给定 documents (list of word lists), 计算每对**有序词对** (a, b, a≠b) 在同一文档共现的次数。
+
+      规则:
+      - 同一文档内的每对不同位置词 (i, j, i≠j) 算一次共现
+      - (a, b) 与 (b, a) 是不同的有序对, 各自计数
+      - 跨文档共现累加
+
+      例: documents = [['the', 'cat', 'sat']]:
+      - (the, cat), (cat, the), (the, sat), (sat, the), (cat, sat), (sat, cat) 各算 1 次
+
+      工程实务: 共现矩阵是 NLP 词嵌入 (word2vec) 的输入, 也用于关联规则挖掘。大词表下矩阵稀疏 (99% 词对从未共现), 用 hash 而非 dense matrix。
+
+      ## 3.2 业务案例: 网站搜索日志分析
+
+      场景: 1 亿条搜索日志, 要做关键词分析:
+      1. **word_count** (本关): 统计每个词出现次数 → 找热搜
+      2. **inverted_index** (本关): 词 → 搜索 session_id list, 用于"搜了 X 的人也搜了 Y"
+      3. **top_k_frequent** (本关 k=100): 找当日 top 100 热搜
+      4. **compute_co_occurrence** (本关): 词对共现 → 推荐相关搜索
+
+      数字: 1 亿日志 / 2 千万 unique 词 / top-100 热搜实时更新 / 共现矩阵 GB 级稀疏存储。
+
+      ## 3.3 工程口诀
+
+      - **MR 经典必会**: word_count / inverted_index / top_k / co-occurrence
+      - **倒排索引去重**: 同文档同词只算一次
+      - **top-K 同频要确定排序**: 字母序是默认
+      - **共现矩阵稀疏**: 99% 词对从不共现, 用 hash 不用 dense matrix
+
+      ## 3.4 现代替代
+
+      Spark / Flink (BD 后续课程) 提供 DataFrame API, word_count 可写成 flatMap → map → reduceByKey 链式调用。但底层仍是 Map/Reduce 思想, 学习 MR 是掌握所有现代框架的基础。
+
+      ## 3.5 数据规模与算法选择
+
+      不同数据量适合不同实现:
+      - **MB-GB 级**: Python 单机 dict 即可 (本关使用)
+      - **GB-TB 级**: 单机不够, 用 MapReduce / Spark
+      - **PB 级**: 分布式 + 多轮 shuffle 优化
+
+      算法**思想**不变, 只是规模触发不同实现选择。本关学算法本质, 规模问题是 BD06 (YARN 调度) 与现代框架课程的内容。

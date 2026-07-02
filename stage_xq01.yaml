@@ -1,0 +1,56 @@
+name: stage_xq01
+course: 校情 (项目实训)
+direction: practical_training
+stage: 1
+title: 学生学业表现基础统计
+order_in_practice: 1
+difficulty: beginner
+
+description: |
+  校情数据分析第 1 关. 4 个核心指标:
+  通过率 / 题目难度系数 / 选课集中度 (HHI) / GPA 分布桶。
+  数据合规简单, 业务复杂度低-中, 协议风险最小 (无 datetime / numpy / pandas)。
+
+handbook_file: handbook_xq01.md
+handbook_word_count: 2900
+
+learning_objectives:
+  - 给定学生成绩与通过阈值, 计算通过率统计
+  - 给定单题学生得分与满分, 计算难度系数 P
+  - 给定课程选课人数, 计算选课集中度 HHI
+  - 给定 GPA 列表与分桶边界, 统计每段人数
+
+functions:
+  - name: compute_pass_rate
+    signature: "compute_pass_rate(grades: List[Dict], threshold: float = 60) -> Dict"
+    return_keys: [pass_count, fail_count, pass_rate]
+  - name: item_difficulty
+    signature: "item_difficulty(scores: List[float], max_score: float = 100) -> float"
+  - name: enrollment_concentration
+    signature: "enrollment_concentration(courses: List[Dict]) -> float"
+  - name: gpa_distribution_buckets
+    signature: "gpa_distribution_buckets(gpas: List[float], buckets: List[float]) -> Dict"
+
+protocol:
+  evaluator: function_call
+  visible_per_function: 1
+  total_cases: 32
+  hidden_cases: 28
+
+attack_table:
+  stub: "100% fail (32/32)"
+  hardcode: "≥80% fail (设计预期)"
+  shape_only: "≥80% fail"
+  identity: "100% fail (输入输出结构不同)"
+
+redline_table:
+  - "≥3 独立输入: F1=8 F2=8 F3=8 F4=8 ✓"
+  - "≥1 边界: 单元素/全通过/全不及格/单课/全在一桶 ✓"
+  - "≥1 类型负例: raises_on_empty + raises_on_non_list ✓"
+  - "abs(x-e)<tol: F2/F3 float, F1 pass_rate float, F4 count int (==) ✓"
+  - "dict 全 key 严格: F1 3 keys, F4 全 buckets keys ✓"
+
+cross_stage_taboo:
+  - "禁提 XQ02-05 (登录频次 / 学习时长 / 教师评价 / 综合报表)"
+  - "禁提其他 9 实训方向 (RFM / 夏普 / 峰谷 / 流失 / 毛利率 / GMV / DSO / 功率曲线 / PR)"
+  - "禁提慧学课程 MJ/NN/CV/WX/BD 算法名"

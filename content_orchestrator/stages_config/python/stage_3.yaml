@@ -1,0 +1,47 @@
+stage_id: stage_3
+course: python
+course_db_id: 100
+title: 函数与作用域
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 函数定义与调用
+- 函数参数传递
+- 位置参数与关键字参数
+- 默认参数值
+- 变量作用域(LOCAL/GLOBAL)
+- global关键字
+- 返回值与return语句
+- 递归函数基础
+- 匿名函数(lambda)
+- 常用内置函数(abs/max/min/round/pow)
+- 四、常见模式与技巧
+- 参数验证模式
+- 默认值陷阱
+- 递归终止条件
+- 五、评测标准
+expected_handbook_min_chars: 5000
+expected_questions_count: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 5
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```python标注
+- 表格用于对比
+prerequisites:
+- 1
+topics_to_avoid:
+- 装饰器
+- 生成器与迭代器
+- 闭包与 nonlocal
+- 面向对象编程
+baseline_code_hint: 一个计算阶乘或斐波那契的函数
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: manual
+  created_date: '2026-04-23'

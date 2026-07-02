@@ -1,0 +1,39 @@
+stage_id: 3
+course: data_collection
+course_db_id: 4
+stage_name: HTML 解析与 BeautifulSoup
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- HTML 文档结构（标签、属性、嵌套关系）
+- BeautifulSoup 解析器选择（html.parser/lxml/html5lib）
+- CSS 选择器（tag/class/id/属性/组合选择器）
+- find() / find_all() / select() 方法对比
+- 导航 DOM 树（父/子/兄节点）
+- 提取文本内容与属性值
+- 处理中文编码问题
+- 常见反解析陷阱（脏HTML、嵌套CDATA）
+- 四、常见模式与技巧
+- 从复杂页面中提取文章正文
+- 表格数据转 CSV
+- 图片链接批量提取
+- 五、评测标准
+expected_handbook_min_chars: 3000
+expected_questions: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主，代码块用```标注
+- 展示 html.parser/lxml/html5lib 对同一 HTML 的解析差异
+prerequisites:
+- 关卡1: 数据采集概述与工具选型
+- 关卡2: HTTP 协议与请求基础
+topics_to_avoid:
+- 正则表达式提取（放入关卡4）
+- JavaScript 动态渲染（放入关卡5）
+codex_review_required: true
+baseline_code_template: 一个解析HTML片段并提取所有链接的Python函数

@@ -1,0 +1,40 @@
+stage_id: stage_7
+course: python
+course_db_id: 100
+title: 文件操作与异常处理
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 文件打开与关闭（open/close、with语句）
+- 文件读写操作（read/readline/readlines/write）
+- 异常处理（try/except/else/finally）
+- 常见异常类型（FileNotFoundError、ValueError、KeyError等）
+- 抛出异常（raise）
+- 异常链与自定义异常
+- 四、常见模式与技巧
+- 文件读写模式
+- 异常处理最佳实践
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_questions_count: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```python标注
+prerequisites:
+- 6
+topics_to_avoid:
+- 上下文管理器原理
+- 生成器与迭代器的异常处理
+- 装饰器捕获异常
+baseline_code_hint: 一个合并两个字典的函数
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'

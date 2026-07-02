@@ -1,0 +1,10 @@
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.env
+.env.local
+backend/static/
+ziyuan_normalized/
+ziyuan_data/
+.DS_Store

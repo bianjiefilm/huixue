@@ -1,0 +1,113 @@
+name: API Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Set up environment
+      run: |
+        cp .env.example .env
+        echo "DATABASE_URL=postgresql://testuser:testpass@localhost:5432/testdb" >> .env
+    
+    - name: Run database migrations
+      run: |
+        alembic upgrade head
+    
+    - name: Start API server
+      run: |
+        nohup python run_test_server.py > server.log 2>&1 &
+        echo $! > server.pid
+        sleep 10  # Wait for server to start
+    
+    - name: Run API tests
+      run: |
+        python test_training_api.py
+      env:
+        BASE_URL: http://localhost:8500/api/v1
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          server.log
+          test-results.json
+    
+    - name: Stop server
+      if: always()
+      run: |
+        if [ -f server.pid ]; then
+          kill $(cat server.pid) || true
+        fi
+    
+    - name: Comment PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          try {
+            const results = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
+            const passed = results.tests.filter(t => t.status === 'PASS').length;
+            const total = results.tests.length;
+            const percentage = (passed/total * 100).toFixed(1);
+            
+            const comment = `## 🧪 API Test Results
+            
+            **${passed}/${total}** tests passed (${percentage}%)
+            
+            ${passed === total ? '✅ All tests passed!' : '⚠️ Some tests failed. Please review.'}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          } catch (e) {
+            console.log('Could not post test results:', e);
+          }

@@ -1,0 +1,37 @@
+stage_id: 8
+course_db_id: 4
+order_in_practice: 8
+title: "定时任务调度"
+difficulty: intermediate
+difficulty_score: 3
+
+knowledge_points:
+  - APScheduler 基础: BlockingScheduler, AsyncIOScheduler
+  - 触发器类型: date, interval, cron
+  - cron 表达式: 分/时/日/月/周 字段
+  - Python cron 调度: apscheduler.schedulers.blocking
+  - crontab 命令: crontab -e, crontab -l
+  - crontab 格式: 分 时 日 月 周 命令
+  - 定时任务持久化: apscheduler.jobstores
+  - 任务管理: add_job, remove_job, reschedule_job
+  - 异常处理与重试: misfire_grace_time, coalesce
+
+difficulty_progression:
+  - "阶段7: JSON/XML 数据解析已掌握"
+  - "本关引入: 定时任务调度, 让采集脚本自动按计划运行"
+  - "下一关前置: DC09 日志采集依赖定时任务输出的日志文件"
+
+learning_objectives:
+  - 掌握 APScheduler 的 BlockingScheduler 和 AsyncIOScheduler 使用
+  - 熟练使用 interval 和 cron 触发器配置定时任务
+  - 能够编写 crontab 表达式并在 Linux 上配置
+  - 理解任务持久化和任务管理的 API
+
+content_keywords:
+  - APScheduler, BlockingScheduler, AsyncIOScheduler
+  - date, interval, cron trigger
+  - add_job, remove_job, reschedule_job
+  - cron expression, crontab
+  - misfire_grace_time, coalesce, jobstores
+
+practice_id: 4

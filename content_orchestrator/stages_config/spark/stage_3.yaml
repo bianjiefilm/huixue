@@ -1,0 +1,40 @@
+stage_id: stage_3
+course: spark
+course_db_id: 102
+title: Spark Transformation与Action
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 窄依赖与宽依赖（Shuffle）
+- 常用Transformation（groupByKey/reduceByKey/join/sortByKey）
+- reduceByKey与groupByKey对比
+- join类型（内连接/外连接/半连接）
+- Action分类（聚合/输出/抽样）
+- DAG与Stage划分
+- 四、常见模式与技巧
+- pipeline化减少Shuffle
+- partitioner使用
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 2
+topics_to_avoid:
+- Spark SQL
+- Spark Streaming
+- checkpoint机制
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个使用reduceByKey实现多字段聚合的Spark程序

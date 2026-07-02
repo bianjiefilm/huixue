@@ -1,0 +1,147 @@
+name: stage_bd12
+course: 大数据
+stage: 12
+title: 大数据综合项目实战
+order_in_practice: 12
+difficulty: hard
+
+description: |
+  整合 BD01-11 的概念到一个完整的大数据流水线: schema 校验、
+  目的到工具的映射、流水线尺寸估算、执行报告组装。
+  本关考察对全课程的内部一致性理解, 不嵌完整数据。
+
+learning_objectives:
+  - 能给定 list[dict] stages, 校验每 stage 含必需字段 (name, tool, output_size_gb)
+  - 能给定 purpose, 返回对应 BD 工具名 (storage/compute/sql/...)
+  - 能给定 stages, 累加得到流水线总输出大小
+  - 能给定 stages_done / total / errors dict, 组装 BD 流水线报告
+
+handbook_word_count: 2900
+
+chapters:
+  - title: "大数据流水线的整合"
+    content: |
+      ## 1.1 全课程概念回顾
+
+      BD 课程涵盖:
+      - **BD01-03**: Hadoop / HDFS 基础 — 分布式存储
+      - **BD04-05**: MapReduce — 分布式计算
+      - **BD06**: YARN — 资源调度
+      - **BD07-08**: Hive — 数据仓库
+      - **BD09**: HBase — NoSQL
+      - **BD10**: Sqoop — 数据迁移
+      - **BD11**: Kafka — 流数据
+
+      本关把这些"零件"组合成系统级流水线。
+
+      ## 1.2 端到端大数据流水线
+
+      标准电商数据平台流水线:
+      1. **migration** (BD10): MySQL → Hive (每日全量/增量)
+      2. **streaming** (BD11): Kafka 实时埋点 → Hive
+      3. **storage** (BD02): HDFS 存原始数据
+      4. **compute** (BD05): MapReduce 离线分析
+      5. **sql** (BD07/08): Hive 数仓 SQL 查询
+      6. **nosql** (BD09): HBase 实时查询
+      7. **scheduling** (BD06): YARN 协调资源
+      8. **报告组装** (本关 F4): 输出执行报告
+
+      本关聚焦"系统骨架": F1 (输入校验) → F2 (purpose → tool 映射) → F3 (尺寸累加) → F4 (报告组装)。
+
+      ## 1.3 Purpose 到工具的映射 (本关 F2)
+
+      | 子任务 (purpose) | BD 工具 (tool) |
+      |---|---|
+      | storage | hdfs |
+      | compute | mapreduce |
+      | scheduling | yarn |
+      | sql | hive |
+      | nosql | hbase |
+      | streaming | kafka |
+      | migration | sqoop |
+
+      把 7 个 purpose 各自映射到对应工具。这是"系统配置"的代码化表达。
+
+  - title: "Schema 校验与尺寸估算"
+    content: |
+      ## 2.1 Stage Schema 校验
+
+      函数 `validate_pipeline_input_schema(stages)`: 每个 stage dict 必须包含:
+      - `name` (str): 阶段名
+      - `tool` (str): 使用的工具 (复习 BD01 组件)
+      - `output_size_gb` (int / float): 输出数据大小, >= 0
+
+      所有 stage 都满足 → True; 任一缺字段或类型错 → False。
+      允许额外字段 (扩展性)。
+
+      工程实务: 流水线 YAML 配置文件必须先校验 schema, 否则启动后失败更难诊断。
+
+      ## 2.2 总尺寸估算
+
+      函数 `compute_pipeline_total_size(stages)`: 累加所有 stage 的 output_size_gb。
+
+      公式: $\text{total} = \sum_i \text{stage}_i[\text{output\_size\_gb}]$
+
+      用途:
+      - 容量规划 (复习 BD01 集群规模)
+      - 成本估算 (云上按 GB 计费)
+      - 监控告警 (实际超估算 → 异常)
+
+      ## 2.3 与 BD01-11 的呼应
+
+      - BD01 集群规模 = 总数据 × 副本因子 / 单节点容量
+      - 本关 F3 算的是数据总量, 喂给 BD01 的公式可得集群规模
+      - BD02 副本扩展, BD07 压缩降低, BD11 流式增加 — 都影响最终 storage 估算
+
+  - title: "执行报告与业务案例"
+    content: |
+      ## 3.1 执行报告 schema
+
+      函数 `combine_bd_pipeline_report(stages_done, stages_total, errors)`: 组装报告 dict:
+
+      ```
+      {
+          'stages_done': 8,
+          'stages_total': 10,
+          'progress_ratio': 0.8,
+          'errors': {'hive_load': 1, 'kafka_consumer': 2},
+          'total_errors': 3,
+          'is_success': False,  # progress_ratio == 1.0 AND total_errors == 0
+      }
+      ```
+
+      字段说明:
+      - progress_ratio = stages_done / stages_total
+      - total_errors = sum(errors.values())
+      - is_success = (progress_ratio == 1.0 AND total_errors == 0)
+
+      ## 3.2 业务案例: 电商每日大数据流水线
+
+      场景: 公司每日凌晨跑 10 个 stage 的大数据流水线:
+
+      流水线设计:
+      1. **schema 校验** (本关 F1): 必须含 name/tool/output_size_gb
+      2. **执行各 stage**: BD01-11 工具组合
+      3. **统计 errors** (本关 F4 输入): 每 stage 报告异常数
+      4. **算总尺寸** (本关 F3): 累加 output_size_gb 估算 HDFS 容量
+      5. **报告组装** (本关 F4): 给运维 + 业务
+
+      数字: 100 GB MySQL → migration → 100 GB Hive 数据 → MapReduce 聚合 → 5 GB 报表 → HBase 实时查询; total = 205 GB; 8/10 success → progress_ratio = 0.8。
+
+      ## 3.3 工程口诀
+
+      - **流水线 = schema + purpose 映射 + 尺寸估算 + 报告**: 4 部分
+      - **schema 校验最先**: 不合法直接退回
+      - **purpose 映射不要硬编码**: 用 dict 易维护
+      - **报告 dict 标准化**: 下游消费方便
+      - **复用 BD01-11 概念**: 综合不引入新工具
+
+      ## 3.4 综合项目对学习的意义
+
+      综合项目 = "概念回归整合":
+      - 知道每个 purpose 用哪个工具 (本关 F2)
+      - 知道 schema 校验长什么样 (本关 F1)
+      - 知道流水线总量 = 各 stage 累加 (本关 F3)
+      - 知道报告是 schema 化 dict (本关 F4)
+
+      数据工程师从"会用单个工具"到"能搭 7 工具协同的流水线", 这是必经之路。

@@ -1,0 +1,38 @@
+stage_id: stage_6
+course: bigdata
+course_db_id: 101
+title: YARN资源管理与调度
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- YARN架构（ResourceManager/NodeManager/ApplicationMaster）
+- YARN与MapReduce 1对比
+- Container与资源分配
+- 调度器（FIFO/Capacity/Fair）
+- 四、常见模式与技巧
+- 内存与CPU配置
+- 长短作业分离
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 4
+topics_to_avoid:
+- YARN NodeManager内部机制
+- ResourceManager高可用
+- 标签调度（Label-based scheduling）
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个提交YARN作业并查看状态的命令行操作

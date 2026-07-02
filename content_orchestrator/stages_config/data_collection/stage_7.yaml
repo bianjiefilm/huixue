@@ -1,0 +1,38 @@
+stage_id: 7
+course_db_id: 4
+order_in_practice: 7
+title: "JSON/XML 数据解析"
+difficulty: intermediate
+difficulty_score: 2
+
+knowledge_points:
+  - Python json 模块: json.loads/dumps/load/dump
+  - 嵌套 JSON 结构解析: 递归访问、默认值处理
+  - JSON 反序列化错误处理: try/except json.JSONDecodeError
+  - xml.etree.ElementTree: parse/fromstring, find/findall, attrib/text
+  - XPath 在 XML 中的应用: //tag, /tag[@attr], text()
+  - JSON vs XML 对比: 结构差异、适用场景
+  - 深度嵌套数据的展平与重组
+  - 异常处理: KeyError, IndexError, TypeError
+
+difficulty_progression:
+  - "阶段3-6: HTTP + HTML + Scrapy 基础已掌握"
+  - "本关引入: 结构化数据解析 (JSON/XML), 深度嵌套数据处理"
+  - "下一关前置: DC08 定时任务输出日志格式依赖本关解析经验"
+
+learning_objectives:
+  - 能够使用 json 模块解析和生成 JSON 数据
+  - 熟练处理嵌套多层 JSON (递归/展平)
+  - 掌握 xml.etree.ElementTree 进行 XML 解析
+  - 能够在 XML 中使用 XPath 表达式定位元素
+  - 理解 JSON 和 XML 的各自适用场景
+
+content_keywords:
+  - json.loads, json.dumps, json.load, json.dump
+  - json.JSONDecodeError, KeyError, TypeError
+  - xml.etree.ElementTree, ET.parse, ET.fromstring
+  - find(), findall(), iter(), attrib, text, tag
+  - XPath: //tag, /tag[@attr='value'], text(), contains()
+  - 嵌套, 递归, 展平, 重组
+
+practice_id: 4

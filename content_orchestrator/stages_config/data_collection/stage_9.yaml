@@ -1,0 +1,35 @@
+stage_id: 9
+course_db_id: 4
+order_in_practice: 9
+title: "日志格式解析与采集"
+difficulty: intermediate
+difficulty_score: 3
+
+knowledge_points:
+  - Nginx 访问日志格式: $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
+  - Python 正则解析日志: re.compile, re.match, re.findall
+  - 结构化日志 (JSON Log): json.loads 处理 JSON Lines
+  - 日志文件读取: open, with, line-by-line, 编码处理
+  - 日志数据统计: IP 统计, 状态码分布, 热门URL
+  - Python logging 模块: 配置格式, Handler, Formatter
+  - 日志切割与轮转: logging.handlers.RotatingFileHandler
+
+difficulty_progression:
+  - "阶段8: 定时任务调度已掌握"
+  - "本关引入: 日志文件解析, 结构化数据提取"
+  - "下一关前置: DC10 数据质量检查依赖本关的数据清洗经验"
+
+learning_objectives:
+  - 能够使用正则表达式解析 Nginx 默认日志格式
+  - 掌握 Python json 模块处理 JSON Lines 格式日志
+  - 能够处理 GBK/UTF-8 编码的日志文件
+  - 理解 logging 模块的配置和使用
+
+content_keywords:
+  - Nginx access log, $remote_addr, $time_local, $request
+  - re.compile, re.match, 日志解析
+  - JSON Lines, json.loads, 结构化日志
+  - Python logging, Handler, Formatter
+  - RotatingFileHandler, 日志轮转
+
+practice_id: 4

@@ -1,0 +1,41 @@
+stage_id: stage_6
+course: spark
+course_db_id: 102
+title: Spark DataFrame高级操作
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- DataSet与强类型
+- 窗口函数（rank/dense_rank/row_number）
+- 联结操作（broadcast join/sort merge join）
+- 列操作与表达式（withColumn/expr）
+- Schema与分区裁剪
+- Parquet与JSON数据源
+- 四、常见模式与技巧
+- 内存管理与列式存储
+- 数据倾斜Join解法
+- SQL函数大全
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 5
+topics_to_avoid:
+- Spark Streaming
+- RDD底层原理
+- 集群配置
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个使用窗口函数计算TopN的Spark SQL程序

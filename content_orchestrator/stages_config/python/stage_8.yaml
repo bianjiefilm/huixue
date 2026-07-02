@@ -1,0 +1,40 @@
+stage_id: stage_8
+course: python
+course_db_id: 100
+title: 函数与模块
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 函数参数传递（位置参数、关键字参数）
+- 默认参数值与参数默认值
+- "*args和**kwargs（可变参数）"
+- 函数的返回值（return、return None）
+- 模块导入（import、from...import）
+- 标准库常用模块（math、random、datetime）
+- 四、常见模式与技巧
+- 参数解包
+- 模块别名与导入技巧
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_questions_count: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 3
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```python标注
+prerequisites:
+- 7
+topics_to_avoid:
+- lambda表达式与匿名函数
+- 装饰器高级用法
+- 闭包与nonlocal
+baseline_code_hint: 一个将华氏度转换为摄氏度的函数
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'

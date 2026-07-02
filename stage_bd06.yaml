@@ -1,0 +1,129 @@
+name: stage_bd06
+course: 大数据
+stage: 6
+title: YARN 资源管理与调度
+order_in_practice: 6
+difficulty: intermediate
+
+description: |
+  YARN container 分配、资源请求合法性、队列分级、公平调度;
+  含集群多租户调度的业务案例。
+
+learning_objectives:
+  - 能给定集群总内存与单 container 内存, 计算可分配 container 数
+  - 能给定资源请求 (mem, cpu) 与上限, 判断请求是否合法
+  - 能给定优先级数, 返回应分配的队列 (production/default/low)
+  - 能给定 job 权重 / 总权重 / 总资源, 计算公平分配份额
+
+handbook_word_count: 2700
+
+chapters:
+  - title: "YARN 架构与 Container"
+    content: |
+      ## 1.1 YARN 出现的背景
+
+      Hadoop 1.x 的 MapReduce 把"资源管理"和"任务调度"耦合, 问题:
+      - 只能跑 MapReduce, 不能跑 Spark / Flink
+      - 资源利用率低 (slot 模型, 内存 CPU 不解耦)
+      - 调度器单点瓶颈
+
+      Hadoop 2.x 引入 YARN (Yet Another Resource Negotiator) 解耦:
+      - **ResourceManager (RM)**: 集群级资源管理
+      - **NodeManager (NM)**: 节点级 container 管理
+      - **ApplicationMaster (AM)**: 每应用一个, 向 RM 申请资源
+
+      ## 1.2 Container: 资源抽象
+
+      Container 是 YARN 的资源分配单元:
+      - **内存 (memory)**: GB
+      - **CPU (vCore)**: 虚拟核
+      - **网络 / GPU** (扩展)
+
+      集群总资源 = 所有节点资源总和。给定单 container 配置 (例: 8 GB):
+      - 总 container 数 = $\lfloor \text{total\_memory} / \text{container\_memory} \rfloor$
+
+      工程实务: 通常按内存做主要约束, CPU 是次要约束 (内存比 CPU 易耗尽)。
+
+      ## 1.3 资源请求合法性
+
+      AM 向 RM 申请 container 时, 必须满足:
+      - 请求内存 ≤ 单 container 最大内存 (常 32 GB)
+      - 请求 CPU ≤ 单 container 最大 vCore (常 16)
+      - 请求资源 > 0
+
+      不合法请求被 RM 拒绝, AM 必须降低请求重试。
+
+      `is_resource_request_valid(req_mem, req_cpu, max_mem, max_cpu)`: 1 ≤ req ≤ max → True。
+
+  - title: "队列与公平调度"
+    content: |
+      ## 2.1 多队列设计
+
+      生产 YARN 集群通常有多个队列, 按业务/优先级划分:
+      - **production**: 高优先级业务任务 (如生产报表)
+      - **default**: 中等任务 (开发/测试)
+      - **low**: 低优先级 (探索性查询)
+
+      简化策略 (本关 assign_yarn_queue):
+      - priority ≥ 8 → 'production'
+      - 4 ≤ priority < 8 → 'default'
+      - priority < 4 → 'low'
+
+      工程实务: 实际队列配置由集群管理员定义, 业务方申请使用某个队列。
+
+      ## 2.2 三种主流调度器
+
+      YARN 内置三种调度器:
+      - **FIFO Scheduler**: 先到先得, 简单但易饥饿
+      - **Capacity Scheduler**: 队列固定容量, 队列内 FIFO (Yahoo 默认)
+      - **Fair Scheduler**: 按权重公平分配 (Facebook 默认)
+
+      本关聚焦 Fair Scheduler 的核心思想: 公平分配。
+
+      ## 2.3 公平调度的份额计算
+
+      给定一组 job, 每个有权重 w_i, 总资源 R:
+
+      $\text{share}_i = \lfloor R \cdot w_i / \sum_j w_j \rfloor$
+
+      简化版 (本关 compute_fair_share_for_job): 给定单 job 权重, 总权重和, 总资源, 返回 floor 份额。
+
+      工程实务: 高优先级 job 设高权重 (如 weight=10), 低优先级 weight=1。Fair Scheduler 保证每个 job 至少获得权重比例的资源。
+
+  - title: "业务案例与工程口诀"
+    content: |
+      ## 3.1 业务案例: 多租户调度
+
+      场景: 100 节点集群, 总内存 8 TB, 6 个业务部门共享, 每部门权重不同:
+
+      | 部门 | 权重 | 公平份额 (本关 compute_fair_share) |
+      |---|---:|---:|
+      | 实时风控 | 10 | 8000 × 10/30 = 2666 GB |
+      | 报表 BI | 8 | 8000 × 8/30 ≈ 2133 GB |
+      | 推荐算法 | 6 | 8000 × 6/30 = 1600 GB |
+      | 数据科学 | 3 | 8000 × 3/30 = 800 GB |
+      | 测试环境 | 2 | 8000 × 2/30 ≈ 533 GB |
+      | 临时任务 | 1 | 8000 × 1/30 ≈ 266 GB |
+
+      运维流水线:
+      1. **集群容量** (本关 compute_yarn_container_count): 总 8 TB / 8 GB = 1024 containers
+      2. **资源请求审核** (本关 is_resource_request_valid): 拒绝 > 32 GB 或 > 16 CPU 的非法请求
+      3. **队列分配** (本关 assign_yarn_queue): 风控 priority=10 → production
+      4. **公平份额** (本关 compute_fair_share_for_job): 每业务按权重分配
+
+      ## 3.2 工程口诀
+
+      - **Container 是资源单元**: mem + CPU 解耦
+      - **队列分级是多租户基础**: 没有队列就是混战
+      - **Fair Scheduler 是默认**: Facebook/字节 在用
+      - **权重控制公平比例**: 高优先级 weight 高
+      - **资源请求要审核**: 防止 1 个 job 占满集群
+
+      ## 3.3 现代云原生
+
+      YARN 在云原生时代的位置:
+      - K8s + Kueue 替代 YARN 调度容器化大数据
+      - Spark on K8s 不需要 YARN
+      - Hadoop on EMR 仍用 YARN, 但是托管的
+
+      但 YARN 概念 (Container / Queue / Fair Scheduler / 资源解耦) 仍是分布式资源管理的"通用术语"。

@@ -1,0 +1,613 @@
+{
+  "apis": [
+    {
+      "path": "/api/exam/papers",
+      "method": "GET",
+      "description": "获取试卷库列表",
+      "request": {
+        "queryParams": [
+          {"name": "keyword", "type": "string", "required": false, "description": "搜索试卷名称"},
+          {"name": "category", "type": "string", "required": false, "description": "方向分类ID"},
+          {"name": "difficulty", "type": "string", "enum": ["easy", "medium", "hard"], "required": false},
+          {"name": "source", "type": "string", "enum": ["system", "personal", "all"], "required": false, "default": "all"},
+          {"name": "page", "type": "number", "required": false, "default": 1},
+          {"name": "pageSize", "type": "number", "required": false, "default": 12}
+        ]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": {
+          "type": "object",
+          "properties": {
+            "list": {
+              "type": "array",
+              "items": { "$ref": "#/components/schemas/PaperSummary" }
+            },
+            "total": {"type": "number", "example": 55}
+          }
+        }
+      },
+      "errorResponse": [
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers",
+      "method": "POST",
+      "description": "新建试卷 (基础信息)",
+      "request": {
+        "body": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "category": {"type": "string"},
+            "difficulty": {"type": "string", "enum": ["easy", "medium", "hard"]},
+            "paperType": {"type": "string", "enum": ["manual", "template"]}
+          },
+          "required": ["title", "category", "difficulty", "paperType"]
+        },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 201,
+        "body": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "example": "paper-new-123"},
+            "paperType": {"type": "string", "example": "manual"}
+          }
+        }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "请求参数错误"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers/{id}",
+      "method": "GET",
+      "description": "获取试卷详情 (包含题目列表)",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "试卷ID"}
+        ]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": { "$ref": "#/components/schemas/PaperDetail" }
+      },
+      "errorResponse": [
+        {"status": 401, "description": "未授权"},
+        {"status": 404, "description": "试卷未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers/{id}",
+      "method": "PUT",
+      "description": "更新试卷信息 (基础信息和题目列表)",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "试卷ID"}
+        ],
+        "body": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string", "required": false},
+            "description": {"type": "string", "required": false},
+            "duration": {"type": "number", "required": false},
+            "passingScore": {"type": "number", "required": false},
+            "questions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "string"},
+                  "score": {"type": "number"}
+                }
+              },
+              "required": false
+            }
+          }
+        },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": { "$ref": "#/components/schemas/PaperDetail" }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "请求参数错误"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限 (非创建者或非个人试卷)"},
+        {"status": 404, "description": "试卷未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers/{id}/copy",
+      "method": "POST",
+      "description": "复制试卷",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "源试卷ID"}
+        ],
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": { "$ref": "#/components/schemas/PaperSummary" }
+      },
+      "errorResponse": [
+        {"status": 401, "description": "未授权"},
+        {"status": 404, "description": "源试卷未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers/{id}/export",
+      "method": "GET",
+      "description": "导出试卷 (Word)",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "试卷ID"}
+        ]
+      },
+      "successResponse": {
+        "status": 200,
+        "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "description": "Word 文件流"
+      },
+      "errorResponse": [
+        {"status": 401, "description": "未授权"},
+        {"status": 404, "description": "试卷未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers/{id}",
+      "method": "DELETE",
+      "description": "删除试卷 (仅限个人试卷)",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "试卷ID"}
+        ],
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": {
+          "type": "object",
+          "properties": {
+            "success": {"type": "boolean", "example": true}
+          }
+        }
+      },
+      "errorResponse": [
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限 (非创建者或非个人试卷)"},
+        {"status": 404, "description": "试卷未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers/create-exam",
+      "method": "POST",
+      "description": "使用试卷创建考试",
+      "request": {
+        "body": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string", "description": "考试名称"},
+            "classroomId": {"type": "string", "description": "目标课堂ID"},
+            "paperId": {"type": "string", "description": "选用的试卷ID"}
+          },
+          "required": ["title", "classroomId", "paperId"]
+        },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 201,
+        "body": { "$ref": "#/components/schemas/ExamItem" }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "请求参数错误"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限"},
+        {"status": 404, "description": "试卷或课堂未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions",
+      "method": "GET",
+      "description": "获取试题库列表",
+      "request": {
+        "queryParams": [
+          {"name": "keyword", "type": "string", "required": false},
+          {"name": "type", "type": "string", "enum": ["single", "multiple", "judge", "essay"], "required": false},
+          {"name": "category", "type": "string", "required": false},
+          {"name": "difficulty", "type": "string", "enum": ["easy", "medium", "hard"], "required": false},
+          {"name": "source", "type": "string", "enum": ["system", "personal", "all"], "required": false, "default": "all"},
+          {"name": "page", "type": "number", "required": false, "default": 1},
+          {"name": "pageSize", "type": "number", "required": false, "default": 12},
+          {"name": "excludePaperId", "type": "string", "required": false, "description": "排除指定试卷中已包含的题目 (用于选题)"}
+        ]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": {
+          "type": "object",
+          "properties": {
+            "list": {
+              "type": "array",
+              "items": { "$ref": "#/components/schemas/QuestionSummary" }
+            },
+            "total": {"type": "number", "example": 150}
+          }
+        }
+      },
+      "errorResponse": [
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions",
+      "method": "POST",
+      "description": "新建试题",
+      "request": {
+        "body": { "$ref": "#/components/schemas/QuestionInput" },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 201,
+        "body": { "$ref": "#/components/schemas/QuestionDetail" }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "请求参数错误"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions/{id}",
+      "method": "GET",
+      "description": "获取试题详情",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "试题ID"}
+        ]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": { "$ref": "#/components/schemas/QuestionDetail" }
+      },
+      "errorResponse": [
+        {"status": 401, "description": "未授权"},
+        {"status": 404, "description": "试题未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions/{id}",
+      "method": "PUT",
+      "description": "编辑试题 (仅限个人试题)",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "试题ID"}
+        ],
+        "body": { "$ref": "#/components/schemas/QuestionInput" },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": { "$ref": "#/components/schemas/QuestionDetail" }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "请求参数错误"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限 (非创建者或非个人试题)"},
+        {"status": 404, "description": "试题未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions/{id}/copy",
+      "method": "POST",
+      "description": "复制试题",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "源试题ID"}
+        ],
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": { "$ref": "#/components/schemas/QuestionDetail" }
+      },
+      "errorResponse": [
+        {"status": 401, "description": "未授权"},
+        {"status": 404, "description": "源试题未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions/{id}",
+      "method": "DELETE",
+      "description": "删除试题 (仅限个人试题)",
+      "request": {
+        "pathParams": [
+          {"name": "id", "type": "string", "required": true, "description": "试题ID"}
+        ],
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": {
+          "type": "object",
+          "properties": {
+            "success": {"type": "boolean", "example": true}
+          }
+        }
+      },
+      "errorResponse": [
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限 (非创建者或非个人试题)"},
+        {"status": 404, "description": "试题未找到"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions/batch-delete",
+      "method": "POST",
+      "description": "批量删除试题 (仅限个人试题)",
+      "request": {
+        "body": {
+          "type": "object",
+          "properties": {
+            "ids": {"type": "array", "items": {"type": "string"}}
+          },
+          "required": ["ids"]
+        },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": {
+          "type": "object",
+          "properties": {
+            "success": {"type": "boolean", "example": true},
+            "deletedCount": {"type": "number", "example": 5}
+          }
+        }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "请求参数错误"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/questions/import",
+      "method": "POST",
+      "description": "导入试题 (Excel)",
+      "request": {
+        "contentType": "multipart/form-data",
+        "body": {
+          "description": "FormData containing the file"
+        },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 200,
+        "body": {
+          "type": "object",
+          "properties": {
+            "success": {"type": "boolean", "example": true},
+            "importedCount": {"type": "number", "example": 50},
+            "errors": {"type": "array", "items": {"type": "string"}, "required": false, "description": "导入错误信息"}
+          }
+        }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "文件格式错误或内容错误"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/paper-templates",
+      "method": "GET",
+      "description": "获取试卷模板列表",
+      "request": {},
+      "successResponse": {
+        "status": 200,
+        "body": {
+          "type": "array",
+          "items": { "$ref": "#/components/schemas/QuestionTemplate" }
+        }
+      },
+      "errorResponse": [
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    },
+    {
+      "path": "/api/exam/papers/generate-from-template",
+      "method": "POST",
+      "description": "使用模板生成试卷",
+      "request": {
+        "body": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "description": {"type": "string", "required": false},
+            "duration": {"type": "number"},
+            "passingScore": {"type": "number"},
+            "rules": {"type": "array", "items": {"$ref": "#/components/schemas/TemplateRule"}},
+            "questionSourceFilters": {
+              "type": "object",
+              "properties": {
+                "category": {"type": "string", "required": false},
+                "difficulty": {"type": "string", "required": false},
+                "source": {"type": "string", "enum": ["system", "personal", "all"], "required": false}
+              }
+            }
+          },
+          "required": ["title", "duration", "passingScore", "rules"]
+        },
+        "security": [{"bearerAuth": []}]
+      },
+      "successResponse": {
+        "status": 201,
+        "body": { "$ref": "#/components/schemas/PaperDetail" }
+      },
+      "errorResponse": [
+        {"status": 400, "description": "请求参数错误或题库不足"},
+        {"status": 401, "description": "未授权"},
+        {"status": 403, "description": "无权限"},
+        {"status": 500, "description": "服务器内部错误"}
+      ]
+    }
+  ],
+  "components": {
+    "schemas": {
+      "PaperSummary": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "category": {"type": "string"},
+          "difficulty": {"type": "string"},
+          "source": {"type": "string", "enum": ["system", "personal"]},
+          "questionCount": {"type": "number"},
+          "totalScore": {"type": "number"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"},
+          "creatorId": {"type": "string", "required": false},
+          "createdBy": {"type": "string", "required": false}
+        }
+      },
+      "PaperDetail": {
+        "allOf": [
+          {"$ref": "#/components/schemas/PaperSummary"},
+          {
+            "type": "object",
+            "properties": {
+              "description": {"type": "string", "required": false},
+              "duration": {"type": "number"},
+              "passingScore": {"type": "number"},
+              "questions": {"type": "array", "items": {"$ref": "#/components/schemas/QuestionDetail"}}
+            }
+          }
+        ]
+      },
+      "QuestionSummary": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string"},
+          "content": {"type": "string"},
+          "category": {"type": "string"},
+          "difficulty": {"type": "string"},
+          "source": {"type": "string"},
+          "score": {"type": "number"}
+        }
+      },
+      "QuestionDetail": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string", "enum": ["single", "multiple", "judge", "essay"]},
+          "content": {"type": "string"},
+          "options": {
+            "type": "array",
+            "items": {"type": "object", "properties": {"content": {"type": "string"}}},
+            "required": false
+          },
+          "answer": {"oneOf": [{"type": "array", "items": {"type": "number"}}, {"type": "boolean"}], "description": "Index/indices for choice/judge, boolean for true/false"},
+          "referenceAnswer": {"type": "string", "required": false, "description": "For essay"},
+          "score": {"type": "number"},
+          "difficulty": {"type": "string", "enum": ["easy", "medium", "hard"]},
+          "category": {"type": "array", "items": {"type": "string"}},
+          "explanation": {"type": "string", "required": false},
+          "source": {"type": "string", "enum": ["system", "personal"]},
+          "creatorId": {"type": "string", "required": false}
+        }
+      },
+      "QuestionInput": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string", "enum": ["single", "multiple", "judge", "essay"]},
+          "content": {"type": "string"},
+          "options": {
+            "type": "array",
+            "items": {"type": "string"},
+            "required": false
+          },
+          "answer": {"oneOf": [{"type": "array", "items": {"type": "number"}}, {"type": "boolean"}], "description": "Index/indices for choice/judge, boolean for true/false"},
+          "referenceAnswer": {"type": "string", "required": false, "description": "For essay"},
+          "score": {"type": "number"},
+          "difficulty": {"type": "string", "enum": ["easy", "medium", "hard"]},
+          "category": {"type": "array", "items": {"type": "string"}},
+          "explanation": {"type": "string", "required": false}
+        },
+        "required": ["type", "content", "score", "difficulty", "category"]
+      },
+      "QuestionTemplate": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "description": {"type": "string"},
+          "rules": {"type": "array", "items": {"$ref": "#/components/schemas/TemplateRule"}},
+          "isSystem": {"type": "boolean"}
+        }
+      },
+      "TemplateRule": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string", "enum": ["single", "multiple", "judge", "essay"]},
+          "count": {"type": "number"},
+          "scorePerQuestion": {"type": "number"},
+          "difficulty": {"type": "string", "enum": ["easy", "medium", "hard"], "required": false},
+          "category": {"type": "array", "items": {"type": "string"}, "required": false}
+        },
+        "required": ["type", "count", "scorePerQuestion"]
+      },
+      "ExamItem": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "courseId": {"type": "string"},
+          "classroomId": {"type": "string"},
+          "paperId": {"type": "string"},
+          "paperName": {"type": "string"},
+          "status": {"type": "string", "enum": ["unpublished", "upcoming", "ongoing", "ended"]},
+          "startTime": {"type": "string", "format": "date-time", "required": false},
+          "endTime": {"type": "string", "format": "date-time", "required": false},
+          "duration": {"type": "number"},
+          "passingScore": {"type": "number"},
+          "randomOrder": {"type": "boolean"},
+          "participantCount": {"type": "number"},
+          "completedCount": {"type": "number"},
+          "passedCount": {"type": "number"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time", "required": false},
+          "paperTotalScore": {"type": "number", "required": false}
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+} 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试页面索引</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #1890ff;
+      border-bottom: 2px solid #1890ff;
+      padding-bottom: 10px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+      background-color: white;
+      padding: 15px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+    }
+    li:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    a {
+      color: #1890ff;
+      text-decoration: none;
+      font-weight: bold;
+      display: block;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .description {
+      color: #666;
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+    .dark-mode {
+      background-color: #141414;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .dark-mode h1 {
+      color: #177ddc;
+      border-bottom-color: #177ddc;
+    }
+    .dark-mode li {
+      background-color: #1f1f1f;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .dark-mode a {
+      color: #177ddc;
+    }
+    .dark-mode .description {
+      color: rgba(255, 255, 255, 0.65);
+    }
+    .mode-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #1890ff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .dark-mode .mode-toggle {
+      background-color: #177ddc;
+    }
+  </style>
+</head>
+<body>
+  <button class="mode-toggle" onclick="toggleDarkMode()">切换暗色模式</button>
+
+  <h1>测试页面索引</h1>
+  
+  <ul>
+    <li>
+      <a href="student-test-fixed.html">学生管理测试页面</a>
+      <div class="description">包含学生信息的CRUD操作、班级关联等功能，已修复 dayjs 和 Chrome 扩展相关问题</div>
+    </li>
+    <li>
+      <a href="course-test.html">课程管理测试页面</a>
+      <div class="description">包含课程信息的操作功能</div>
+    </li>
+    <li>
+      <a href="ml-canvas-test.html">Canvas 绘图测试页面</a>
+      <div class="description">测试 Canvas 绘图功能</div>
+    </li>
+  </ul>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    // 检查是否之前设置了暗色模式
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
+</body>
+</html> 

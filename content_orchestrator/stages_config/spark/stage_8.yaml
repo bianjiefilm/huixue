@@ -1,0 +1,41 @@
+stage_id: stage_8
+course: spark
+course_db_id: 102
+title: Structured Streaming
+difficulty: advanced
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- Structured Streaming与微批
+- DataFrame/DataSet流式API
+- 输入源（socket/file/kafka）
+- 输出模式（complete/append/update）
+- 事件时间与水印
+- 状态管理（mapGroupsWithState）
+- 四、常见模式与技巧
+- 迟到数据处理
+- 动态写入分区
+- 故障恢复
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 7
+topics_to_avoid:
+- Spark MLlib
+- GraphX
+- Kafka底层原理
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个使用Structured Streaming读取CSV目录并实时统计的Scala程序

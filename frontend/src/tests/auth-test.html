@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户认证Mock测试</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f2f5;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #1890ff;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background-color: #1890ff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #40a9ff;
+    }
+    .btn-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>用户认证Mock API测试</h1>
+    <div class="btn-container">
+      <button id="startTestBtn" class="btn">开始测试</button>
+    </div>
+    <div id="log"></div>
+  </div>
+
+  <!-- 引入Axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+  <!-- 引入Mock.js -->
+  <script src="https://cdn.jsdelivr.net/npm/mockjs/dist/mock.min.js"></script>
+  
+  <!-- 引入我们的Mock配置 -->
+  <script>
+    // 模拟getRandomId函数
+    function getRandomId(prefix = '') {
+      return prefix + Math.random().toString(36).substring(2, 10);
+    }
+    
+    // 用户角色类型
+    const UserRole = {
+      STUDENT: 'student',
+      TEACHER: 'teacher',
+      ADMIN: 'admin'
+    };
+    
+    // 模拟用户数据
+    const users = [
+      {
+        id: '1',
+        username: 'admin',
+        password: 'admin123',
+        avatar: 'https://joeschmoe.io/api/v1/admin',
+        email: 'admin@example.com',
+        role: UserRole.ADMIN
+      },
+      {
+        id: '2',
+        username: 'teacher',
+        password: 'teacher123',
+        avatar: 'https://joeschmoe.io/api/v1/teacher',
+        email: 'teacher@example.com',
+        role: UserRole.TEACHER
+      },
+      {
+        id: '3',
+        username: 'student',
+        password: 'student123',
+        avatar: 'https://joeschmoe.io/api/v1/student',
+        email: 'student@example.com',
+        role: UserRole.STUDENT
+      }
+    ];
+    
+    // 模拟Token存储
+    const tokenStore = {};
+    
+    // 配置Mock.js拦截请求
+    
+    // 登录接口
+    Mock.mock('/api/login', 'post', function(options) {
+      const body = JSON.parse(options.body);
+      const { username, password } = body;
+      
+      // 查找用户
+      const user = users.find(u => u.username === username);
+      
+      // 验证失败
+      if (!user || user.password !== password) {
+        return {
+          code: 401,
+          message: '用户名或密码错误',
+          success: false
+        };
+      }
+      
+      // 生成Token
+      const token = 'mock_token_' + getRandomId();
+      tokenStore[token] = user.id;
+      
+      // 返回登录成功信息
+      return {
+        code: 200,
+        message: '登录成功',
+        success: true,
+        data: {
+          token,
+          user: {
+            id: user.id,
+            username: user.username,
+            avatar: user.avatar,
+            email: user.email,
+            role: user.role
+          }
+        }
+      };
+    });
+    
+    // 获取当前用户信息
+    Mock.mock(new RegExp('/api/user/info(\\?.*)?'), 'get', function(options) {
+      // 从URL获取token
+      const token = options.url.includes('token=') 
+        ? options.url.split('token=')[1].split('&')[0]
+        : '';
+      
+      // Token无效
+      if (!token || !tokenStore[token]) {
+        return {
+          code: 401,
+          message: '未授权，请重新登录',
+          success: false
+        };
+      }
+      
+      // 查找用户
+      const userId = tokenStore[token];
+      const user = users.find(u => u.id === userId);
+      
+      if (!user) {
+        return {
+          code: 404,
+          message: '用户不存在',
+          success: false
+        };
+      }
+      
+      // 返回用户信息
+      return {
+        code: 200,
+        message: '获取用户信息成功',
+        success: true,
+        data: {
+          id: user.id,
+          username: user.username,
+          avatar: user.avatar,
+          email: user.email,
+          role: user.role
+        }
+      };
+    });
+    
+    // 登出接口
+    Mock.mock(new RegExp('/api/logout(\\?.*)?'), 'post', function(options) {
+      // 获取token
+      const token = options.url.includes('token=') 
+        ? options.url.split('token=')[1].split('&')[0]
+        : '';
+      
+      // 删除Token
+      if (token && tokenStore[token]) {
+        delete tokenStore[token];
+      }
+      
+      return {
+        code: 200,
+        message: '登出成功',
+        success: true
+      };
+    });
+  </script>
+  
+  <!-- 引入测试代码 -->
+  <script src="auth.test.js"></script>
+  
+  <!-- 初始化测试 -->
+  <script>
+    // 等待页面加载完成
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化日志显示
+      initLogDisplay();
+      
+      // 绑定开始测试按钮事件
+      document.getElementById('startTestBtn').addEventListener('click', function() {
+        // 清空日志
+        document.getElementById('log').innerHTML = '';
+        // 运行测试
+        runTests();
+      });
+    });
+  </script>
+</body>
+</html> 

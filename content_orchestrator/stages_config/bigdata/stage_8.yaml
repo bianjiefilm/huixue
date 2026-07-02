@@ -1,0 +1,38 @@
+stage_id: stage_8
+course: bigdata
+course_db_id: 101
+title: HiveQL查询与优化
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- HiveQL查询语法（SELECT/WHERE/GROUP BY/ORDER BY）
+- 聚合函数与窗口函数
+- JOIN类型与优化
+- 视图与子查询
+- 四、常见模式与技巧
+- 数据倾斜处理
+- 向量化执行
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 7
+topics_to_avoid:
+- HiveServer2安全认证
+- 列式存储格式深入
+- 索引机制
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个统计用户行为的HiveQL查询

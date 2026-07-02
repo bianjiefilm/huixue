@@ -1,0 +1,117 @@
+name: stage_mj11
+course: 数据挖掘
+stage: 11
+title: 集成学习与模型融合
+order_in_practice: 11
+difficulty: advanced
+
+description: |
+  Bagging(随机森林)、Boosting(AdaBoost/GBDT)、
+  Stacking 多层融合、Voting 投票集成。
+
+learning_objectives:
+  - 掌握 Bagging 的方差削减原理
+  - 掌握 Boosting 的序列学习残差思想
+  - 掌握 Stacking 多模型融合架构
+  - 掌握 VotingClassifier 投票集成
+
+handbook_word_count: 1700
+
+chapters:
+  - title: "Bagging 与随机森林"
+    content: |
+      ## 11.1 Bagging 原理
+
+      Bootstrap Aggregating: 对训练集有放回抽样,每个子集训练一个模型,结果投票/平均
+
+      核心效果: 降低方差,提高稳定性
+
+      随机森林 = Bagging + 特征子采样:
+      - 行抽样: 有放回抽样 (bootstrap=True)
+      - 列抽样: 每次分裂考虑 sqrt(d) 个特征
+
+      ```python
+      from sklearn.ensemble import RandomForestClassifier, BaggingClassifier
+      from sklearn.tree import DecisionTreeClassifier
+
+      # Bagging
+      bag = BaggingClassifier(
+          estimator=DecisionTreeClassifier(max_depth=5),
+          n_estimators=100,
+          bootstrap=True, max_samples=0.8,
+          random_state=42, n_jobs=-1
+      )
+      bag.fit(X_train, y_train)
+
+      # 随机森林(RandomForest, Bagging的特例)
+      rf = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+      rf.fit(X_train, y_train)
+      ```
+
+  - title: "Boosting 与 GBDT"
+    content: |
+      ## 11.2 Boosting 原理
+
+      序列化训练: 每棵树学习前面所有树的残差/梯度,逐步减少偏差
+
+      ```python
+      from sklearn.ensemble import GradientBoostingClassifier, AdaBoostClassifier
+
+      # AdaBoost: 对错误样本加权
+      ada = AdaBoostClassifier(
+          n_estimators=100, learning_rate=1.0,
+          random_state=42
+      )
+      ada.fit(X_train, y_train)
+
+      # GBDT: 梯度下降优化
+      gbdt = GradientBoostingClassifier(
+          n_estimators=100,
+          learning_rate=0.1,
+          max_depth=5,
+          subsample=0.8,
+          random_state=42
+      )
+      gbdt.fit(X_train, y_train)
+      ```
+
+  - title: "Stacking 与 Voting"
+    content: |
+      ## 11.3 Stacking 多层融合
+
+      元学习器(meta-learner)对基础模型输出做二次学习:
+
+      ```python
+      from sklearn.ensemble import StackingClassifier
+      from sklearn.linear_model import LogisticRegression
+      from sklearn.svm import SVC
+      from sklearn.neighbors import KNeighborsClassifier
+
+      base_models = [
+          ('rf', RandomForestClassifier(n_estimators=100, random_state=42)),
+          ('svc', SVC(probability=True, random_state=42)),
+          ('knn', KNeighborsClassifier(n_neighbors=5)),
+      ]
+
+      stacking = StackingClassifier(
+          estimators=base_models,
+          final_estimator=LogisticRegression(),
+          cv=5,
+          n_jobs=-1
+      )
+      stacking.fit(X_train, y_train)
+      y_pred = stacking.predict(X_test)
+      ```
+
+      ## 11.4 Voting 投票
+
+      ```python
+      from sklearn.ensemble import VotingClassifier
+
+      voting = VotingClassifier(
+          estimators=base_models,
+          voting='soft',  # 'hard' 多数投票, 'soft' 概率加权
+          n_jobs=-1
+      )
+      voting.fit(X_train, y_train)
+      ```

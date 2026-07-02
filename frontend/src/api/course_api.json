@@ -1,0 +1,434 @@
+[
+  {
+    "path": "/api/courses/resources",
+    "method": "GET",
+    "description": "获取课程教材列表",
+    "request": {
+      "queryParams": [
+        {"name": "keyword", "type": "string", "required": false, "description": "搜索关键词 (课程标题、教师、学校、描述)"},
+        {"name": "tags", "type": "string[]", "required": false, "description": "筛选标签名称数组"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "example": "1"},
+            "title": {"type": "string", "example": "大数据技术基础与应用实践"},
+            "cover": {"type": "string", "example": "https://picsum.photos/id/231/800/450"},
+            "teacher": {"type": "string", "example": "林子雨"},
+            "university": {"type": "string", "example": "厦门大学"},
+            "description": {"type": "string", "example": "全面讲解大数据技术和应用..."},
+            "tags": {"type": "array", "items": {"type": "string"}, "example": ["大数据", "计算机基础"]},
+            "views": {"type": "number", "example": 3562},
+            "rating": {"type": "number", "example": 4.8},
+            "students": {"type": "number", "example": 1280},
+            "chapters": {"type": "number", "example": 14},
+            "practices": {"type": "number", "example": 36}
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/courses/micro",
+    "method": "GET",
+    "description": "获取微型实验课程列表",
+    "request": {
+      "queryParams": [
+        {"name": "keyword", "type": "string", "required": false, "description": "搜索关键词 (课程标题)"},
+        {"name": "direction", "type": "string", "required": false, "description": "方向筛选"},
+        {"name": "category", "type": "string", "required": false, "description": "分类筛选"},
+        {"name": "level", "type": "string", "required": false, "description": "难度筛选 (初级, 中级, 高级)"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "example": "1"},
+            "title": {"type": "string", "example": "学习中的基本概念"},
+            "cover": {"type": "string", "example": "https://picsum.photos/id/251/800/450"},
+            "type": {"type": "string", "example": "入门"},
+            "level": {"type": "string", "example": "初级"},
+            "popularity": {"type": "number", "example": 1024},
+            "views": {"type": "number", "example": 5689},
+            "direction": {"type": "string", "example": "基础理论"},
+            "category": {"type": "string", "example": "概念学习"},
+            "introduction": {"type": "string", "example": "本课程主要介绍计算机科学中的基础概念..."},
+            "coins": {"type": "number", "example": 500},
+            "skills": {"type": "array", "items": {"type": "string"}, "example": ["理论基础", "概念理解"]},
+            "tasks": {"type": "array", "items": {"$ref": "#/components/schemas/Task"}}
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/courses/tags",
+    "method": "GET",
+    "description": "获取所有课程标签",
+    "request": {},
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "example": "1"},
+            "name": {"type": "string", "example": "大数据"}
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/courses/micro/directions",
+    "method": "GET",
+    "description": "获取所有微型实验方向",
+    "request": {},
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {"type": "string"},
+        "example": ["基础理论", "编程基础", "算法与数据结构"]
+      }
+    },
+    "errorResponse": [
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/courses/micro/categories",
+    "method": "GET",
+    "description": "获取所有微型实验分类",
+    "request": {},
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {"type": "string"},
+        "example": ["概念学习", "面向对象", "算法设计"]
+      }
+    },
+    "errorResponse": [
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/courses/resources/{id}",
+    "method": "GET",
+    "description": "获取课程教材详情",
+    "request": {
+      "pathParams": [
+        {"name": "id", "type": "string", "required": true, "description": "课程教材ID"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "example": "1"},
+          "title": {"type": "string", "example": "大数据技术基础与应用实践"},
+          "cover": {"type": "string", "example": "https://picsum.photos/id/231/800/450"},
+          "teacher": {"type": "string", "example": "林子雨"},
+          "university": {"type": "string", "example": "厦门大学"},
+          "description": {"type": "string", "example": "全面讲解大数据技术和应用..."},
+          "tags": {"type": "array", "items": {"type": "string"}, "example": ["大数据", "计算机基础"]},
+          "views": {"type": "number", "example": 3562},
+          "rating": {"type": "number", "example": 4.8},
+          "students": {"type": "number", "example": 1280},
+          "chapters": {"type": "number", "example": 14},
+          "practices": {"type": "number", "example": 36},
+          "direction": {"type": "string", "example": "大数据技术"},
+          "syllabus": {"type": "array", "items": {"type": "object", "properties": {"title": {"type": "string"}, "content": {"type": "string"}}}},
+          "resources": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "type": {"type": "string"}, "size": {"type": "string"}, "url": {"type": "string"}}}},
+          "exams": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "type": {"type": "string"}, "questions": {"type": "number"}, "score": {"type": "number"}, "status": {"type": "string"}}}},
+          "teams": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "logo": {"type": "string"}}}},
+          "introduction": {"type": "string", "example": "大数据技术入门课程..."},
+          "chapterList": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "description": {"type": "string"}}}}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 404, "description": "课程资源未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/courses/micro/{id}",
+    "method": "GET",
+    "description": "获取微型实验详情",
+    "request": {
+      "pathParams": [
+        {"name": "id", "type": "string", "required": true, "description": "微型实验ID"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "example": "1"},
+          "title": {"type": "string", "example": "学习中的基本概念"},
+          "cover": {"type": "string", "example": "https://picsum.photos/id/251/800/450"},
+          "type": {"type": "string", "example": "入门"},
+          "level": {"type": "string", "example": "初级"},
+          "popularity": {"type": "number", "example": 1024},
+          "views": {"type": "number", "example": 5689},
+          "direction": {"type": "string", "example": "基础理论"},
+          "category": {"type": "string", "example": "概念学习"},
+          "introduction": {"type": "string", "example": "本课程主要介绍计算机科学中的基础概念..."},
+          "coins": {"type": "number", "example": 500},
+          "skills": {"type": "array", "items": {"type": "string"}, "example": ["理论基础", "概念理解"]},
+          "tasks": {"type": "array", "items": {"$ref": "#/components/schemas/Task"}}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 404, "description": "微型实验未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/courses/micro/{id}/recommended",
+    "method": "GET",
+    "description": "获取推荐的微型实验",
+    "request": {
+      "pathParams": [
+        {"name": "id", "type": "string", "required": true, "description": "当前微型实验ID"}
+      ],
+      "queryParams": [
+        {"name": "count", "type": "number", "required": false, "default": 4, "description": "推荐数量"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {"$ref": "#/components/schemas/MicroCourse"}
+      }
+    },
+    "errorResponse": [
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/challenges/{id}",
+    "method": "GET",
+    "description": "获取关卡挑战详情",
+    "request": {
+      "pathParams": [
+        {"name": "id", "type": "string", "required": true, "description": "挑战ID (通常是Task ID)"}
+      ]
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {"$ref": "#/components/schemas/CodingChallenge"}
+    },
+    "errorResponse": [
+      {"status": 404, "description": "挑战未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/challenges/evaluate",
+    "method": "POST",
+    "description": "评测单条测试用例",
+    "request": {
+      "body": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "string", "description": "用户提交的代码"},
+          "testCase": {"$ref": "#/components/schemas/TestCase"}
+        },
+        "required": ["code", "testCase"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "passed": {"type": "boolean", "example": true},
+          "actualOutput": {"type": "string", "example": "我是小明，来自中国\n中国"},
+          "error": {"type": "string", "required": false, "example": "编译错误: 缺少分号"}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 500, "description": "评测服务错误"}
+    ]
+  },
+  {
+    "path": "/api/challenges/evaluate-all",
+    "method": "POST",
+    "description": "使用所有测试用例评测代码",
+    "request": {
+      "body": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "string", "description": "用户提交的代码"},
+          "testCases": {"type": "array", "items": {"$ref": "#/components/schemas/TestCase"}}
+        },
+        "required": ["code", "testCases"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "example": "1"},
+            "title": {"type": "string", "example": "测试用例1"},
+            "passed": {"type": "boolean", "example": true},
+            "actualOutput": {"type": "string", "example": "我是小明，来自中国\n中国"},
+            "expectedOutput": {"type": "string", "example": "我是小明，来自中国\n中国"},
+            "error": {"type": "string", "required": false},
+            "hidden": {"type": "boolean", "example": false}
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 500, "description": "评测服务错误"}
+    ]
+  },
+  {
+    "path": "/api/challenges/validate-html",
+    "method": "POST",
+    "description": "验证HTML挑战",
+    "request": {
+      "body": {
+        "type": "object",
+        "properties": {
+          "htmlContent": {"type": "string", "description": "用户提交的HTML内容"},
+          "testCases": {"type": "array", "items": {"$ref": "#/components/schemas/TestCase"}}
+        },
+        "required": ["htmlContent", "testCases"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "example": "1"},
+            "title": {"type": "string", "example": "基本HTML结构测试"},
+            "passed": {"type": "boolean", "example": true},
+            "actualOutput": {"type": "string", "example": "预览窗口中显示的内容"},
+            "expectedOutput": {"type": "string", "example": "页面应正确显示HTML结构"},
+            "error": {"type": "string", "required": false},
+            "hidden": {"type": "boolean", "example": false}
+          }
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 500, "description": "验证服务错误"}
+    ]
+  },
+  {
+    "path": "/api/classrooms",
+    "method": "POST",
+    "description": "创建课堂 (从课程详情页发起)",
+    "request": {
+      "body": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string", "description": "课堂名称"},
+          "credit": {"type": "number", "description": "学分"},
+          "startTime": {"type": "string", "format": "date-time", "description": "开始时间"},
+          "endTime": {"type": "string", "format": "date-time", "description": "结束时间"},
+          "modules": {"type": "array", "items": {"type": "string"}, "description": "选用的模块 (practice, resource, exam)"},
+          "courseId": {"type": "string", "description": "关联的课程资源ID"}
+        },
+        "required": ["name", "credit", "startTime", "endTime", "modules", "courseId"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {"$ref": "#/components/schemas/Classroom"}
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 401, "description": "未授权 (用户未登录或无权限)"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/classrooms/my",
+    "method": "GET",
+    "description": "获取当前用户创建的课堂列表 (用于添加到课堂弹窗)",
+    "request": {},
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "array",
+        "items": {"$ref": "#/components/schemas/Classroom"}
+      }
+    },
+    "errorResponse": [
+      {"status": 401, "description": "未授权 (用户未登录或无权限)"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  },
+  {
+    "path": "/api/classrooms/{classroomId}/courses",
+    "method": "POST",
+    "description": "将微型实验添加到课堂",
+    "request": {
+      "pathParams": [
+        {"name": "classroomId", "type": "string", "required": true, "description": "目标课堂ID"}
+      ],
+      "body": {
+        "type": "object",
+        "properties": {
+          "microCourseId": {"type": "string", "description": "要添加的微型实验ID"}
+        },
+        "required": ["microCourseId"]
+      }
+    },
+    "successResponse": {
+      "status": 200,
+      "body": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string", "example": "课程添加成功"}
+        }
+      }
+    },
+    "errorResponse": [
+      {"status": 400, "description": "请求参数错误"},
+      {"status": 401, "description": "未授权"},
+      {"status": 403, "description": "无权限操作该课堂"},
+      {"status": 404, "description": "课堂或实践未找到"},
+      {"status": 500, "description": "服务器内部错误"}
+    ]
+  }
+] 

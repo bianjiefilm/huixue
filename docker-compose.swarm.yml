@@ -1,0 +1,274 @@
+# =============================================================================
+# 慧学高校大数据平台 — Docker Swarm Stack 配置 (V2 重构版)
+# =============================================================================
+#
+# 重构内容:
+#   1. 所有挂载路径改为 NFS 共享绝对路径 (/data/huixue_storage/...)
+#   2. 移除 container_name (Swarm 不兼容)
+#   3. 统一使用 overlay 网络 (跨节点通信)
+#   4. DB/Redis 绑定 manager 节点 (有状态服务)
+#   5. 无状态服务可自由调度
+#
+# 部署命令:
+#   docker stack deploy -c docker-compose.swarm.yml huixue-core
+#
+# 更新命令:
+#   docker stack deploy -c docker-compose.swarm.yml huixue-core
+#   (Swarm 会自动做滚动更新)
+#
+# =============================================================================
+
+version: "3.8"
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 数据库 — 绑定 manager 节点
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    # 不使用 container_name (Swarm 不支持)
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-huixue}
+      POSTGRES_USER: ${POSTGRES_USER:-huixue}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-huixue123}
+    volumes:
+      - /data/huixue_storage/postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - huixue-overlay
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-huixue}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Redis 缓存 — 绑定 manager 节点
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 1G
+    command: redis-server --appendonly yes
+    volumes:
+      - /data/huixue_storage/redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - huixue-overlay
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # 后端 API (FastAPI) — 可调度到任意节点
+  # ---------------------------------------------------------------------------
+  backend:
+    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-backend:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
+    ports:
+      - "8000:8000"
+    volumes:
+      # ★ 核心修复: 使用 NFS 绝对路径（三台机器都能读到）
+      - /data/huixue_storage/static/ziyuan_data_full:/app/ziyuan_data:ro
+      # 学生工作目录
+      - /data/huixue_storage/student_workspaces:/app/student_work
+      # 授权文件
+      - /data/huixue_storage/license.json:/app/license/license.json:ro
+      # Docker Socket（仅 manager 节点需要）
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-huixue}:${POSTGRES_PASSWORD:-huixue123}@db:5432/${POSTGRES_DB:-huixue}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-huixue-secret-key-change-in-production}
+      # ★ 资源路径指向 NFS 挂载
+      - RESOURCE_BASE_DIR=/app/ziyuan_data
+      - HUIXUE_RESOURCE_DIR=/app/ziyuan_data
+      - CONTAINER_STUDENT_WORK_BASE=/app/student_work
+      - LICENSE_PATH=/app/license/license.json
+      - HOST_MACHINE_CODE=${HOST_MACHINE_CODE:-efa7f3332140e8de92d9a14159376b54c260299f6b3c705a4d123dbfd0a846e7}
+      # Jupyter 配置 — 使用内网 IP
+      - JUPYTER_BASE_URL=http://172.16.100.41:8888
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-huixue_token}
+      # PromptPilot
+      - AGENTPILOT_API_KEY=${AGENTPILOT_API_KEY:-f615ee84-e781-43eb-9393-d88ab1030156}
+      - AGENTPILOT_WORKSPACE_ID=${AGENTPILOT_WORKSPACE_ID:-ws-20250912023836-3yTQ9}
+      - AGENTPILOT_API_URL=${AGENTPILOT_API_URL:-https://prompt-pilot.cn-beijing.volces.com}
+      - ARK_API_KEY=${ARK_API_KEY:-}
+      # Dify
+      - DIFY_SECRET_KEY=${DIFY_SECRET_KEY:-}
+      # 飞书
+      - FEISHU_APP_ID=${FEISHU_APP_ID:-}
+      - FEISHU_APP_SECRET=${FEISHU_APP_SECRET:-}
+      - FEISHU_CHAT_ID=${FEISHU_CHAT_ID:-}
+      - FEISHU_WEBHOOK_URL=${FEISHU_WEBHOOK_URL:-}
+    networks:
+      - huixue-overlay
+
+  # ---------------------------------------------------------------------------
+  # 前端 (Vue + Nginx) — 可调度到任意节点
+  # ---------------------------------------------------------------------------
+  frontend:
+    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-frontend:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 512M
+    ports:
+      - "3000:80"
+    networks:
+      - huixue-overlay
+
+  # ---------------------------------------------------------------------------
+  # Jupyter 实训环境 — 绑定 manager（需要访问 NFS 数据）
+  # ---------------------------------------------------------------------------
+  jupyter:
+    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-jupyter:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 2G
+    ports:
+      - "8888:8888"
+    volumes:
+      - /data/huixue_storage/student_workspaces:/home/jovyan/work
+      - /data/huixue_storage/static/ziyuan_data_full:/home/jovyan/resources:ro
+    environment:
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-huixue_token}
+      - MPLCONFIGDIR=/home/jovyan/.config/matplotlib
+    command: >
+      jupyter
+      notebook
+      --ip=0.0.0.0
+      --port=8888
+      --NotebookApp.token='${JUPYTER_TOKEN:-huixue_token}'
+      --NotebookApp.allow_origin='*'
+      --NotebookApp.disable_check_xsrf=True
+      --NotebookApp.tornado_settings="{'headers': {'Content-Security-Policy': \"frame-ancestors 'self' http://172.16.100.41:3000 http://100.74.141.3:3000\"}}"
+      --allow-root
+    networks:
+      - huixue-overlay
+
+  # ---------------------------------------------------------------------------
+  # VDI 云桌面环境 (Ubuntu + noVNC) — 可调度
+  # ---------------------------------------------------------------------------
+  vdi:
+    image: consol/ubuntu-xfce-vnc:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 2G
+    ports:
+      - "6080:6901"
+      - "5901:5901"
+    volumes:
+      - /data/huixue_storage/static/ziyuan_data_full:/headless/resources:ro
+    environment:
+      - VNC_PW=huixue123
+      - VNC_RESOLUTION=1280x720
+      - VNC_COL_DEPTH=24
+    networks:
+      - huixue-overlay
+    shm_size: '512m'
+
+  # ---------------------------------------------------------------------------
+  # KNIME 数据分析环境 — 可调度
+  # ---------------------------------------------------------------------------
+  knime:
+    image: cfprot/knime:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 4G
+    ports:
+      - "6081:5901"
+    volumes:
+      - /data/huixue_storage/static/ziyuan_data_full:/home/knime/data:ro
+    environment:
+      - VNC_PASSWORD=huixue123
+    networks:
+      - huixue-overlay
+    shm_size: '1g'
+
+  # ---------------------------------------------------------------------------
+  # Docker Registry — 绑定 manager 节点
+  # ---------------------------------------------------------------------------
+  registry:
+    image: registry:2
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "5000:5000"
+    volumes:
+      - /data/huixue_storage/registry-data:/var/lib/registry
+    networks:
+      - huixue-overlay
+
+# =============================================================================
+# 网络 — 统一使用 Overlay（跨节点通信）
+# =============================================================================
+networks:
+  huixue-overlay:
+    driver: overlay
+    attachable: true

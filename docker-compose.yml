@@ -1,0 +1,218 @@
+# =============================================================================
+# 慧学高校大数据平台 - 统一 Docker Compose 配置
+# =============================================================================
+# 
+# 精简版：只包含核心必需服务
+# 
+# 服务列表：
+#   1. db        - PostgreSQL 数据库
+#   2. redis     - Redis 缓存
+#   3. backend   - FastAPI 后端
+#   4. frontend  - Vue 前端 (Nginx)
+#   5. jupyter   - Jupyter 实训环境
+#
+# 使用方法：
+#   docker-compose up -d
+#
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 数据库
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: huixue-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-huixue}
+      POSTGRES_USER: ${POSTGRES_USER:-huixue}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-huixue123}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - huixue-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-huixue}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Redis 缓存
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: huixue-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - huixue-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # 后端 API (FastAPI)
+  # ---------------------------------------------------------------------------
+  backend:
+    build: ./backend
+    image: huixue-backend:latest
+    container_name: huixue-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # 挂载后端代码目录（支持热重载）
+      - /opt/huixue-yuanban/backend:/app
+      # 资源文件目录（只读）
+      - ./ziyuan_data:/app/ziyuan_data:ro
+      # 学生工作目录（读写）- 使用主机绑定挂载以便子目录可访问
+      - ./student_work:/app/student_work
+      # 授权文件目录
+      - ./license.json:/app/license/license.json
+      # Docker Socket（用于容器管理）
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DATABASE_URL=postgresql://huixue:huixue123@172.18.0.3:5432/huixue
+      - REDIS_HOST=172.18.0.2
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-huixue-secret-key-change-in-production}
+      - RESOURCE_BASE_DIR=/app/ziyuan_data
+      - HUIXUE_RESOURCE_DIR=/app/ziyuan_data
+      - CONTAINER_STUDENT_WORK_BASE=/app/student_work
+      - LICENSE_PATH=/app/license/license.json
+      # 固定机器码（避免容器重启后变化）
+      - HOST_MACHINE_CODE=efa7f3332140e8de92d9a14159376b54c260299f6b3c705a4d123dbfd0a846e7
+      # Jupyter 配置
+      - JUPYTER_BASE_URL=http://localhost:8888
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-huixue_token}
+      # PromptPilot (Volcengine) Configuration
+      - AGENTPILOT_API_KEY=${AGENTPILOT_API_KEY:-f615ee84-e781-43eb-9393-d88ab1030156}
+      - AGENTPILOT_WORKSPACE_ID=${AGENTPILOT_WORKSPACE_ID:-ws-20250912023836-3yTQ9}
+      - AGENTPILOT_API_URL=${AGENTPILOT_API_URL:-https://prompt-pilot.cn-beijing.volces.com}
+      - ARK_API_KEY=${ARK_API_KEY:-}
+      # 飞书配置（用于运维通知）
+      - FEISHU_APP_ID=${FEISHU_APP_ID:-}
+      - FEISHU_APP_SECRET=${FEISHU_APP_SECRET:-}
+      - FEISHU_CHAT_ID=${FEISHU_CHAT_ID:-}
+      - FEISHU_WEBHOOK_URL=${FEISHU_WEBHOOK_URL:-}
+    networks:
+      - huixue-net
+      - node1-data_default
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # 前端 (Vue + Nginx)
+  # ---------------------------------------------------------------------------
+  frontend:
+    build: ./frontend
+    image: huixue-frontend:latest
+    container_name: huixue-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - huixue-net
+    depends_on:
+      - backend
+
+  # ---------------------------------------------------------------------------
+  # Jupyter 实训环境 (自定义镜像，支持中文字体和深度学习)
+  # ---------------------------------------------------------------------------
+  jupyter:
+    build: ./jupyter
+    image: huixue-jupyter:latest
+    container_name: huixue-jupyter
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - jupyter-work:/home/jovyan/work
+      - ./ziyuan_data:/home/jovyan/resources:ro
+    environment:
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-huixue_token}
+      # Matplotlib 中文字体配置
+      - MPLCONFIGDIR=/home/jovyan/.config/matplotlib
+    command: >
+      jupyter
+      notebook
+      --ip=0.0.0.0
+      --port=8888
+      --NotebookApp.token='${JUPYTER_TOKEN:-huixue_token}'
+      --NotebookApp.allow_origin='*'
+      --NotebookApp.disable_check_xsrf=True
+      --NotebookApp.tornado_settings="{'headers': {'Content-Security-Policy': \"frame-ancestors 'self' http://localhost:3000 http://100.74.141.3:3000\"}}"
+      --allow-root
+
+  # ---------------------------------------------------------------------------
+  # VDI 云桌面环境 (Ubuntu + noVNC) - 通用桌面
+  # ---------------------------------------------------------------------------
+  vdi:
+    image: consol/ubuntu-xfce-vnc:latest
+    container_name: huixue-vdi
+    restart: unless-stopped
+    ports:
+      - "6080:6901"   # noVNC Web端口 (容器内6901映射到主机6080)
+      - "5901:5901"   # VNC端口
+    volumes:
+      - vdi-work:/headless/Desktop
+      - ./ziyuan_data:/headless/resources:ro
+    environment:
+      - VNC_PW=huixue123
+      - VNC_RESOLUTION=1280x720
+      - VNC_COL_DEPTH=24
+    networks:
+      - huixue-net
+    shm_size: '512m'
+
+  # ---------------------------------------------------------------------------
+  # KNIME 数据分析环境 (KNIME + VNC)
+  # ---------------------------------------------------------------------------
+  knime:
+    image: cfprot/knime:latest
+    container_name: huixue-knime
+    restart: unless-stopped
+    ports:
+      - "6081:5901"   # VNC端口
+    volumes:
+      - knime-work:/home/knime/workspace
+      - ./ziyuan_data:/home/knime/data:ro
+    environment:
+      - VNC_PASSWORD=huixue123
+    networks:
+      - huixue-net
+    shm_size: '1g'
+
+# =============================================================================
+# 网络
+# =============================================================================
+networks:
+  huixue-net:
+    driver: bridge
+  node1-data_default:
+    external: true
+
+# =============================================================================
+# 数据卷
+# =============================================================================
+volumes:
+  postgres-data:
+  redis-data:
+  student-work:
+  jupyter-work:
+  vdi-work:
+  knime-work:

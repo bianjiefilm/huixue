@@ -1,0 +1,5 @@
+import os
+with open("/tmp/module_load.log", "a") as f:
+    f.write(f"[{os.getpid()}] training_environments.py loaded at {__file__}
+")
+    f.flush()

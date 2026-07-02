@@ -1,0 +1,41 @@
+stage_id: stage_12
+course: spark
+course_db_id: 102
+title: Spark电商数据处理项目
+difficulty: advanced
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 电商数据处理全流程
+- 用户行为日志分析（Spark Streaming）
+- 订单数据分析（Spark SQL）
+- 商品推荐（ALS协同过滤）
+- 实时大屏（Structured Streaming）
+- 数据仓库建模（维度表/事实表）
+- 四、常见模式与技巧
+- Lambda架构
+- 数据质量检查
+- 结果可视化
+- 五、评测标准
+expected_handbook_min_chars: 4000
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 9
+topics_to_avoid:
+- 底层源码
+- 集群运维
+- 前端可视化实现
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个整合Spark SQL和MLlib完成商品推荐的完整程序

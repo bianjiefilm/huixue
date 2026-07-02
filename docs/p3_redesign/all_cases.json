@@ -1,0 +1,7678 @@
+{
+  "classify_value_status": [
+    {
+      "args": [
+        5,
+        0,
+        10
+      ],
+      "exp": "valid"
+    },
+    {
+      "args": [
+        null,
+        0,
+        10
+      ],
+      "exp": "missing"
+    },
+    {
+      "args": [
+        "x",
+        0,
+        10
+      ],
+      "exp": "missing"
+    },
+    {
+      "args": [
+        -1,
+        0,
+        10
+      ],
+      "exp": "out_of_range"
+    },
+    {
+      "args": [
+        100,
+        0,
+        10
+      ],
+      "exp": "out_of_range"
+    },
+    {
+      "args": [
+        0,
+        0,
+        10
+      ],
+      "exp": "valid"
+    },
+    {
+      "args": [
+        7,
+        0,
+        10
+      ],
+      "exp": "valid"
+    },
+    {
+      "args": [
+        6,
+        -5,
+        5
+      ],
+      "exp": "valid"
+    },
+    {
+      "args": [
+        -6,
+        -5,
+        5
+      ],
+      "exp": "out_of_range"
+    },
+    {
+      "args": [
+        3,
+        -5,
+        5
+      ],
+      "exp": "valid"
+    },
+    {
+      "args": [
+        8,
+        -5,
+        5
+      ],
+      "exp": "out_of_range"
+    },
+    {
+      "args": [
+        -3,
+        -5,
+        5
+      ],
+      "exp": "valid"
+    },
+    {
+      "args": [
+        null,
+        -5,
+        5
+      ],
+      "exp": "missing"
+    },
+    {
+      "args": [
+        "",
+        -5,
+        5
+      ],
+      "exp": "missing"
+    },
+    {
+      "args": [
+        "abc",
+        0,
+        10
+      ],
+      "exp": "missing"
+    },
+    {
+      "args": [
+        5,
+        "0",
+        10
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_quality_ratio": [
+    {
+      "args": [
+        78,
+        100
+      ],
+      "exp": 0.78
+    },
+    {
+      "args": [
+        1,
+        3
+      ],
+      "exp": 0.3333333333333333
+    },
+    {
+      "args": [
+        7,
+        8
+      ],
+      "exp": 0.875
+    },
+    {
+      "args": [
+        3,
+        7
+      ],
+      "exp": 0.42857142857142855
+    },
+    {
+      "args": [
+        100,
+        200
+      ],
+      "exp": 0.5
+    },
+    {
+      "args": [
+        9,
+        10
+      ],
+      "exp": 0.9
+    },
+    {
+      "args": [
+        0,
+        100
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        1,
+        1
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        50,
+        50
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        3,
+        4
+      ],
+      "exp": 0.75
+    },
+    {
+      "args": [
+        7,
+        10
+      ],
+      "exp": 0.7
+    },
+    {
+      "args": [
+        "a",
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        -1,
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        101,
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        0,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "get_cleaning_priority": [
+    {
+      "args": [
+        "missing"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        "duplicate"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        "outlier"
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        "format"
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        "consistency"
+      ],
+      "exp": 5
+    },
+    {
+      "args": [
+        "encoding"
+      ],
+      "exp": 6
+    },
+    {
+      "args": [
+        "typo"
+      ],
+      "exp": 7
+    },
+    {
+      "args": [
+        "unknown"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        123
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        null
+      ],
+      "exp": "raises"
+    }
+  ],
+  "decide_drop_or_fill": [
+    {
+      "args": [
+        80,
+        100,
+        0.5
+      ],
+      "exp": "drop"
+    },
+    {
+      "args": [
+        20,
+        100,
+        0.5
+      ],
+      "exp": "fill"
+    },
+    {
+      "args": [
+        50,
+        100,
+        0.5
+      ],
+      "exp": "drop"
+    },
+    {
+      "args": [
+        49,
+        100,
+        0.5
+      ],
+      "exp": "fill"
+    },
+    {
+      "args": [
+        30,
+        100,
+        0.6
+      ],
+      "exp": "fill"
+    },
+    {
+      "args": [
+        70,
+        100,
+        0.4
+      ],
+      "exp": "drop"
+    },
+    {
+      "args": [
+        0,
+        100,
+        0.5
+      ],
+      "exp": "fill"
+    },
+    {
+      "args": [
+        100,
+        100,
+        0.5
+      ],
+      "exp": "drop"
+    },
+    {
+      "args": [
+        35,
+        100,
+        0.4
+      ],
+      "exp": "fill"
+    },
+    {
+      "args": [
+        65,
+        100,
+        0.6
+      ],
+      "exp": "drop"
+    },
+    {
+      "args": [
+        51,
+        100,
+        0.5
+      ],
+      "exp": "drop"
+    },
+    {
+      "args": [
+        -1,
+        100,
+        0.5
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        50,
+        100,
+        1.5
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        50,
+        0,
+        0.5
+      ],
+      "exp": "raises"
+    }
+  ],
+  "is_missing": [
+    {
+      "args": [
+        null
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "NA"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        false
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "null"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        -1
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "None"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "N/A"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        1.5
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "exp": false
+    }
+  ],
+  "count_missing": [
+    {
+      "args": [
+        [
+          null,
+          1,
+          2
+        ]
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          null,
+          null,
+          3
+        ]
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          null,
+          null,
+          null
+        ]
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          "NA",
+          1,
+          2
+        ]
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          "",
+          1,
+          null
+        ]
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        [
+          0,
+          false,
+          null
+        ]
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          false,
+          false,
+          null
+        ]
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          null,
+          null,
+          1,
+          2,
+          null
+        ]
+      ],
+      "exp": 3
+    }
+  ],
+  "fill_missing_with_constant": [
+    {
+      "args": [
+        [
+          null,
+          1,
+          2
+        ],
+        0
+      ],
+      "exp": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "args": [
+        [
+          null,
+          null,
+          3
+        ],
+        -1
+      ],
+      "exp": [
+        -1,
+        -1,
+        3
+      ]
+    },
+    {
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        99
+      ],
+      "exp": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "args": [
+        [
+          null
+        ],
+        42
+      ],
+      "exp": [
+        42
+      ]
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          null,
+          null,
+          null
+        ],
+        0
+      ],
+      "exp": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "args": [
+        [
+          0,
+          null,
+          0
+        ],
+        -999
+      ],
+      "exp": [
+        0,
+        -999,
+        0
+      ]
+    },
+    {
+      "args": [
+        [
+          false,
+          null,
+          true
+        ],
+        true
+      ],
+      "exp": [
+        false,
+        true,
+        true
+      ]
+    },
+    {
+      "args": [
+        [
+          "x",
+          null,
+          "y"
+        ],
+        "Z"
+      ],
+      "exp": [
+        "x",
+        "Z",
+        "y"
+      ]
+    },
+    {
+      "args": [
+        [
+          1,
+          null,
+          3,
+          null,
+          5
+        ],
+        -1
+      ],
+      "exp": [
+        1,
+        -1,
+        3,
+        -1,
+        5
+      ]
+    }
+  ],
+  "fill_missing_with_mean": [
+    {
+      "args": [
+        [
+          1,
+          2,
+          null
+        ]
+      ],
+      "exp": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "args": [
+        [
+          null,
+          5,
+          null,
+          5
+        ]
+      ],
+      "exp": [
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    {
+      "args": [
+        [
+          10,
+          null,
+          20
+        ]
+      ],
+      "exp": [
+        10,
+        15,
+        20
+      ]
+    },
+    {
+      "args": [
+        [
+          100
+        ]
+      ],
+      "exp": [
+        100
+      ]
+    },
+    {
+      "args": [
+        [
+          null,
+          null,
+          3
+        ]
+      ],
+      "exp": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          "a",
+          null,
+          3
+        ]
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        [
+          null,
+          null,
+          null
+        ]
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        [
+          1,
+          2,
+          3,
+          null,
+          4
+        ]
+      ],
+      "exp": [
+        1,
+        2,
+        3,
+        2.5,
+        4
+      ]
+    },
+    {
+      "args": [
+        [
+          null,
+          4,
+          null,
+          8
+        ]
+      ],
+      "exp": [
+        4,
+        4,
+        4,
+        8
+      ]
+    }
+  ],
+  "is_exact_duplicate": [
+    {
+      "args": [
+        {
+          "a": 1,
+          "b": "x"
+        },
+        {
+          "a": 1,
+          "b": "x"
+        }
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        {
+          "a": 1,
+          "b": "x"
+        },
+        {
+          "a": 1,
+          "b": "y"
+        }
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        {},
+        {}
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        {
+          "a": 1
+        },
+        {
+          "a": 1,
+          "b": 2
+        }
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        {
+          "a": null,
+          "b": null
+        },
+        {
+          "a": null,
+          "b": null
+        }
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        {
+          "a": [
+            1,
+            2
+          ]
+        },
+        {
+          "a": [
+            1,
+            2
+          ]
+        }
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        {
+          "a": 1,
+          "b": 2,
+          "c": 3
+        },
+        {
+          "a": 1,
+          "b": 2,
+          "c": 3
+        }
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        {
+          "x": true
+        },
+        {
+          "x": true
+        }
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        {
+          "a": 1,
+          "b": "X"
+        },
+        {
+          "a": 1,
+          "b": "x"
+        }
+      ],
+      "exp": false
+    }
+  ],
+  "count_duplicate_rows": [
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          }
+        ]
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": 3
+          }
+        ]
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 1
+          },
+          {
+            "a": 1
+          }
+        ]
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 1,
+            "b": 3
+          },
+          {
+            "a": 1,
+            "b": 2
+          }
+        ]
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          {
+            "x": true
+          },
+          {
+            "x": true
+          },
+          {
+            "x": true
+          },
+          {
+            "x": true
+          }
+        ]
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        [
+          {
+            "a": null
+          },
+          {
+            "a": null
+          }
+        ]
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": 2
+          }
+        ]
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": 1
+          }
+        ]
+      ],
+      "exp": 2
+    }
+  ],
+  "dedup_keep_first": [
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          }
+        ],
+        "a"
+      ],
+      "exp": [
+        {
+          "a": 1
+        },
+        {
+          "a": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": 1
+          }
+        ],
+        "a"
+      ],
+      "exp": [
+        {
+          "a": 1
+        },
+        {
+          "a": 2
+        },
+        {
+          "a": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          }
+        ]
+      ],
+      "exp": [
+        {
+          "a": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "x": 1
+          },
+          {
+            "x": 1
+          },
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          }
+        ],
+        "x"
+      ],
+      "exp": [
+        {
+          "x": 1
+        },
+        {
+          "x": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "a": null
+          },
+          {
+            "a": null
+          }
+        ],
+        "a"
+      ],
+      "exp": [
+        {
+          "a": null
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          },
+          {
+            "id": 3
+          },
+          {
+            "id": 1
+          }
+        ],
+        "id"
+      ],
+      "exp": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        }
+      ]
+    }
+  ],
+  "dedup_preserve_first": [
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 1,
+            "b": 3
+          },
+          {
+            "a": 2,
+            "b": 4
+          }
+        ],
+        "a"
+      ],
+      "exp": [
+        {
+          "a": 1,
+          "b": 2
+        },
+        {
+          "a": 2,
+          "b": 4
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": 3
+          }
+        ],
+        "a"
+      ],
+      "exp": [
+        {
+          "a": 1
+        },
+        {
+          "a": 2
+        },
+        {
+          "a": 3
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1,
+            "v": "x"
+          },
+          {
+            "k": 1,
+            "v": "y"
+          },
+          {
+            "k": 2
+          }
+        ],
+        "k"
+      ],
+      "exp": [
+        {
+          "k": 1,
+          "v": "x"
+        },
+        {
+          "k": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 1
+          }
+        ],
+        "a"
+      ],
+      "exp": [
+        {
+          "a": 1,
+          "b": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 100,
+            "name": "A"
+          },
+          {
+            "id": 200,
+            "name": "B"
+          },
+          {
+            "id": 100,
+            "name": "C"
+          }
+        ],
+        "id"
+      ],
+      "exp": [
+        {
+          "id": 100,
+          "name": "A"
+        },
+        {
+          "id": 200,
+          "name": "B"
+        }
+      ]
+    }
+  ],
+  "is_outlier_iqr": [
+    {
+      "args": [
+        15,
+        10,
+        20,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0,
+        10,
+        20,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        50,
+        10,
+        20,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        30,
+        10,
+        20,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        7.5,
+        10,
+        20,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        -10,
+        0,
+        100,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        251,
+        0,
+        100,
+        1.5
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        -51,
+        0,
+        100,
+        1.5
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        5,
+        10,
+        20,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        35,
+        10,
+        20,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        100,
+        25,
+        50,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        -20,
+        0,
+        100,
+        1.5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        300,
+        50,
+        200,
+        2.0
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        250,
+        0,
+        100,
+        1.5
+      ],
+      "exp": true
+    }
+  ],
+  "count_outliers": [
+    {
+      "args": [
+        [
+          10,
+          20,
+          15,
+          100,
+          14
+        ],
+        10,
+        20,
+        1.5
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          10,
+          20,
+          15,
+          100,
+          200,
+          14
+        ],
+        10,
+        20,
+        1.5
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        1,
+        4,
+        1.5
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          10,
+          20,
+          100,
+          200,
+          300
+        ],
+        10,
+        200,
+        1.5
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          50,
+          50,
+          50,
+          50
+        ],
+        25,
+        50,
+        1.5
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          0,
+          1,
+          2,
+          3,
+          100
+        ],
+        1,
+        3,
+        1.5
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          -20,
+          -10,
+          0,
+          10,
+          20
+        ],
+        -5,
+        15,
+        1.5
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        [
+          100,
+          200,
+          300,
+          400
+        ],
+        0,
+        200,
+        1.5
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        2,
+        6,
+        1.5
+      ],
+      "exp": 0
+    }
+  ],
+  "compute_iqr_bounds": [
+    {
+      "args": [
+        10,
+        20,
+        1.5
+      ],
+      "exp": [
+        5,
+        35
+      ]
+    },
+    {
+      "args": [
+        0,
+        100,
+        1.5
+      ],
+      "exp": [
+        -50,
+        200
+      ]
+    },
+    {
+      "args": [
+        25,
+        50,
+        2.0
+      ],
+      "exp": [
+        -25,
+        120
+      ]
+    },
+    {
+      "args": [
+        10,
+        30,
+        1.5
+      ],
+      "exp": [
+        5,
+        55
+      ]
+    },
+    {
+      "args": [
+        0,
+        50,
+        1.5
+      ],
+      "exp": [
+        -75,
+        125
+      ]
+    },
+    {
+      "args": [
+        20,
+        40,
+        1.5
+      ],
+      "exp": [
+        -10,
+        90
+      ]
+    },
+    {
+      "args": [
+        100,
+        200,
+        1.5
+      ],
+      "exp": [
+        50,
+        350
+      ]
+    },
+    {
+      "args": [
+        -5,
+        5,
+        1.5
+      ],
+      "exp": [
+        -20,
+        20
+      ]
+    },
+    {
+      "args": [
+        0,
+        10,
+        2.0
+      ],
+      "exp": [
+        -20,
+        30
+      ]
+    },
+    {
+      "args": [
+        50,
+        100,
+        1.5
+      ],
+      "exp": [
+        25,
+        175
+      ]
+    }
+  ],
+  "clip_value_to_range": [
+    {
+      "args": [
+        -5,
+        0,
+        10
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        15,
+        0,
+        10
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        7,
+        0,
+        10
+      ],
+      "exp": 7
+    },
+    {
+      "args": [
+        0,
+        0,
+        10
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        10,
+        0,
+        10
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        50,
+        -100,
+        100
+      ],
+      "exp": 50
+    },
+    {
+      "args": [
+        -999,
+        0,
+        10
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        3.5,
+        0,
+        10
+      ],
+      "exp": 3.5
+    },
+    {
+      "args": [
+        -99.9,
+        0,
+        100
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        100.5,
+        0,
+        100
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        50,
+        10,
+        20
+      ],
+      "exp": 20
+    },
+    {
+      "args": [
+        5,
+        10,
+        20
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        "abc",
+        0,
+        10
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        5,
+        10,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "is_valid_email_basic": [
+    {
+      "args": [
+        "a@b.com"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "x@domain.cn"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "user.name@sub.domain.com"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "nodomain"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "no@"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "@nodomain.com"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "space here@domain.com"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "has+tag@domain.com"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "mixedCase@Domain.COM"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "test_123@example.co.uk"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "a@b.c"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "test@.com"
+      ],
+      "exp": false
+    }
+  ],
+  "normalize_email_lower": [
+    {
+      "args": [
+        "User@DOMAIN.COM"
+      ],
+      "exp": "user@domain.com"
+    },
+    {
+      "args": [
+        "  Test@Example.CN  "
+      ],
+      "exp": "test@example.cn"
+    },
+    {
+      "args": [
+        "Normal@domain.com"
+      ],
+      "exp": "normal@domain.com"
+    },
+    {
+      "args": [
+        "already_lower@site.org"
+      ],
+      "exp": "already_lower@site.org"
+    },
+    {
+      "args": [
+        "Mixed@Case.COM"
+      ],
+      "exp": "mixed@case.com"
+    },
+    {
+      "args": [
+        "ADMIN@COMPANY.CN"
+      ],
+      "exp": "admin@company.cn"
+    }
+  ],
+  "normalize_phone_digits": [
+    {
+      "args": [
+        "+86 138-1234-5678"
+      ],
+      "exp": "13812345678"
+    },
+    {
+      "args": [
+        "(010) 8888-9999"
+      ],
+      "exp": "01088889999"
+    },
+    {
+      "args": [
+        "13900001111"
+      ],
+      "exp": "13900001111"
+    },
+    {
+      "args": [
+        "+1-800-123-4567"
+      ],
+      "exp": "18001234567"
+    },
+    {
+      "args": [
+        "123-456-7890"
+      ],
+      "exp": "1234567890"
+    },
+    {
+      "args": [
+        "008613812345678"
+      ],
+      "exp": "008613812345678"
+    },
+    {
+      "args": [
+        "+86 10-1234-5678"
+      ],
+      "exp": "1012345678"
+    }
+  ],
+  "parse_simple_date_iso": [
+    {
+      "args": [
+        "2024-03-15"
+      ],
+      "exp": {
+        "year": 2024,
+        "month": 3,
+        "day": 15
+      }
+    },
+    {
+      "args": [
+        "2020-01-01"
+      ],
+      "exp": {
+        "year": 2020,
+        "month": 1,
+        "day": 1
+      }
+    },
+    {
+      "args": [
+        "1999-12-31"
+      ],
+      "exp": {
+        "year": 1999,
+        "month": 12,
+        "day": 31
+      }
+    },
+    {
+      "args": [
+        "2023-06-30"
+      ],
+      "exp": {
+        "year": 2023,
+        "month": 6,
+        "day": 30
+      }
+    },
+    {
+      "args": [
+        "2024-01-01"
+      ],
+      "exp": {
+        "year": 2024,
+        "month": 1,
+        "day": 1
+      }
+    },
+    {
+      "args": [
+        "2024-12-31"
+      ],
+      "exp": {
+        "year": 2024,
+        "month": 12,
+        "day": 31
+      }
+    },
+    {
+      "args": [
+        "invalid"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        "2024/03/15"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        "03-15-2024"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        "2024-13-01"
+      ],
+      "exp": "raises"
+    }
+  ],
+  "is_pure_ascii": [
+    {
+      "args": [
+        "hello world"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "Hello123"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "hello中文"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "héllo"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "你好"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "hello!@#"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "café"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "  \t\n  "
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "normal text here"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "日本語"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "hello-world_2024"
+      ],
+      "exp": true
+    }
+  ],
+  "has_utf8_bom": [
+    {
+      "args": [
+        [
+          239,
+          187,
+          191,
+          97
+        ]
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          97,
+          98,
+          99
+        ]
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        [
+          239,
+          187
+        ]
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        [
+          239,
+          187,
+          191
+        ]
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          192,
+          97
+        ]
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        [
+          239,
+          187,
+          191,
+          104,
+          101,
+          108,
+          108,
+          111
+        ]
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          239,
+          187,
+          191,
+          119,
+          111,
+          114,
+          108,
+          100
+        ]
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          110,
+          111,
+          32,
+          98,
+          111,
+          109
+        ]
+      ],
+      "exp": false
+    }
+  ],
+  "count_non_ascii": [
+    {
+      "args": [
+        "hello中文world"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        "pure ascii"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        "你好"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        "abc中def文ghi"
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        "café"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        "résumé"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        "123!@#"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        "日本文"
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        "hello-world_2024"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        "mixed中文and english"
+      ],
+      "exp": 2
+    }
+  ],
+  "remove_control_chars": [
+    {
+      "args": [
+        "hello\u0000world"
+      ],
+      "exp": "helloworld"
+    },
+    {
+      "args": [
+        "line1\nline2"
+      ],
+      "exp": "line1\nline2"
+    },
+    {
+      "args": [
+        "no change"
+      ],
+      "exp": "no change"
+    },
+    {
+      "args": [
+        "has\ttab"
+      ],
+      "exp": "has\ttab"
+    },
+    {
+      "args": [
+        "\u0000\u0001\u0002"
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        "normal string"
+      ],
+      "exp": "normal string"
+    },
+    {
+      "args": [
+        "hello\u0000\u0001world"
+      ],
+      "exp": "helloworld"
+    },
+    {
+      "args": [
+        "a\u0000b\u0001c\u0002"
+      ],
+      "exp": "abc"
+    }
+  ],
+  "collapse_internal_whitespace": [
+    {
+      "args": [
+        "hello   world"
+      ],
+      "exp": "hello world"
+    },
+    {
+      "args": [
+        "a\t\t\tb"
+      ],
+      "exp": "a b"
+    },
+    {
+      "args": [
+        "no change"
+      ],
+      "exp": "no change"
+    },
+    {
+      "args": [
+        "  multiple   spaces  "
+      ],
+      "exp": " multiple spaces "
+    },
+    {
+      "args": [
+        "one    two    three"
+      ],
+      "exp": "one two three"
+    },
+    {
+      "args": [
+        "tab\there"
+      ],
+      "exp": "tab here"
+    },
+    {
+      "args": [
+        "a  b  c  d"
+      ],
+      "exp": "a b c d"
+    }
+  ],
+  "trim_whitespace": [
+    {
+      "args": [
+        "  hello  "
+      ],
+      "exp": "hello"
+    },
+    {
+      "args": [
+        "\t\ntest\r"
+      ],
+      "exp": "test"
+    },
+    {
+      "args": [
+        "nospace"
+      ],
+      "exp": "nospace"
+    },
+    {
+      "args": [
+        "  "
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        "\t\t\t"
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        "   leading and trailing   "
+      ],
+      "exp": "leading and trailing"
+    },
+    {
+      "args": [
+        "\r\ntext\r\n"
+      ],
+      "exp": "text"
+    }
+  ],
+  "truncate_to_length": [
+    {
+      "args": [
+        "hello world",
+        5
+      ],
+      "exp": "hello"
+    },
+    {
+      "args": [
+        "hi",
+        10
+      ],
+      "exp": "hi"
+    },
+    {
+      "args": [
+        "exactly",
+        7
+      ],
+      "exp": "exactly"
+    },
+    {
+      "args": [
+        "",
+        5
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        "abc",
+        0
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        "long string here",
+        4
+      ],
+      "exp": "long"
+    },
+    {
+      "args": [
+        "mid",
+        3
+      ],
+      "exp": "mid"
+    },
+    {
+      "args": [
+        "中文测试",
+        2
+      ],
+      "exp": "中文"
+    },
+    {
+      "args": [
+        "12345",
+        3
+      ],
+      "exp": "123"
+    },
+    {
+      "args": [
+        "hello",
+        10
+      ],
+      "exp": "hello"
+    },
+    {
+      "args": [
+        "abcdef",
+        3
+      ],
+      "exp": "abc"
+    }
+  ],
+  "remove_punctuation": [
+    {
+      "args": [
+        "hello,world!"
+      ],
+      "exp": "helloworld"
+    },
+    {
+      "args": [
+        "no.punct"
+      ],
+      "exp": "nopunct"
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        "a,b;c:d"
+      ],
+      "exp": "abcd"
+    },
+    {
+      "args": [
+        "..."
+      ],
+      "exp": ""
+    },
+    {
+      "args": [
+        "mixed.case-123!"
+      ],
+      "exp": "mixedcase123"
+    },
+    {
+      "args": [
+        "hello_world.test"
+      ],
+      "exp": "helloworldtest"
+    },
+    {
+      "args": [
+        "a+b=c"
+      ],
+      "exp": "abce"
+    },
+    {
+      "args": [
+        "[{}]"
+      ],
+      "exp": ""
+    }
+  ],
+  "is_numeric_string": [
+    {
+      "args": [
+        "123"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "3.14"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "  42  "
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "-10.5"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "12,345"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "3.14.15"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "abc"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "1e5"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "+5"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "  -3.14  "
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "NaN"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        ".5"
+      ],
+      "exp": true
+    }
+  ],
+  "clip_to_range": [
+    {
+      "args": [
+        15,
+        0,
+        10
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        -5,
+        0,
+        10
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        7,
+        0,
+        10
+      ],
+      "exp": 7
+    },
+    {
+      "args": [
+        0,
+        0,
+        10
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        10,
+        0,
+        10
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        -100,
+        0,
+        100
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        200,
+        -50,
+        50
+      ],
+      "exp": 50
+    },
+    {
+      "args": [
+        3.5,
+        0,
+        10
+      ],
+      "exp": 3.5
+    },
+    {
+      "args": [
+        -99.9,
+        0,
+        100
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        100.5,
+        0,
+        100
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        50,
+        10,
+        20
+      ],
+      "exp": 20
+    },
+    {
+      "args": [
+        5,
+        10,
+        20
+      ],
+      "exp": 10
+    }
+  ],
+  "parse_numeric_string": [
+    {
+      "args": [
+        "42"
+      ],
+      "exp": 42
+    },
+    {
+      "args": [
+        "3.14"
+      ],
+      "exp": 3.14
+    },
+    {
+      "args": [
+        "  100  "
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        "-5.5"
+      ],
+      "exp": -5.5
+    },
+    {
+      "args": [
+        "+10"
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        "1e3"
+      ],
+      "exp": 1000
+    },
+    {
+      "args": [
+        "50%"
+      ],
+      "exp": 0.5
+    },
+    {
+      "args": [
+        "  -3.14  "
+      ],
+      "exp": -3.14
+    },
+    {
+      "args": [
+        ".5"
+      ],
+      "exp": 0.5
+    },
+    {
+      "args": [
+        "-0.25"
+      ],
+      "exp": -0.25
+    },
+    {
+      "args": [
+        "abc"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        "3..14"
+      ],
+      "exp": "raises"
+    }
+  ],
+  "round_half_up": [
+    {
+      "args": [
+        2.5,
+        0
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        1.4,
+        0
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        1.5,
+        0
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        -1.5,
+        0
+      ],
+      "exp": -2
+    },
+    {
+      "args": [
+        2.555,
+        2
+      ],
+      "exp": 2.56
+    },
+    {
+      "args": [
+        2.554,
+        2
+      ],
+      "exp": 2.55
+    },
+    {
+      "args": [
+        1.234,
+        2
+      ],
+      "exp": 1.23
+    },
+    {
+      "args": [
+        0.5,
+        0
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        -2.5,
+        0
+      ],
+      "exp": -3
+    },
+    {
+      "args": [
+        1.235,
+        2
+      ],
+      "exp": 1.24
+    },
+    {
+      "args": [
+        1.245,
+        2
+      ],
+      "exp": 1.25
+    },
+    {
+      "args": [
+        0.001,
+        2
+      ],
+      "exp": 0.0
+    }
+  ],
+  "has_unique_keys": [
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          }
+        ],
+        "a"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          },
+          {
+            "a": 2
+          },
+          {
+            "a": 1
+          }
+        ],
+        "a"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1
+          }
+        ],
+        "a"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "a": null
+          },
+          {
+            "a": null
+          }
+        ],
+        "a"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 4
+          }
+        ],
+        "x"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          },
+          {
+            "id": 3
+          }
+        ],
+        "id"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 1,
+            "name": "A"
+          },
+          {
+            "id": 1,
+            "name": "B"
+          }
+        ],
+        "id"
+      ],
+      "exp": false
+    }
+  ],
+  "is_one_to_one_mapping": [
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 10
+          },
+          {
+            "a": 2,
+            "b": 20
+          }
+        ],
+        "a",
+        "b"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 10
+          },
+          {
+            "a": 2,
+            "b": 10
+          }
+        ],
+        "a",
+        "b"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 10
+          },
+          {
+            "a": 1,
+            "b": 20
+          }
+        ],
+        "a",
+        "b"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 10
+          }
+        ],
+        "a",
+        "b"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1,
+            "v": 10
+          },
+          {
+            "k": 2,
+            "v": 20
+          },
+          {
+            "k": 3,
+            "v": 30
+          }
+        ],
+        "k",
+        "v"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1,
+            "v": 10
+          },
+          {
+            "k": 2,
+            "v": 20
+          },
+          {
+            "k": 3,
+            "v": 10
+          }
+        ],
+        "k",
+        "v"
+      ],
+      "exp": false
+    }
+  ],
+  "count_referential_violations": [
+    {
+      "args": [
+        [
+          {
+            "fk": 1
+          },
+          {
+            "fk": 2
+          },
+          {
+            "fk": 3
+          }
+        ],
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          }
+        ],
+        "fk",
+        "id"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          {
+            "fk": 1
+          },
+          {
+            "fk": 2
+          }
+        ],
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          }
+        ],
+        "fk",
+        "id"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [],
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          }
+        ],
+        "fk",
+        "id"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "fk": 5
+          },
+          {
+            "fk": 6
+          },
+          {
+            "fk": 7
+          }
+        ],
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          }
+        ],
+        "fk",
+        "id"
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        [
+          {
+            "fk": null
+          }
+        ],
+        [
+          {
+            "id": 1
+          }
+        ],
+        "fk",
+        "id"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "fk": 2
+          }
+        ],
+        [
+          {
+            "id": 1
+          }
+        ],
+        "fk",
+        "id"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "fk": 3
+          },
+          {
+            "fk": 4
+          }
+        ],
+        [
+          {
+            "id": 3
+          },
+          {
+            "id": 4
+          },
+          {
+            "id": 5
+          }
+        ],
+        "fk",
+        "id"
+      ],
+      "exp": 0
+    }
+  ],
+  "find_orphan_keys": [
+    {
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "exp": [
+        3
+      ]
+    },
+    {
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [],
+        [
+          1,
+          2
+        ]
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          5,
+          6,
+          7,
+          8
+        ],
+        [
+          3,
+          4,
+          5
+        ]
+      ],
+      "exp": [
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "args": [
+        [
+          1,
+          1,
+          2
+        ],
+        [
+          1
+        ]
+      ],
+      "exp": [
+        2
+      ]
+    },
+    {
+      "args": [
+        [
+          null,
+          1,
+          null
+        ],
+        [
+          1
+        ]
+      ],
+      "exp": [
+        null
+      ]
+    },
+    {
+      "args": [
+        [],
+        []
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          10,
+          20,
+          30,
+          40
+        ],
+        [
+          20,
+          30
+        ]
+      ],
+      "exp": [
+        10,
+        40
+      ]
+    },
+    {
+      "args": [
+        [
+          "a",
+          "b",
+          "c"
+        ],
+        [
+          "b"
+        ]
+      ],
+      "exp": [
+        "a",
+        "c"
+      ]
+    }
+  ],
+  "compute_merge_size": [
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          },
+          {
+            "k": 2
+          }
+        ],
+        [
+          {
+            "k": 1
+          },
+          {
+            "k": 3
+          }
+        ],
+        "k"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          },
+          {
+            "k": 2
+          }
+        ],
+        [
+          {
+            "k": 3
+          },
+          {
+            "k": 4
+          }
+        ],
+        "k"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [],
+        [
+          {
+            "k": 1
+          }
+        ],
+        "k"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          },
+          {
+            "k": 1
+          },
+          {
+            "k": 2
+          }
+        ],
+        [
+          {
+            "k": 1
+          }
+        ],
+        "k"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          },
+          {
+            "k": 2
+          }
+        ],
+        [
+          {
+            "k": 1
+          },
+          {
+            "k": 2
+          }
+        ],
+        "k"
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          }
+        ],
+        [
+          {
+            "k": 2
+          }
+        ],
+        "k"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1,
+            "v": 10
+          },
+          {
+            "k": 2
+          }
+        ],
+        [
+          {
+            "k": 1
+          }
+        ],
+        "k"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          }
+        ],
+        [
+          {
+            "id": 2
+          },
+          {
+            "id": 3
+          }
+        ],
+        "id"
+      ],
+      "exp": 2
+    }
+  ],
+  "merge_inner_by_key": [
+    {
+      "args": [
+        [
+          {
+            "k": 1,
+            "v": "a"
+          },
+          {
+            "k": 2,
+            "v": "b"
+          }
+        ],
+        [
+          {
+            "k": 1,
+            "w": 10
+          },
+          {
+            "k": 3,
+            "w": 30
+          }
+        ],
+        "k"
+      ],
+      "exp": [
+        {
+          "k": 1,
+          "v": "a",
+          "w": 10
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          }
+        ],
+        [
+          {
+            "k": 2
+          }
+        ],
+        "k"
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 1,
+            "x": 10
+          },
+          {
+            "id": 2
+          }
+        ],
+        [
+          {
+            "id": 1,
+            "y": 20
+          }
+        ],
+        "id"
+      ],
+      "exp": [
+        {
+          "id": 1,
+          "x": 10,
+          "y": 20
+        },
+        {
+          "id": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 10
+          },
+          {
+            "a": 20
+          }
+        ],
+        [
+          {
+            "a": 10,
+            "b": 100
+          }
+        ],
+        "a"
+      ],
+      "exp": [
+        {
+          "a": 10,
+          "b": 100
+        }
+      ]
+    }
+  ],
+  "merge_left_by_key": [
+    {
+      "args": [
+        [
+          {
+            "k": 1,
+            "v": "a"
+          },
+          {
+            "k": 2,
+            "v": "b"
+          }
+        ],
+        [
+          {
+            "k": 1,
+            "w": 10
+          }
+        ],
+        "k"
+      ],
+      "exp": [
+        {
+          "k": 1,
+          "v": "a",
+          "w": 10
+        },
+        {
+          "k": 2,
+          "v": "b"
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          }
+        ],
+        [
+          {
+            "k": 2
+          }
+        ],
+        "k"
+      ],
+      "exp": [
+        {
+          "k": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [],
+        [
+          {
+            "k": 1
+          }
+        ],
+        "k"
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1,
+            "v": 10
+          },
+          {
+            "k": 2,
+            "v": 20
+          }
+        ],
+        [
+          {
+            "k": 1
+          }
+        ],
+        "k"
+      ],
+      "exp": [
+        {
+          "k": 1,
+          "v": 10
+        },
+        {
+          "k": 2,
+          "v": 20
+        }
+      ]
+    }
+  ],
+  "dedup_dicts_by_key": [
+    {
+      "args": [
+        [
+          {
+            "id": 1,
+            "name": "a"
+          },
+          {
+            "id": 2,
+            "name": "b"
+          },
+          {
+            "id": 1,
+            "name": "c"
+          }
+        ],
+        "id"
+      ],
+      "exp": [
+        {
+          "id": 1,
+          "name": "a"
+        },
+        {
+          "id": 2,
+          "name": "b"
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 1
+          }
+        ],
+        [],
+        "id"
+      ],
+      "exp": [
+        {
+          "id": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        [
+          {
+            "k": "x",
+            "v": 1
+          },
+          {
+            "k": "x",
+            "v": 2
+          }
+        ],
+        "k"
+      ],
+      "exp": [
+        {
+          "k": "x",
+          "v": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": 1,
+            "v": 100
+          },
+          {
+            "id": 2,
+            "v": 200
+          },
+          {
+            "id": 1,
+            "v": 300
+          }
+        ],
+        "id"
+      ],
+      "exp": [
+        {
+          "id": 1,
+          "v": 100
+        },
+        {
+          "id": 2,
+          "v": 200
+        }
+      ]
+    }
+  ],
+  "compute_completeness": [
+    {
+      "args": [
+        95,
+        100
+      ],
+      "exp": 0.95
+    },
+    {
+      "args": [
+        100,
+        100
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        0,
+        100
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        50,
+        200
+      ],
+      "exp": 0.25
+    },
+    {
+      "args": [
+        7,
+        10
+      ],
+      "exp": 0.7
+    },
+    {
+      "args": [
+        3,
+        10
+      ],
+      "exp": 0.3
+    },
+    {
+      "args": [
+        1,
+        1000
+      ],
+      "exp": 0.001
+    },
+    {
+      "args": [
+        999,
+        1000
+      ],
+      "exp": 0.999
+    },
+    {
+      "args": [
+        50,
+        50
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        0,
+        50
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        -1,
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        50,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_uniqueness": [
+    {
+      "args": [
+        10,
+        10
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        5,
+        10
+      ],
+      "exp": 0.5
+    },
+    {
+      "args": [
+        3,
+        10
+      ],
+      "exp": 0.3
+    },
+    {
+      "args": [
+        10,
+        100
+      ],
+      "exp": 0.1
+    },
+    {
+      "args": [
+        1,
+        10
+      ],
+      "exp": 0.1
+    },
+    {
+      "args": [
+        0,
+        10
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        7,
+        10
+      ],
+      "exp": 0.7
+    },
+    {
+      "args": [
+        100,
+        100
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        50,
+        100
+      ],
+      "exp": 0.5
+    },
+    {
+      "args": [
+        -1,
+        10
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        5,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_validity_in_range": [
+    {
+      "args": [
+        [
+          1,
+          2,
+          3,
+          100,
+          5
+        ],
+        0,
+        10
+      ],
+      "exp": 0.8
+    },
+    {
+      "args": [
+        [
+          100,
+          200,
+          300
+        ],
+        0,
+        10
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        [
+          0,
+          5,
+          10,
+          15
+        ],
+        0,
+        10
+      ],
+      "exp": 0.75
+    },
+    {
+      "args": [
+        [
+          -5,
+          0,
+          5,
+          10
+        ],
+        0,
+        10
+      ],
+      "exp": 0.75
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        [
+          10,
+          20,
+          30
+        ],
+        15,
+        25
+      ],
+      "exp": 0.3333333333333333
+    },
+    {
+      "args": [
+        [
+          1,
+          1,
+          1,
+          1
+        ],
+        0,
+        1
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        [
+          0,
+          0,
+          0
+        ],
+        0,
+        0
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        [
+          5,
+          10,
+          15
+        ],
+        0,
+        20
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        [
+          -10,
+          0,
+          10,
+          20
+        ],
+        0,
+        10
+      ],
+      "exp": 0.5
+    }
+  ],
+  "quality_summary_dict": [
+    {
+      "args": [
+        {
+          "rows": [
+            {
+              "a": null,
+              "b": 1
+            },
+            {
+              "a": 2,
+              "b": 2
+            }
+          ],
+          "rules": {
+            "a": "not_null"
+          }
+        },
+        {
+          "a": "not_null",
+          "b": "not_null"
+        }
+      ],
+      "exp": {
+        "a": "not_null",
+        "b": "not_null"
+      }
+    },
+    {
+      "args": [
+        {
+          "rows": [],
+          "rules": {}
+        },
+        {}
+      ],
+      "exp": {}
+    },
+    {
+      "args": [
+        {
+          "rows": [
+            {
+              "x": 1,
+              "y": null
+            }
+          ],
+          "rules": {
+            "y": "not_null"
+          }
+        },
+        {
+          "y": "not_null"
+        }
+      ],
+      "exp": {
+        "y": "not_null"
+      }
+    }
+  ],
+  "get_hadoop_component_role": [
+    {
+      "args": [
+        "hdfs"
+      ],
+      "exp": "storage"
+    },
+    {
+      "args": [
+        "mapreduce"
+      ],
+      "exp": "compute"
+    },
+    {
+      "args": [
+        "yarn"
+      ],
+      "exp": "scheduling"
+    },
+    {
+      "args": [
+        "hive"
+      ],
+      "exp": "data_warehouse"
+    },
+    {
+      "args": [
+        "hbase"
+      ],
+      "exp": "nosql"
+    },
+    {
+      "args": [
+        "kafka"
+      ],
+      "exp": "streaming"
+    },
+    {
+      "args": [
+        "sqoop"
+      ],
+      "exp": "migration"
+    },
+    {
+      "args": [
+        "spark"
+      ],
+      "exp": "compute"
+    },
+    {
+      "args": [
+        "flink"
+      ],
+      "exp": "streaming"
+    },
+    {
+      "args": [
+        "zookeeper"
+      ],
+      "exp": "coordination"
+    },
+    {
+      "args": [
+        "impala"
+      ],
+      "exp": "compute"
+    },
+    {
+      "args": [
+        "presto"
+      ],
+      "exp": "compute"
+    },
+    {
+      "args": [
+        "unknown"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        ""
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        123
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_cluster_node_count": [
+    {
+      "args": [
+        1000.0,
+        10.0,
+        3
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        1000.0,
+        10.0
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        999.9,
+        10.0,
+        3
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        1.0,
+        10.0,
+        3
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        0.0,
+        10.0,
+        3
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        999.9,
+        10.0,
+        2
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        50.0,
+        10.0,
+        3
+      ],
+      "exp": 5
+    },
+    {
+      "args": [
+        333.3,
+        10.0,
+        3
+      ],
+      "exp": 34
+    },
+    {
+      "args": [
+        -1,
+        10,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        0,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        10,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "is_hadoop_safe_mode_ok": [
+    {
+      "args": [
+        1000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        1500
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        999
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        500
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        1501
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        10000
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        1000,
+        2000
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        1999,
+        2000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        2000,
+        2000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        -1
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1000.0
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "get_hadoop_default_port": [
+    {
+      "args": [
+        "namenode"
+      ],
+      "exp": 9000
+    },
+    {
+      "args": [
+        "datanode"
+      ],
+      "exp": 9866
+    },
+    {
+      "args": [
+        "namenode_ui"
+      ],
+      "exp": 9870
+    },
+    {
+      "args": [
+        "resourcemanager"
+      ],
+      "exp": 8088
+    },
+    {
+      "args": [
+        "jobhistory"
+      ],
+      "exp": 19888
+    },
+    {
+      "args": [
+        "nodemanager"
+      ],
+      "exp": 8042
+    },
+    {
+      "args": [
+        "datanode_http"
+      ],
+      "exp": 9864
+    },
+    {
+      "args": [
+        "historyserver"
+      ],
+      "exp": 10020
+    },
+    {
+      "args": [
+        "secondarynamenode"
+      ],
+      "exp": 9868
+    },
+    {
+      "args": [
+        "unknown_svc"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        9000
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        null
+      ],
+      "exp": "raises"
+    }
+  ],
+  "is_block_size_valid": [
+    {
+      "args": [
+        134217728
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        536870912
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        67108864
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        2147483649
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        1024
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        2147483648
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        67108863
+      ],
+      "exp": false
+    }
+  ],
+  "compute_hdfs_block_count": [
+    {
+      "args": [
+        268435456,
+        134217728
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        134217728,
+        134217728
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        134217729,
+        134217728
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        0,
+        134217728
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        1342177280,
+        134217728
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        671088645,
+        134217728
+      ],
+      "exp": 6
+    },
+    {
+      "args": [
+        -1,
+        134217728
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        134217728,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_namenode_metadata_size": [
+    {
+      "args": [
+        1000,
+        1073741824,
+        3
+      ],
+      "exp": 3221225472
+    },
+    {
+      "args": [
+        1,
+        1073741824,
+        3
+      ],
+      "exp": 3221225472
+    },
+    {
+      "args": [
+        0,
+        1073741824,
+        3
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        100,
+        1000000,
+        2
+      ],
+      "exp": 200000000
+    },
+    {
+      "args": [
+        10,
+        1000000000,
+        3
+      ],
+      "exp": 30000000000
+    },
+    {
+      "args": [
+        -1,
+        100,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        -1,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        100,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_storage_with_replication": [
+    {
+      "args": [
+        1000,
+        3
+      ],
+      "exp": 3000
+    },
+    {
+      "args": [
+        100,
+        1
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        100,
+        2
+      ],
+      "exp": 200
+    },
+    {
+      "args": [
+        0,
+        3
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        999,
+        3
+      ],
+      "exp": 2997
+    },
+    {
+      "args": [
+        500,
+        5
+      ],
+      "exp": 2500
+    },
+    {
+      "args": [
+        -1,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "is_replication_factor_valid": [
+    {
+      "args": [
+        3,
+        5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        1,
+        3
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        5,
+        5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        6,
+        5
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0,
+        3
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        -1,
+        3
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        2,
+        2
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        3,
+        3
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        10,
+        5
+      ],
+      "exp": false
+    }
+  ],
+  "count_blocks_to_re_replicate": [
+    {
+      "args": [
+        2,
+        100,
+        3
+      ],
+      "exp": 600
+    },
+    {
+      "args": [
+        1,
+        100,
+        3
+      ],
+      "exp": 300
+    },
+    {
+      "args": [
+        0,
+        100,
+        3
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        3,
+        50,
+        2
+      ],
+      "exp": 300
+    },
+    {
+      "args": [
+        5,
+        10,
+        3
+      ],
+      "exp": 150
+    },
+    {
+      "args": [
+        10,
+        20,
+        3
+      ],
+      "exp": 600
+    },
+    {
+      "args": [
+        1,
+        0,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1,
+        100,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_data_locality_score": [
+    {
+      "args": [
+        80,
+        100
+      ],
+      "exp": 0.8
+    },
+    {
+      "args": [
+        100,
+        100
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        0,
+        100
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        33,
+        100
+      ],
+      "exp": 0.33
+    },
+    {
+      "args": [
+        0,
+        1
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        1,
+        3
+      ],
+      "exp": 0.3333333333333333
+    },
+    {
+      "args": [
+        7,
+        10
+      ],
+      "exp": 0.7
+    },
+    {
+      "args": [
+        50,
+        100
+      ],
+      "exp": 0.5
+    },
+    {
+      "args": [
+        -1,
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        80,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "assign_replicas_round_robin": [
+    {
+      "args": [
+        3,
+        [
+          "n1",
+          "n2",
+          "n3"
+        ]
+      ],
+      "exp": [
+        "n1",
+        "n2",
+        "n3"
+      ]
+    },
+    {
+      "args": [
+        5,
+        [
+          "n1",
+          "n2"
+        ]
+      ],
+      "exp": [
+        "n1",
+        "n2",
+        "n1",
+        "n2",
+        "n1"
+      ]
+    },
+    {
+      "args": [
+        1,
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ],
+      "exp": [
+        "a"
+      ]
+    },
+    {
+      "args": [
+        4,
+        [
+          "only"
+        ]
+      ],
+      "exp": [
+        "only",
+        "only",
+        "only",
+        "only"
+      ]
+    },
+    {
+      "args": [
+        0,
+        [
+          "n1"
+        ]
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        7,
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ],
+      "exp": [
+        "a",
+        "b",
+        "c",
+        "a",
+        "b",
+        "c",
+        "a"
+      ]
+    },
+    {
+      "args": [
+        6,
+        [
+          "x",
+          "y"
+        ]
+      ],
+      "exp": [
+        "x",
+        "y",
+        "x",
+        "y",
+        "x",
+        "y"
+      ]
+    }
+  ],
+  "is_combinable_operation": [
+    {
+      "args": [
+        "sum"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "count"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "min"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "max"
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "avg"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "mean"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "median"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "std"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "collect_list"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "percentile"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "SUM"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "Count"
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "distinct"
+      ],
+      "exp": false
+    }
+  ],
+  "partition_by_hash": [
+    {
+      "args": [
+        "key_a",
+        3
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        "key_b",
+        3
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        "key_c",
+        3
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        "test",
+        1
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        "another",
+        5
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        "hello",
+        10
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        "user_123",
+        7
+      ],
+      "exp": 5
+    },
+    {
+      "args": [
+        "item_456",
+        5
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        123,
+        4
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        "test",
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_map_task_count": [
+    {
+      "args": [
+        10737418240,
+        134217728,
+        2,
+        5
+      ],
+      "exp": 80
+    },
+    {
+      "args": [
+        134217728,
+        134217728,
+        2,
+        5
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        0,
+        134217728,
+        2,
+        5
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        13421772800,
+        134217728,
+        1,
+        10
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        50000000,
+        10000000,
+        4,
+        2
+      ],
+      "exp": 5
+    },
+    {
+      "args": [
+        100000000,
+        65536000,
+        2,
+        4
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        -1,
+        134217728,
+        2,
+        5
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        134217728,
+        0,
+        2,
+        5
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_reduce_task_count": [
+    {
+      "args": [
+        5,
+        2,
+        3
+      ],
+      "exp": 5
+    },
+    {
+      "args": [
+        10,
+        2,
+        3
+      ],
+      "exp": 6
+    },
+    {
+      "args": [
+        1,
+        2,
+        3
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        0,
+        2,
+        3
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        100,
+        4,
+        5
+      ],
+      "exp": 20
+    },
+    {
+      "args": [
+        50,
+        3,
+        5
+      ],
+      "exp": 15
+    },
+    {
+      "args": [
+        -1,
+        2,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        5,
+        0,
+        3
+      ],
+      "exp": "raises"
+    }
+  ],
+  "top_k_frequent": [
+    {
+      "args": [
+        {
+          "a": 3,
+          "b": 5,
+          "c": 1
+        },
+        2
+      ],
+      "exp": [
+        [
+          "b",
+          5
+        ],
+        [
+          "a",
+          3
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "x": 10,
+          "y": 2,
+          "z": 10
+        },
+        2
+      ],
+      "exp": [
+        [
+          "x",
+          10
+        ],
+        [
+          "y",
+          2
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "a": 1
+        },
+        3
+      ],
+      "exp": [
+        [
+          "a",
+          1
+        ]
+      ]
+    },
+    {
+      "args": [
+        {},
+        1
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        {
+          "a": 5,
+          "b": 3,
+          "c": 3,
+          "d": 1
+        },
+        1
+      ],
+      "exp": [
+        [
+          "a",
+          5
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "a": 2,
+          "b": 2,
+          "c": 1
+        },
+        2
+      ],
+      "exp": [
+        [
+          "a",
+          2
+        ],
+        [
+          "b",
+          2
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "one": 10,
+          "two": 8,
+          "three": 8,
+          "four": 1
+        },
+        2
+      ],
+      "exp": [
+        [
+          "one",
+          10
+        ],
+        [
+          "two",
+          8
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "word": 7,
+          "other": 7,
+          "another": 5
+        },
+        2
+      ],
+      "exp": [
+        [
+          "word",
+          7
+        ],
+        [
+          "other",
+          7
+        ]
+      ]
+    }
+  ],
+  "inverted_index": [
+    {
+      "args": [
+        [
+          "hello world",
+          "hello"
+        ]
+      ],
+      "exp": {
+        "hello": [
+          0,
+          1
+        ],
+        "world": [
+          0
+        ]
+      }
+    },
+    {
+      "args": [
+        [
+          "python java",
+          "java c++",
+          "c++ python"
+        ]
+      ],
+      "exp": {
+        "python": [
+          0,
+          2
+        ],
+        "java": [
+          1
+        ],
+        "c++": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": {}
+    },
+    {
+      "args": [
+        [
+          "single"
+        ]
+      ],
+      "exp": {
+        "single": [
+          0
+        ]
+      }
+    },
+    {
+      "args": [
+        [
+          "a b c",
+          "b c d",
+          "c d e"
+        ]
+      ],
+      "exp": {
+        "a": [
+          0
+        ],
+        "b": [
+          0,
+          1
+        ],
+        "c": [
+          0,
+          1,
+          2
+        ],
+        "d": [
+          1,
+          2
+        ],
+        "e": [
+          2
+        ]
+      }
+    },
+    {
+      "args": [
+        [
+          "x",
+          "x y",
+          "x y z"
+        ]
+      ],
+      "exp": {
+        "x": [
+          0,
+          1,
+          2
+        ],
+        "y": [
+          1,
+          2
+        ],
+        "z": [
+          2
+        ]
+      }
+    }
+  ],
+  "compute_co_occurrence": [
+    {
+      "args": [
+        [
+          "hello world",
+          "hello python",
+          "world java"
+        ],
+        "hello",
+        "world"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          "hello world",
+          "hello world"
+        ],
+        "hello",
+        "world"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        [
+          "python java",
+          "c++"
+        ],
+        "python",
+        "java"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          "only python"
+        ],
+        "python",
+        "java"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          "a b c",
+          "d e f"
+        ],
+        "a",
+        "f"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        [
+          "hello hello",
+          "world hello"
+        ],
+        "hello",
+        "world"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        [
+          "x y",
+          "y z",
+          "z x"
+        ],
+        "x",
+        "z"
+      ],
+      "exp": 2
+    }
+  ],
+  "word_count": [
+    {
+      "args": [
+        [
+          "hello",
+          "world",
+          "hello"
+        ]
+      ],
+      "exp": {
+        "hello": 2,
+        "world": 1
+      }
+    },
+    {
+      "args": [
+        [
+          "a",
+          "b",
+          "a",
+          "c",
+          "a"
+        ]
+      ],
+      "exp": {
+        "a": 3,
+        "b": 1,
+        "c": 1
+      }
+    },
+    {
+      "args": [
+        []
+      ],
+      "exp": {}
+    },
+    {
+      "args": [
+        [
+          "test"
+        ]
+      ],
+      "exp": {
+        "test": 1
+      }
+    },
+    {
+      "args": [
+        [
+          "one",
+          "one",
+          "one",
+          "two",
+          "two"
+        ]
+      ],
+      "exp": {
+        "one": 3,
+        "two": 2
+      }
+    },
+    {
+      "args": [
+        [
+          "a",
+          "b",
+          "c",
+          "a",
+          "b"
+        ]
+      ],
+      "exp": {
+        "a": 2,
+        "b": 2,
+        "c": 1
+      }
+    },
+    {
+      "args": [
+        [
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      ],
+      "exp": {
+        "x": 4
+      }
+    }
+  ],
+  "is_resource_request_valid": [
+    {
+      "args": [
+        1024,
+        1,
+        4096,
+        4
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        8192,
+        4,
+        4096,
+        4
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        4096,
+        4,
+        4096,
+        4
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0,
+        1,
+        4096,
+        4
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        -1,
+        1,
+        4096,
+        4
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        1024,
+        -1,
+        4096,
+        4
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        1024,
+        1,
+        0,
+        4
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        4096,
+        4,
+        8192,
+        8
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        2048,
+        2,
+        4096,
+        4
+      ],
+      "exp": true
+    }
+  ],
+  "compute_yarn_container_count": [
+    {
+      "args": [
+        4096,
+        4,
+        1024,
+        1
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        8192,
+        4,
+        2048,
+        2
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        4096,
+        4,
+        1024,
+        4
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        1024,
+        1,
+        1024,
+        1
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        0,
+        4,
+        1024,
+        1
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        10240,
+        4,
+        1024,
+        2
+      ],
+      "exp": 5
+    },
+    {
+      "args": [
+        16384,
+        8,
+        2048,
+        4
+      ],
+      "exp": 4
+    },
+    {
+      "args": [
+        4096,
+        4,
+        1024,
+        0
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1024,
+        0,
+        1024,
+        1
+      ],
+      "exp": "raises"
+    }
+  ],
+  "assign_yarn_queue": [
+    {
+      "args": [
+        {
+          "default": {
+            "mem": 1000,
+            "vcores": 1
+          },
+          "fast": {
+            "mem": 2000,
+            "vcores": 2
+          }
+        },
+        1500,
+        2
+      ],
+      "exp": "fast"
+    },
+    {
+      "args": [
+        {
+          "default": {
+            "mem": 1000,
+            "vcores": 1
+          }
+        },
+        800,
+        1
+      ],
+      "exp": "default"
+    },
+    {
+      "args": [
+        {
+          "a": {
+            "mem": 500,
+            "vcores": 1
+          },
+          "b": {
+            "mem": 2000,
+            "vcores": 4
+          }
+        },
+        3000,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        {
+          "low": {
+            "mem": 100,
+            "vcores": 1
+          },
+          "high": {
+            "mem": 500,
+            "vcores": 2
+          }
+        },
+        300,
+        1
+      ],
+      "exp": "high"
+    },
+    {
+      "args": [
+        {
+          "prod": {
+            "mem": 10000,
+            "vcores": 8
+          },
+          "dev": {
+            "mem": 1000,
+            "vcores": 2
+          }
+        },
+        5000,
+        4
+      ],
+      "exp": "prod"
+    }
+  ],
+  "compute_fair_share_for_job": [
+    {
+      "args": [
+        {
+          "mem": 1000,
+          "vcores": 1
+        },
+        1000,
+        3
+      ],
+      "exp": {
+        "mem": 333,
+        "vcores": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "mem": 1000,
+          "vcores": 1
+        },
+        3000,
+        3
+      ],
+      "exp": {
+        "mem": 1000,
+        "vcores": 1
+      }
+    },
+    {
+      "args": [
+        {
+          "mem": 100,
+          "vcores": 1
+        },
+        900,
+        3
+      ],
+      "exp": {
+        "mem": 100,
+        "vcores": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "mem": 0,
+          "vcores": 0
+        },
+        1000,
+        5
+      ],
+      "exp": {
+        "mem": 0,
+        "vcores": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "mem": 5000,
+          "vcores": 5
+        },
+        1000,
+        2
+      ],
+      "exp": {
+        "mem": 500,
+        "vcores": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "mem": 200,
+          "vcores": 1
+        },
+        1000,
+        10
+      ],
+      "exp": {
+        "mem": 100,
+        "vcores": 0
+      }
+    }
+  ],
+  "is_partition_pruning_helpful": [
+    {
+      "args": [
+        0.1,
+        10
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0.5,
+        10
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0.01,
+        100
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0.9,
+        10
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0.0,
+        10
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        1.0,
+        5
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0.05,
+        20
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0.99,
+        5
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0.5,
+        100
+      ],
+      "exp": false
+    }
+  ],
+  "compute_partition_count": [
+    {
+      "args": [
+        365,
+        "dt"
+      ],
+      "exp": 365
+    },
+    {
+      "args": [
+        30,
+        "month"
+      ],
+      "exp": 12
+    },
+    {
+      "args": [
+        7,
+        "week"
+      ],
+      "exp": 53
+    },
+    {
+      "args": [
+        1,
+        "year"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        0,
+        "dt"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        100,
+        "month"
+      ],
+      "exp": 12
+    },
+    {
+      "args": [
+        365,
+        "day"
+      ],
+      "exp": 365
+    },
+    {
+      "args": [
+        366,
+        "dt"
+      ],
+      "exp": 366
+    },
+    {
+      "args": [
+        -1,
+        "dt"
+      ],
+      "exp": "raises"
+    }
+  ],
+  "get_hive_storage_format": [
+    {
+      "args": [
+        "select *"
+      ],
+      "exp": "textfile"
+    },
+    {
+      "args": [
+        "select count(*)"
+      ],
+      "exp": "textfile"
+    },
+    {
+      "args": [
+        "select a join b"
+      ],
+      "exp": "orc"
+    },
+    {
+      "args": [
+        "insert overwrite"
+      ],
+      "exp": "orc"
+    },
+    {
+      "args": [
+        "select with complex udf"
+      ],
+      "exp": "textfile"
+    },
+    {
+      "args": [
+        "select sum(a) group by b"
+      ],
+      "exp": "orc"
+    },
+    {
+      "args": [
+        "create table"
+      ],
+      "exp": "textfile"
+    },
+    {
+      "args": [
+        "select * from t where dt"
+      ],
+      "exp": "textfile"
+    }
+  ],
+  "compute_data_warehouse_size": [
+    {
+      "args": [
+        100,
+        0.3,
+        3
+      ],
+      "exp": 90
+    },
+    {
+      "args": [
+        1000,
+        0.5,
+        2
+      ],
+      "exp": 1000
+    },
+    {
+      "args": [
+        100,
+        1.0,
+        1
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        0,
+        0.5,
+        3
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        50,
+        0.4,
+        2
+      ],
+      "exp": 40
+    },
+    {
+      "args": [
+        200,
+        0.25,
+        3
+      ],
+      "exp": 150
+    },
+    {
+      "args": [
+        -1,
+        0.5,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        -0.1,
+        3
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        100,
+        0.5,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "estimate_query_cost": [
+    {
+      "args": [
+        10737418240,
+        10
+      ],
+      "exp": 1073741824
+    },
+    {
+      "args": [
+        1073741824,
+        1
+      ],
+      "exp": 1073741824
+    },
+    {
+      "args": [
+        0,
+        5
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        1000000000,
+        4
+      ],
+      "exp": 250000000
+    },
+    {
+      "args": [
+        500000000,
+        8
+      ],
+      "exp": 62500000
+    },
+    {
+      "args": [
+        -1,
+        1
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        10737418240,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "should_use_broadcast_join": [
+    {
+      "args": [
+        8388608,
+        10485760
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        20971520,
+        10485760
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        10485760,
+        10485760
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        1048576,
+        10485760
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0,
+        10485760
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        10485761,
+        10485760
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        50000000,
+        10000000
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        10000000,
+        10000000
+      ],
+      "exp": true
+    }
+  ],
+  "count_distinct_simple": [
+    {
+      "args": [
+        1000,
+        0.1
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        10000,
+        0.01
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        1000,
+        1.0
+      ],
+      "exp": 1000
+    },
+    {
+      "args": [
+        1000,
+        0.0
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        999,
+        0.333
+      ],
+      "exp": 333
+    },
+    {
+      "args": [
+        10000,
+        0.001
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        5000,
+        0.2
+      ],
+      "exp": 1000
+    },
+    {
+      "args": [
+        -1,
+        0.1
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1000,
+        -0.1
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_partition_pruning_set": [
+    {
+      "args": [
+        {
+          "dt": "2024-03-15"
+        },
+        [
+          "dt"
+        ]
+      ],
+      "exp": [
+        "2024-03-15"
+      ]
+    },
+    {
+      "args": [
+        {
+          "dt": "2024-03-15",
+          "region": "bj"
+        },
+        [
+          "dt",
+          "region"
+        ]
+      ],
+      "exp": [
+        "2024-03-15"
+      ]
+    },
+    {
+      "args": [
+        {},
+        [
+          "dt"
+        ]
+      ],
+      "exp": []
+    },
+    {
+      "args": [
+        {
+          "year": 2024
+        },
+        [
+          "year"
+        ]
+      ],
+      "exp": [
+        2024
+      ]
+    },
+    {
+      "args": [
+        {
+          "month": 3,
+          "day": 15
+        },
+        [
+          "month",
+          "day"
+        ]
+      ],
+      "exp": [
+        3
+      ]
+    },
+    {
+      "args": [
+        {
+          "region": "us",
+          "year": 2024
+        },
+        [
+          "region",
+          "year"
+        ]
+      ],
+      "exp": [
+        "us"
+      ]
+    }
+  ],
+  "is_hot_row_key": [
+    {
+      "args": [
+        "row_0000",
+        3
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "row_1234",
+        3
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "row_0001",
+        3
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "row_5678",
+        3
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "fixed_key",
+        5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "var_9999",
+        5
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "key_with_no_suffix",
+        3
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "user_123456",
+        10
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "prefix_0",
+        5
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "row_3",
+        3
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        "row_6",
+        3
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        "999999",
+        10
+      ],
+      "exp": false
+    }
+  ],
+  "compute_region_count": [
+    {
+      "args": [
+        10737418240,
+        1073741824
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        1073741824,
+        1073741824
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        5368709120,
+        536870912
+      ],
+      "exp": 10
+    },
+    {
+      "args": [
+        0,
+        1073741824
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        10737418240,
+        536870912
+      ],
+      "exp": 20
+    },
+    {
+      "args": [
+        21474836480,
+        1073741824
+      ],
+      "exp": 20
+    },
+    {
+      "args": [
+        -1,
+        1073741824
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1073741824,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_block_cache_hit_rate": [
+    {
+      "args": [
+        80,
+        100
+      ],
+      "exp": 0.8
+    },
+    {
+      "args": [
+        100,
+        100
+      ],
+      "exp": 1.0
+    },
+    {
+      "args": [
+        0,
+        100
+      ],
+      "exp": 0.0
+    },
+    {
+      "args": [
+        33,
+        100
+      ],
+      "exp": 0.33
+    },
+    {
+      "args": [
+        999,
+        1000
+      ],
+      "exp": 0.999
+    },
+    {
+      "args": [
+        7,
+        10
+      ],
+      "exp": 0.7
+    },
+    {
+      "args": [
+        50,
+        100
+      ],
+      "exp": 0.5
+    },
+    {
+      "args": [
+        -1,
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        80,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "design_row_key_with_salt": [
+    {
+      "args": [
+        "user_123",
+        5
+      ],
+      "exp": "3_user_123"
+    },
+    {
+      "args": [
+        "item_456",
+        3
+      ],
+      "exp": "1_item_456"
+    },
+    {
+      "args": [
+        "",
+        5
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        "k",
+        0
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        "user_999999",
+        10
+      ],
+      "exp": "6_user_999999"
+    },
+    {
+      "args": [
+        "test_key_abc",
+        7
+      ],
+      "exp": "6_test_key_abc"
+    },
+    {
+      "args": [
+        "row_00001",
+        5
+      ],
+      "exp": "2_row_00001"
+    }
+  ],
+  "is_incremental_import_valid": [
+    {
+      "args": [
+        100,
+        200
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        200,
+        100
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        50,
+        50
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        0,
+        100
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        999,
+        1000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        1000,
+        999
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        1,
+        2
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0,
+        1
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        99,
+        100
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        100,
+        100
+      ],
+      "exp": false
+    }
+  ],
+  "select_split_column_strategy": [
+    {
+      "args": [
+        {
+          "cardinality": 100000,
+          "type": "int",
+          "has_null": false
+        }
+      ],
+      "exp": "id_column"
+    },
+    {
+      "args": [
+        {
+          "cardinality": 10,
+          "type": "date",
+          "has_null": false
+        }
+      ],
+      "exp": "date_column"
+    },
+    {
+      "args": [
+        {
+          "cardinality": 2,
+          "type": "string",
+          "has_null": true
+        }
+      ],
+      "exp": "none"
+    },
+    {
+      "args": [
+        {
+          "cardinality": 1000,
+          "type": "string",
+          "has_null": false
+        }
+      ],
+      "exp": "hash"
+    },
+    {
+      "args": [
+        {
+          "cardinality": 50000,
+          "type": "int",
+          "has_null": false
+        }
+      ],
+      "exp": "hash"
+    },
+    {
+      "args": [
+        {
+          "cardinality": 100,
+          "type": "string",
+          "has_null": true
+        }
+      ],
+      "exp": "none"
+    },
+    {
+      "args": [
+        {
+          "cardinality": 500,
+          "type": "string",
+          "has_null": false
+        }
+      ],
+      "exp": "hash"
+    }
+  ],
+  "compute_split_size": [
+    {
+      "args": [
+        1000000,
+        10,
+        100
+      ],
+      "exp": 10000000
+    },
+    {
+      "args": [
+        1000000,
+        4,
+        200
+      ],
+      "exp": 50000000
+    },
+    {
+      "args": [
+        1000000,
+        10,
+        50
+      ],
+      "exp": 5000000
+    },
+    {
+      "args": [
+        0,
+        10,
+        100
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        100000,
+        5,
+        1000
+      ],
+      "exp": 20000000
+    },
+    {
+      "args": [
+        500000,
+        8,
+        250
+      ],
+      "exp": 15625000
+    },
+    {
+      "args": [
+        -1,
+        10,
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1000000,
+        0,
+        100
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1000000,
+        10,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_migration_time_seconds": [
+    {
+      "args": [
+        1073741824,
+        10,
+        1.2
+      ],
+      "exp": 128
+    },
+    {
+      "args": [
+        1073741824,
+        1,
+        1.0
+      ],
+      "exp": 1024
+    },
+    {
+      "args": [
+        0,
+        10,
+        1.0
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        10485760,
+        100,
+        1.0
+      ],
+      "exp": 100
+    },
+    {
+      "args": [
+        104857600,
+        10,
+        1.5
+      ],
+      "exp": 15360
+    },
+    {
+      "args": [
+        52428800,
+        10,
+        2.0
+      ],
+      "exp": 10240
+    },
+    {
+      "args": [
+        -1,
+        10,
+        1.0
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1048576,
+        -1,
+        1.0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "is_message_lag_critical": [
+    {
+      "args": [
+        10000,
+        5000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        3000,
+        5000
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        4999,
+        5000
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        5001,
+        5000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        0,
+        5000
+      ],
+      "exp": false
+    },
+    {
+      "args": [
+        100000,
+        5000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        5000,
+        5000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        7500,
+        5000
+      ],
+      "exp": true
+    },
+    {
+      "args": [
+        -1,
+        5000
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_minimum_replication": [
+    {
+      "args": [
+        3,
+        "all"
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        2,
+        "all"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        1,
+        "all"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        3,
+        "majority"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        2,
+        "majority"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        1,
+        "majority"
+      ],
+      "exp": 1
+    },
+    {
+      "args": [
+        0,
+        "all"
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        3,
+        "quorum"
+      ],
+      "exp": 2
+    },
+    {
+      "args": [
+        5,
+        "majority"
+      ],
+      "exp": 3
+    },
+    {
+      "args": [
+        7,
+        "all"
+      ],
+      "exp": 7
+    },
+    {
+      "args": [
+        3,
+        "invalid"
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        -1,
+        "all"
+      ],
+      "exp": "raises"
+    }
+  ],
+  "compute_throughput_bytes_per_sec": [
+    {
+      "args": [
+        1073741824,
+        60
+      ],
+      "exp": 17881395.066666666
+    },
+    {
+      "args": [
+        1048576,
+        1
+      ],
+      "exp": 1048576
+    },
+    {
+      "args": [
+        0,
+        10
+      ],
+      "exp": 0
+    },
+    {
+      "args": [
+        1000000,
+        5
+      ],
+      "exp": 200000
+    },
+    {
+      "args": [
+        10737418240,
+        120
+      ],
+      "exp": 89587852.0
+    },
+    {
+      "args": [
+        104857600,
+        10
+      ],
+      "exp": 10485760
+    },
+    {
+      "args": [
+        -1,
+        10
+      ],
+      "exp": "raises"
+    },
+    {
+      "args": [
+        1048576,
+        0
+      ],
+      "exp": "raises"
+    }
+  ],
+  "assign_consumer_partitions": [
+    {
+      "args": [
+        6,
+        3
+      ],
+      "exp": {
+        "0": [
+          0,
+          3
+        ],
+        "1": [
+          1,
+          4
+        ],
+        "2": [
+          2,
+          5
+        ]
+      }
+    },
+    {
+      "args": [
+        5,
+        3
+      ],
+      "exp": {
+        "0": [
+          0,
+          3
+        ],
+        "1": [
+          1,
+          4
+        ],
+        "2": [
+          2
+        ]
+      }
+    },
+    {
+      "args": [
+        3,
+        3
+      ],
+      "exp": {
+        "0": [
+          0
+        ],
+        "1": [
+          1
+        ],
+        "2": [
+          2
+        ]
+      }
+    },
+    {
+      "args": [
+        4,
+        2
+      ],
+      "exp": {
+        "0": [
+          0,
+          2
+        ],
+        "1": [
+          1,
+          3
+        ]
+      }
+    },
+    {
+      "args": [
+        1,
+        3
+      ],
+      "exp": {
+        "0": [
+          0
+        ],
+        "1": [],
+        "2": []
+      }
+    },
+    {
+      "args": [
+        0,
+        3
+      ],
+      "exp": {
+        "0": [],
+        "1": [],
+        "2": []
+      }
+    },
+    {
+      "args": [
+        10,
+        4
+      ],
+      "exp": {
+        "0": [
+          0,
+          4,
+          8
+        ],
+        "1": [
+          1,
+          5,
+          9
+        ],
+        "2": [
+          2,
+          6
+        ],
+        "3": [
+          3,
+          7
+        ]
+      }
+    },
+    {
+      "args": [
+        7,
+        3
+      ],
+      "exp": {
+        "0": [
+          0,
+          3,
+          6
+        ],
+        "1": [
+          1,
+          4
+        ],
+        "2": [
+          2,
+          5
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="/node_modules/vue/dist/vue.global.js"></script>
+  <script src="/node_modules/@vue-office/pptx/lib/index.umd.js"></script>
+  <style>
+    body { margin: 0; padding: 0; background: #eee; }
+    #app { width: 100vw; height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <vue-office-pptx :src="src" @rendered="rendered" @error="error" style="height: 100vh; width: 100vw;"/>
+  </div>
+  <script>
+    const { createApp, ref, onMounted } = Vue;
+    createApp({
+      setup() {
+        const src = ref(null);
+        onMounted(() => {
+          fetch('http://localhost:8000/static/resources/%E8%AF%BE%E7%A8%8B%E8%B5%84%E6%BA%90/%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97/%E8%A7%86%E9%A2%91%E5%92%8C%E8%AF%BE%E4%BB%B6/%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E8%AF%BE%E7%A8%8B_%E8%A7%86%E9%A2%915_%E6%96%87%E6%9C%AC%E6%B8%85%E6%B4%97.pptx')
+            .then(res => res.arrayBuffer())
+            .then(buffer => {
+              src.value = buffer;
+            });
+        });
+        const rendered = () => console.log('RENDERED SUCCESSFULLY');
+        const error = (e) => console.log('RENDER ERROR', e);
+        return { src, rendered, error };
+      }
+    }).component('vue-office-pptx', vueOfficePptx).mount('#app');
+  </script>
+</body>
+</html>

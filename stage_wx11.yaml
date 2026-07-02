@@ -1,0 +1,158 @@
+name: stage_wx11
+course: 数据清洗
+stage: 11
+title: 清洗质量评估
+order_in_practice: 11
+difficulty: intermediate
+
+description: |
+  数据完整性 / 唯一性 / 有效性的量化指标、综合质量评分;
+  含数据质量月报的业务案例。
+
+learning_objectives:
+  - 能给定值列表与缺失 marker, 计算完整性比率 (1 - missing/total)
+  - 能给定值列表, 计算唯一性比率 (distinct/total)
+  - 能给定数值列表与上下界, 计算有效性比率 (在范围内/total)
+  - 能给定三个比率, 组装质量评估 dict
+
+handbook_word_count: 2700
+
+chapters:
+  - title: "数据质量的多维度量"
+    content: |
+      ## 1.1 单维质量指标的局限
+
+      单看一个指标会被误导:
+      - 只看完整性: 漏率低但全是重复值, 数据无效
+      - 只看唯一性: 全唯一但都是异常值, 数据失真
+      - 只看有效性: 范围内但大量缺失, 数据稀疏
+
+      工程实务: **三维同时看** = 完整性 + 唯一性 + 有效性。
+
+      ## 1.2 三个核心指标
+
+      ### 完整性 (completeness)
+      $\text{completeness} = \frac{\text{非 missing 数}}{\text{总数}}$
+
+      复习 WX01 的 quality_ratio, WX02 的 missing 检测。本关函数复用 WX02 的 missing markers。
+
+      ### 唯一性 (uniqueness)
+      $\text{uniqueness} = \frac{\text{distinct 数}}{\text{总数}}$
+
+      其中 distinct 数是去重后的元素种类数。
+
+      ### 有效性 (validity)
+      $\text{validity} = \frac{\text{在 [lo, hi] 范围内的数}}{\text{总数}}$
+
+      复习 WX04 的范围概念。本关用统计意义上的有效范围。
+
+      ## 1.3 三维指标的工程意义
+
+      - **completeness < 0.9**: 数据稀疏, 不适合训练 ML
+      - **uniqueness < 0.1**: 数据高度重复, 信息密度低
+      - **validity < 0.95**: 含大量异常, 需深度清洗
+
+      不同业务场景阈值不同, 但**三维同时看**是工程基本功。
+
+  - title: "三个比率的具体计算"
+    content: |
+      ## 2.1 completeness 实现
+
+      ```
+      n = len(values)
+      missing = sum(1 for v in values if v in markers)
+      return (n - missing) / n
+      ```
+
+      边界:
+      - 空 list → 抛 ValueError
+      - 全 missing → completeness = 0.0
+
+      ## 2.2 uniqueness 实现
+
+      ```
+      n = len(values)
+      distinct = len(set(values))
+      return distinct / n
+      ```
+
+      边界:
+      - 空 list → 抛 ValueError
+      - 全相同 → uniqueness = 1/n
+      - 全不同 → uniqueness = 1.0
+
+      工程实务: uniqueness 太低 → 字段无信息量; 太高 → 可能是 ID 字段, 不适合做特征。
+
+      ## 2.3 validity 实现
+
+      ```
+      n = len(values)
+      in_range = sum(1 for v in values if lo <= v <= hi)
+      return in_range / n
+      ```
+
+      边界:
+      - 非数值元素直接计为 invalid (本关简化: 假设输入都是数值)
+      - lo > hi → 抛 ValueError
+
+      ## 2.4 综合质量评估
+
+      函数 `quality_summary_dict(completeness, uniqueness, validity)`: 把 3 个比率组装成统一 dict:
+      ```
+      {
+          'completeness': c,
+          'uniqueness': u,
+          'validity': v,
+          'overall': (c + u + v) / 3,
+      }
+      ```
+
+      overall 是简单平均, 工程实务可能用加权平均 (业务定权重)。本关用简单平均。
+
+  - title: "业务案例与工程口诀"
+    content: |
+      ## 3.1 业务案例: 数据质量月报
+
+      场景: 公司每月对核心业务表 (用户 / 订单 / 商品) 出质量月报, 监控质量趋势。
+
+      报告流水线 (一张表):
+      1. **每个字段算 completeness** (本关): 列出 missing 字段及比例
+      2. **每个字段算 uniqueness** (本关): 主键应该 1.0, 类别字段应在 0.001-0.1 (有重复但不全同)
+      3. **数值字段算 validity** (本关): 设业务合理范围
+      4. **综合 overall** (本关): 单字段三维平均
+      5. **跨字段聚合**: 整张表的所有字段 overall 取平均
+
+      报警规则:
+      - 单字段 overall < 0.7 → 需立即介入
+      - 月度趋势下降 > 10% → 数据源出问题
+
+      ## 3.2 工程口诀
+
+      - **三维必须同时看**: 单维易误判
+      - **completeness 是地基**: missing 太多其他指标都失真
+      - **uniqueness 看场景**: 主键 = 1, 类别 = 中, 错误时 = 异常
+      - **validity 必须有业务范围**: 不能用统计 IQR 替代业务规则
+      - **overall 简单平均易理解**: 加权平均仅在业务有强偏好时
+
+      ## 3.3 报告自动化与监控
+
+      质量指标月度报告应该:
+      - 自动化生成 (定时任务)
+      - 入监控系统 (Grafana 等可视化)
+      - 阈值触发报警 (PagerDuty 等)
+      - 历史趋势保留 (>= 12 月)
+
+      工程经验: 数据质量是**长期习惯**, 不是一次性活动。建立监控比写清洗代码更重要。
+
+      ## 3.4 与 WX01 的呼应
+
+      复习 WX01 的 `quality_ratio = valid / total`, 是 completeness 的简化版。本关把 quality 拆成三维, 是工程级的细化。
+
+      ## 3.5 进阶: 更多质量维度
+
+      除了三维, 工业质量框架还有:
+      - **一致性 (consistency)**: 跨字段约束 (复习 WX09)
+      - **及时性 (timeliness)**: 数据更新延迟
+      - **可解释性 (interpretability)**: 业务有人能解释每个字段
+
+      DAMA-DMBOK 数据质量标准列了 8 维度, 本关聚焦最常用的三维。

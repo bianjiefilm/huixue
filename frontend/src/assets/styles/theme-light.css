@@ -1,0 +1,144 @@
+/**
+ * 亮色主题 CSS 变量覆盖
+ * 将所有 --copilot-* 深色变量替换为亮色版本
+ */
+
+:root {
+  /* ==================== 背景色 ==================== */
+  --copilot-bg-primary: #f5f5f5;
+  --copilot-bg-secondary: #ffffff;
+  --copilot-bg-tertiary: #fafafa;
+  --copilot-bg-elevated: #ffffff;
+  --copilot-bg-hover: rgba(0, 0, 0, 0.04);
+
+  /* ==================== 文字色 ==================== */
+  --copilot-text-primary: rgba(0, 0, 0, 0.85);
+  --copilot-text-secondary: rgba(0, 0, 0, 0.65);
+  --copilot-text-tertiary: rgba(0, 0, 0, 0.45);
+  --copilot-text-muted: rgba(0, 0, 0, 0.25);
+
+  /* ==================== 边框色 ==================== */
+  --copilot-border-default: #d9d9d9;
+  --copilot-border-muted: #e8e8e8;
+  --copilot-border-accent: #1890ff;
+  --copilot-border-highlight: rgba(24, 144, 255, 0.5);
+
+  /* ==================== 品牌色 ==================== */
+  --copilot-brand-primary: #1890ff;
+  --copilot-brand-hover: #40a9ff;
+  --copilot-brand-active: #096dd9;
+  --copilot-brand-primary-alpha-20: rgba(24, 144, 255, 0.15);
+
+  /* ==================== 强调色（亮色版本） ==================== */
+  --copilot-accent-cyan: #1890ff;
+  --copilot-accent-cyan-dim: rgba(24, 144, 255, 0.1);
+  --copilot-accent-green: #52c41a;
+  --copilot-accent-green-dim: rgba(82, 196, 26, 0.1);
+  --copilot-accent-yellow: #faad14;
+  --copilot-accent-yellow-dim: rgba(250, 173, 20, 0.1);
+  --copilot-accent-pink: #eb2f96;
+  --copilot-accent-pink-dim: rgba(235, 47, 150, 0.1);
+  --copilot-accent-purple: #722ed1;
+  --copilot-accent-purple-dim: rgba(114, 46, 209, 0.1);
+
+  /* ==================== 语义色 ==================== */
+  --copilot-semantic-success: #52c41a;
+  --copilot-semantic-warning: #faad14;
+  --copilot-semantic-error: #f5222d;
+  --copilot-semantic-info: #1890ff;
+
+  /* ==================== 侧边栏（亮色） ==================== */
+  --copilot-sidebar-bg: #ffffff;
+  --copilot-sidebar-border: #e8e8e8;
+  --copilot-sidebar-width-collapsed: 64px;
+  --copilot-sidebar-width-expanded: 240px;
+  --copilot-sidebar-padding: 12px;
+
+  /* ==================== 字体大小 ==================== */
+  --copilot-font-size-xs: 12px;
+  --copilot-font-size-sm: 13px;
+  --copilot-font-size-base: 14px;
+  --copilot-font-size-lg: 18px;
+  --copilot-font-size-xl: 24px;
+  --copilot-font-size-2xl: 32px;
+  --copilot-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --copilot-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* ==================== 间距 ==================== */
+  --copilot-spacing-xs: 4px;
+  --copilot-spacing-sm: 8px;
+  --copilot-spacing-md: 12px;
+  --copilot-spacing-lg: 16px;
+  --copilot-spacing-xl: 24px;
+
+  /* ==================== 圆角 ==================== */
+  --copilot-radius-sm: 4px;
+  --copilot-radius-md: 8px;
+  --copilot-radius-lg: 12px;
+  --copilot-radius-full: 9999px;
+
+  /* ==================== 阴影（亮色版本） ==================== */
+  --copilot-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --copilot-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --copilot-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --copilot-shadow-glow-cyan: 0 0 20px rgba(24, 144, 255, 0.15);
+
+  /* ==================== 渐变（亮色版本） ==================== */
+  --copilot-gradient-primary: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+  --copilot-gradient-card: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  --copilot-gradient-progress: linear-gradient(90deg, #1890ff 0%, #52c41a 100%);
+
+  /* ==================== 过渡 ==================== */
+  --copilot-transition-fast: 150ms ease;
+  --copilot-transition-normal: 250ms ease;
+
+  /* ==================== 断点 ==================== */
+  --copilot-breakpoint-mobile: 768px;
+  --copilot-breakpoint-tablet: 1024px;
+  --copilot-breakpoint-desktop: 1280px;
+}
+
+/* ==================== 全局亮色主题覆盖 ==================== */
+
+/* 确保 html 和 body 使用亮色背景 */
+html, body {
+  background-color: #f0f2f5 !important;
+}
+
+#app {
+  background-color: #f0f2f5 !important;
+  min-height: 100vh;
+}
+
+/* 移除 copilot-theme 类的深色背景 */
+.copilot-theme {
+  background-color: var(--copilot-bg-primary) !important;
+  color: var(--copilot-text-primary) !important;
+}
+
+/* Ant Design Layout 亮色背景 */
+.ant-layout {
+  background-color: #f0f2f5 !important;
+}
+
+.ant-layout-content {
+  background-color: #f0f2f5 !important;
+}
+
+/* 覆盖所有使用深色背景的元素 */
+[class*="copilot"] {
+  background-color: inherit;
+  color: inherit;
+}
+
+/* ==================== Ant Design 侧边栏收缩按钮亮色 ==================== */
+.ant-layout-sider-trigger {
+  background: #f0f2f5 !important;
+  color: rgba(0, 0, 0, 0.65) !important;
+  border-top: 1px solid #e8e8e8 !important;
+}
+
+.ant-layout-sider-trigger:hover {
+  background: #e6e6e6 !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}

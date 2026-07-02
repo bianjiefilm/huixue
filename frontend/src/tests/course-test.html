@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>课程和挑战模块 Mock API 测试</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .theme-switch {
+      display: flex;
+      align-items: center;
+    }
+    h1 {
+      text-align: center;
+      color: #1890ff;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background-color: #1890ff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+      margin-right: 8px;
+    }
+    .btn:hover {
+      background-color: #40a9ff;
+    }
+    .btn-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .test-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .test-section h3 {
+      margin-top: 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .result {
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 15px;
+      max-height: 300px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-family: monospace;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+    .param-row {
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .param-item {
+      margin-right: 15px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    input, select {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+    label {
+      margin-right: 8px;
+      font-weight: 500;
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    .dark-mode .container {
+      background-color: #1f1f1f;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .dark-mode .result {
+      background-color: #242424;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+    .dark-mode input, 
+    .dark-mode select {
+      background-color: #333;
+      border-color: #444;
+      color: #e0e0e0;
+    }
+    .dark-mode .test-section {
+      border-color: #444;
+    }
+    .dark-mode .success {
+      color: #52c41a;
+    }
+    .dark-mode .error {
+      color: #ff4d4f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>课程和挑战模块 Mock API 测试</h1>
+      <div class="theme-switch">
+        <button id="themeToggle" class="btn">切换主题</button>
+      </div>
+    </div>
+    
+    <!-- 课程资源测试部分 -->
+    <div class="test-section">
+      <h2>课程资源 API 测试</h2>
+      
+      <div class="test-section">
+        <h3>获取课程资源列表</h3>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="resource-keyword">关键词:</label>
+            <input type="text" id="resource-keyword" placeholder="搜索关键词">
+          </div>
+          <div class="param-item">
+            <label for="resource-tags">标签:</label>
+            <select id="resource-tags">
+              <option value="">全部</option>
+              <!-- 标签选项将通过API动态获取 -->
+            </select>
+          </div>
+        </div>
+        <button id="get-resources" class="btn">获取课程资源列表</button>
+        <div id="resources-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>获取课程资源详情</h3>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="resource-id">课程ID:</label>
+            <input type="text" id="resource-id" placeholder="输入课程ID">
+          </div>
+        </div>
+        <button id="get-resource-detail" class="btn">获取课程详情</button>
+        <div id="resource-detail-result" class="result"></div>
+      </div>
+    </div>
+    
+    <!-- 微型实验课程测试部分 -->
+    <div class="test-section">
+      <h2>微型实验课程 API 测试</h2>
+      
+      <div class="test-section">
+        <h3>获取微型实验课程列表</h3>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="micro-keyword">关键词:</label>
+            <input type="text" id="micro-keyword" placeholder="搜索关键词">
+          </div>
+          <div class="param-item">
+            <label for="micro-direction">方向:</label>
+            <select id="micro-direction">
+              <option value="">全部</option>
+              <!-- 方向选项将通过API动态获取 -->
+            </select>
+          </div>
+          <div class="param-item">
+            <label for="micro-category">分类:</label>
+            <select id="micro-category">
+              <option value="">全部</option>
+              <!-- 分类选项将通过API动态获取 -->
+            </select>
+          </div>
+          <div class="param-item">
+            <label for="micro-level">难度:</label>
+            <select id="micro-level">
+              <option value="">全部</option>
+              <option value="初级">初级</option>
+              <option value="中级">中级</option>
+              <option value="高级">高级</option>
+            </select>
+          </div>
+        </div>
+        <button id="get-micro-courses" class="btn">获取微型实验课程列表</button>
+        <div id="micro-courses-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>获取微型实验课程详情</h3>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="micro-id">课程ID:</label>
+            <input type="text" id="micro-id" placeholder="输入课程ID">
+          </div>
+        </div>
+        <button id="get-micro-detail" class="btn">获取课程详情</button>
+        <div id="micro-detail-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>获取推荐课程</h3>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="current-micro-id">当前课程ID:</label>
+            <input type="text" id="current-micro-id" placeholder="输入当前课程ID">
+          </div>
+          <div class="param-item">
+            <label for="recommend-count">推荐数量:</label>
+            <input type="number" id="recommend-count" value="4" min="1" max="10">
+          </div>
+        </div>
+        <button id="get-recommended" class="btn">获取推荐课程</button>
+        <div id="recommended-result" class="result"></div>
+      </div>
+    </div>
+    
+    <!-- 编码挑战测试部分 -->
+    <div class="test-section">
+      <h2>编码挑战 API 测试</h2>
+      
+      <div class="test-section">
+        <h3>获取编码挑战详情</h3>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="challenge-id">挑战ID:</label>
+            <input type="text" id="challenge-id" placeholder="输入挑战ID">
+          </div>
+        </div>
+        <button id="get-challenge" class="btn">获取挑战详情</button>
+        <div id="challenge-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>评测代码</h3>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="code">代码:</label>
+            <textarea id="code" rows="5" cols="50" placeholder="输入要评测的代码"></textarea>
+          </div>
+        </div>
+        <div class="param-row">
+          <div class="param-item">
+            <label for="test-case">测试用例:</label>
+            <select id="test-case">
+              <option value="">请先获取挑战详情</option>
+            </select>
+          </div>
+        </div>
+        <button id="evaluate-code" class="btn">评测代码</button>
+        <div id="evaluation-result" class="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 引入Axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+  <!-- 引入Mock.js -->
+  <script src="https://cdn.jsdelivr.net/npm/mockjs/dist/mock.min.js"></script>
+  
+  <!-- 测试脚本 -->
+  <script>
+    // 全局axios实例
+    const api = axios.create({
+      baseURL: '/',
+      timeout: 5000
+    });
+    
+    // 主题切换功能
+    let isDarkMode = false;
+    
+    // 格式化输出JSON
+    function formatJson(obj) {
+      if (typeof obj === 'string') {
+        try {
+          obj = JSON.parse(obj);
+        } catch (e) {
+          return obj;
+        }
+      }
+      return JSON.stringify(obj, null, 2);
+    }
+    
+    // 显示结果
+    function showResult(elementId, data, isSuccess = true) {
+      const element = document.getElementById(elementId);
+      element.textContent = formatJson(data);
+      element.classList.remove('success', 'error');
+      element.classList.add(isSuccess ? 'success' : 'error');
+    }
+    
+    // 初始化页面
+    document.addEventListener('DOMContentLoaded', async function() {
+      // 主题切换
+      const themeToggle = document.getElementById('themeToggle');
+      themeToggle.addEventListener('click', function() {
+        isDarkMode = !isDarkMode;
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        themeToggle.textContent = isDarkMode ? '切换到亮色主题' : '切换到暗色主题';
+      });
+      
+      // 加载标签选项
+      try {
+        const tagsResponse = await api.get('/api/courses/tags');
+        const tags = tagsResponse.data;
+        const tagsSelect = document.getElementById('resource-tags');
+        
+        tags.forEach(tag => {
+          const option = document.createElement('option');
+          option.value = tag.name;
+          option.textContent = tag.name;
+          tagsSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('加载标签失败:', error);
+      }
+      
+      // 加载方向选项
+      try {
+        const directionsResponse = await api.get('/api/courses/micro/directions');
+        const directions = directionsResponse.data;
+        const directionsSelect = document.getElementById('micro-direction');
+        
+        directions.forEach(direction => {
+          const option = document.createElement('option');
+          option.value = direction;
+          option.textContent = direction;
+          directionsSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('加载方向失败:', error);
+      }
+      
+      // 加载分类选项
+      try {
+        const categoriesResponse = await api.get('/api/courses/micro/categories');
+        const categories = categoriesResponse.data;
+        const categoriesSelect = document.getElementById('micro-category');
+        
+        categories.forEach(category => {
+          const option = document.createElement('option');
+          option.value = category;
+          option.textContent = category;
+          categoriesSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('加载分类失败:', error);
+      }
+    });
+    
+    // 课程资源列表
+    document.getElementById('get-resources').addEventListener('click', async () => {
+      try {
+        const keyword = document.getElementById('resource-keyword').value;
+        const tag = document.getElementById('resource-tags').value;
+        
+        let url = '/api/courses/resources';
+        const params = {};
+        
+        if (keyword) {
+          params.keyword = keyword;
+        }
+        if (tag) {
+          params.tags = [tag];
+        }
+        
+        const response = await api.get(url, { params });
+        showResult('resources-result', response.data);
+      } catch (error) {
+        showResult('resources-result', error.response?.data || error.message, false);
+      }
+    });
+    
+    // 课程资源详情
+    document.getElementById('get-resource-detail').addEventListener('click', async () => {
+      try {
+        const resourceId = document.getElementById('resource-id').value;
+        if (!resourceId) throw new Error('请输入课程ID');
+        
+        const response = await api.get(`/api/courses/resources/${resourceId}`);
+        showResult('resource-detail-result', response.data);
+      } catch (error) {
+        showResult('resource-detail-result', error.response?.data || error.message, false);
+      }
+    });
+    
+    // 微型实验课程列表
+    document.getElementById('get-micro-courses').addEventListener('click', async () => {
+      try {
+        const keyword = document.getElementById('micro-keyword').value;
+        const direction = document.getElementById('micro-direction').value;
+        const category = document.getElementById('micro-category').value;
+        const level = document.getElementById('micro-level').value;
+        
+        let url = '/api/courses/micro';
+        const params = {};
+        
+        if (keyword) {
+          params.keyword = keyword;
+        }
+        if (direction) {
+          params.direction = direction;
+        }
+        if (category) {
+          params.category = category;
+        }
+        if (level) {
+          params.level = level;
+        }
+        
+        const response = await api.get(url, { params });
+        showResult('micro-courses-result', response.data);
+      } catch (error) {
+        showResult('micro-courses-result', error.response?.data || error.message, false);
+      }
+    });
+    
+    // 微型实验课程详情
+    document.getElementById('get-micro-detail').addEventListener('click', async () => {
+      try {
+        const microId = document.getElementById('micro-id').value;
+        if (!microId) throw new Error('请输入课程ID');
+        
+        const response = await api.get(`/api/courses/micro/${microId}`);
+        showResult('micro-detail-result', response.data);
+      } catch (error) {
+        showResult('micro-detail-result', error.response?.data || error.message, false);
+      }
+    });
+    
+    // 获取推荐课程
+    document.getElementById('get-recommended').addEventListener('click', async () => {
+      try {
+        const currentMicroId = document.getElementById('current-micro-id').value;
+        if (!currentMicroId) throw new Error('请输入当前课程ID');
+        
+        const count = document.getElementById('recommend-count').value;
+        
+        const response = await api.get(`/api/courses/micro/${currentMicroId}/recommended?count=${count}`);
+        showResult('recommended-result', response.data);
+      } catch (error) {
+        showResult('recommended-result', error.response?.data || error.message, false);
+      }
+    });
+    
+    // 获取编码挑战详情
+    document.getElementById('get-challenge').addEventListener('click', async () => {
+      try {
+        const challengeId = document.getElementById('challenge-id').value;
+        if (!challengeId) throw new Error('请输入挑战ID');
+        
+        const response = await api.get(`/api/challenges/${challengeId}`);
+        showResult('challenge-result', response.data);
+        
+        // 更新测试用例选择
+        const testCaseSelect = document.getElementById('test-case');
+        testCaseSelect.innerHTML = '';
+        
+        if (response.data && response.data.testCases && response.data.testCases.length > 0) {
+          response.data.testCases.forEach(testCase => {
+            const option = document.createElement('option');
+            option.value = JSON.stringify(testCase);
+            option.textContent = testCase.title + (testCase.hidden ? ' (隐藏用例)' : '');
+            testCaseSelect.appendChild(option);
+          });
+        }
+      } catch (error) {
+        showResult('challenge-result', error.response?.data || error.message, false);
+      }
+    });
+    
+    // 评测代码
+    document.getElementById('evaluate-code').addEventListener('click', async () => {
+      try {
+        const code = document.getElementById('code').value;
+        if (!code) throw new Error('请输入代码');
+        
+        const testCaseValue = document.getElementById('test-case').value;
+        if (!testCaseValue) throw new Error('请选择测试用例');
+        
+        const testCase = JSON.parse(testCaseValue);
+        
+        const response = await api.post('/api/challenges/evaluate', {
+          code,
+          testCase
+        });
+        
+        showResult('evaluation-result', response.data);
+      } catch (error) {
+        showResult('evaluation-result', error.response?.data || error.message, false);
+      }
+    });
+  </script>
+  
+  <!-- 引入 Mock 实现 -->
+  <script type="module">
+    // 导入和初始化 Mock API
+    // 这里的路径需要根据实际项目结构调整
+    import '../mock/course.ts';
+    import '../mock/challenge.ts';
+  </script>
+</body>
+</html> 

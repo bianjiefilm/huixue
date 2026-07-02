@@ -1,0 +1,151 @@
+name: stage_cv10
+course: 计算机视觉
+stage: 10
+title: 目标检测 (BBox / IoU / NMS)
+order_in_practice: 10
+difficulty: hard
+
+description: |
+  目标检测概念 (定位 + 分类)、Bounding Box 表示、IoU 重叠度公式、
+  2D 非极大值抑制、置信度阈值过滤; 含工业目标检测业务案例。
+
+learning_objectives:
+  - 能给定两个 BBox [x1, y1, x2, y2], 计算 IoU
+  - 能给定一组 BBox + scores, 用 IoU 阈值做 NMS
+  - 能给定一个 BBox, 计算面积
+  - 能给定 scores 列表与阈值, 返回保留的索引
+
+handbook_word_count: 2900
+
+chapters:
+  - title: "目标检测的本质"
+    content: |
+      ## 1.1 分类 vs 定位 vs 检测
+
+      理解目标检测先要分清三种任务:
+      - **分类 (Classification)**: 一张图一个类别 (复习 CV09 的 softmax)
+      - **定位 (Localization)**: 一张图一个目标, 输出位置 (BBox)
+      - **检测 (Detection)**: 一张图多个目标, 每个输出 BBox + 类别
+
+      检测 = 定位 + 分类 + 多目标。难度大幅高于纯分类。
+
+      ## 1.2 BBox 表示
+
+      Bounding Box (BBox / 边界框) 是检测任务的标准输出格式:
+      - **坐标格式**: $[x_1, y_1, x_2, y_2]$ — 左上角与右下角
+      - **替代格式**: $[x_c, y_c, w, h]$ — 中心 + 宽高 (YOLO 格式)
+      - **归一化**: 坐标除以图像宽高, 范围 $[0, 1]$ (尺度无关)
+
+      本关用左上右下格式 $[x_1, y_1, x_2, y_2]$, 满足 $x_1 < x_2$, $y_1 < y_2$。
+
+      ## 1.3 BBox 面积
+
+      面积 = $(x_2 - x_1) \cdot (y_2 - y_1)$
+
+      工程实务: 检测输出过小或过大的 BBox 通常是错误, 需要面积过滤。
+
+      ## 1.4 检测系统的输出形式
+
+      标准检测器对一张图输出:
+      - **N 个候选 BBox**: 例如 N=1000 (Faster R-CNN) 或 N=8000 (YOLO)
+      - 每个 BBox 附带:
+        - 4 个坐标 $(x_1, y_1, x_2, y_2)$
+        - 1 个置信度 score (该位置有目标的概率)
+        - 类别概率 (复习 CV09 softmax)
+
+      但 N 这么大不合理 — 一张图实际目标只有几个。需要后处理:
+      1. **置信度阈值过滤**: 丢掉 score < 阈值 (本关函数)
+      2. **NMS**: 同一目标多个重叠框去重 (本关函数)
+
+  - title: "IoU 与 NMS"
+    content: |
+      ## 2.1 IoU (Intersection over Union)
+
+      两个 BBox 的"重叠度", 是检测任务的核心度量。
+
+      $\text{IoU}(A, B) = \frac{|A \cap B|}{|A \cup B|} = \frac{\text{交集面积}}{\text{并集面积}}$
+
+      **交集计算** (两个 BBox $A = [a_1, b_1, a_2, b_2], B = [c_1, d_1, c_2, d_2]$):
+
+      $\text{inter\_x1} = \max(a_1, c_1)$
+      $\text{inter\_y1} = \max(b_1, d_1)$
+      $\text{inter\_x2} = \min(a_2, c_2)$
+      $\text{inter\_y2} = \min(b_2, d_2)$
+
+      若 inter_x2 > inter_x1 且 inter_y2 > inter_y1, 交集面积 = $(\text{inter\_x2} - \text{inter\_x1}) \cdot (\text{inter\_y2} - \text{inter\_y1})$, 否则交集面积 = 0 (不重叠)。
+
+      **并集面积** = $|A| + |B| - |A \cap B|$。
+
+      **范围**: IoU $\in [0, 1]$, 0 = 完全不重叠, 1 = 完全一致。
+
+      工程默认: IoU > 0.5 算"高度重叠", IoU > 0.7 算"几乎相同 BBox"。
+
+      ## 2.2 NMS (Non-Max Suppression) 2D
+
+      检测结果中同一目标会有多个重叠 BBox (滑窗或 anchor 偏移生成的)。NMS 算法:
+
+      ```
+      1. 按 score 降序排序所有 BBox
+      2. 取最大 score 的 BBox 加入"保留"列表
+      3. 把与该 BBox IoU > 阈值的其他 BBox 全部丢弃
+      4. 在剩余 BBox 中重复 2-3, 直到所有 BBox 被处理
+      5. 返回保留列表的索引 (升序)
+      ```
+
+      经验阈值: IoU 阈值 = 0.5 (主流) 或 0.3 (更激进抑制) 或 0.7 (保守)。
+
+      ## 2.3 NMS 与 CV08 模板匹配 NMS 的区别
+
+      复习 CV08 用过 1D NMS — 处理相关度图局部极值。本关 NMS 是 **2D BBox NMS** — 用 IoU 度量重叠。两者是同一思想 (抑制重叠) 在不同维度的应用。
+
+      工程实务: 检测器的 NMS 阈值是关键超参, 必须根据评测集调。
+
+  - title: "置信度过滤与业务案例"
+    content: |
+      ## 3.1 置信度阈值过滤
+
+      检测器输出大量低置信度 BBox (大部分是背景假阳性)。先用阈值过滤:
+
+      $\text{kept indices} = \{i : \text{score}_i \geq \text{thresh}\}$
+
+      阈值常用 0.05 (训练时评测) 或 0.5 (部署推理)。
+
+      工程实务:
+      - 太低: 太多假阳性进入 NMS, 拖慢速度
+      - 太高: 漏检低置信度的真目标
+
+      ## 3.2 完整后处理流水线
+
+      ```
+      Detector 原始输出 (1000 BBox + scores)
+        → confidence_threshold_filter (thresh=0.5) → 100 BBox
+        → NMS (IoU=0.5) → 10 BBox
+        → 最终预测
+      ```
+
+      先 thresh 后 NMS 是标配, 因为 NMS 计算量是 $O(N^2)$, 先过滤减少 N。
+
+      ## 3.3 业务案例: 工业流水线缺陷检测
+
+      场景: 流水线相机拍每件产品, 检测产品上的缺陷 (划痕、污点、裂纹), 输出每个缺陷的位置和类别。
+
+      检测流水线:
+      1. 灰度 + 滤波 + 边缘 (CV02-05 复习)
+      2. 滑窗 + 模板/分类器 (CV08 + CV09 复习) → 候选 BBox + scores
+      3. **置信度过滤** (本关) → 保留 score ≥ 0.6 的候选
+      4. **NMS** (本关 IoU=0.5) → 同位置去重得到稀疏缺陷框
+      5. 每个 BBox 算面积 (本关), 太小或太大的丢掉
+      6. 输出: 缺陷位置 + 类别 + 面积
+
+      工程实务:
+      - **小目标 (划痕)**: BBox 小, NMS 阈值要保守 (= 0.3)
+      - **大目标 (污点)**: NMS 阈值可以激进 (= 0.5)
+      - **多类别**: 每个类别独立 NMS, 不跨类抑制
+
+      ## 3.4 工程口诀
+
+      - **检测 = 定位 + 分类 + 多目标**: 不要混淆与单目标分类
+      - **BBox 必须满足 x1 < x2, y1 < y2**: 不合法 BBox 要校验
+      - **IoU 是度量, 不是损失**: IoU 不可微, 训练用近似 (GIoU, CIoU)
+      - **NMS 阈值 0.5 是默认**: 现场调
+      - **先过滤后 NMS**: O(N²) 性能优化关键

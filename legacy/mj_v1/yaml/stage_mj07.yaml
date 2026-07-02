@@ -1,0 +1,97 @@
+name: stage_mj07
+course: 数据挖掘
+stage: 7
+title: "无监督学习: 聚类"
+order_in_practice: 7
+difficulty: intermediate
+
+description: |
+  K-Means 聚类原理与 sklearn 实现、DBSCAN 密度聚类、
+  层次聚类、轮廓系数(Silhouette Score)评估。
+
+learning_objectives:
+  - 掌握 K-Means 算法原理与 elbow 法确定 K 值
+  - 掌握 DBSCAN 对异常点的鲁棒性
+  - 掌握 sklearn AgglomerativeClustering 层次聚类
+  - 掌握轮廓系数评估聚类质量
+
+handbook_word_count: 1700
+
+chapters:
+  - title: "K-Means 聚类"
+    content: |
+      ## 7.1 算法原理
+
+      1. 随机选择 K 个中心点
+      2. 将每个点分配给最近的中心
+      3. 重新计算各簇中心
+      4. 重复2-3直至收敛
+
+      ```python
+      from sklearn.cluster import KMeans
+      from sklearn.preprocessing import StandardScaler
+
+      scaler = StandardScaler()
+      X_scaled = scaler.fit_transform(X)
+
+      # elbow 法: 绘制不同 K 值的 inertia(SSE)
+      inertias = []
+      K_range = range(2, 11)
+      for k in K_range:
+          km = KMeans(n_clusters=k, random_state=42, n_init=10)
+          km.fit(X_scaled)
+          inertias.append(km.inertia_)
+
+      # 确定 K 后
+      kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+      labels = kmeans.fit_predict(X_scaled)
+      centroids = kmeans.cluster_centers_
+      ```
+
+  - title: "DBSCAN"
+    content: |
+      ## 7.2 DBSCAN 密度聚类
+
+      基于密度的聚类,可发现任意形状簇并自动识别噪声点:
+
+      ```python
+      from sklearn.cluster import DBSCAN
+
+      dbscan = DBSCAN(eps=0.5, min_samples=5)
+      labels = dbscan.fit_predict(X_scaled)
+      # labels == -1 表示噪声点
+      n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+      n_noise = list(labels).count(-1)
+      print(f"聚类数: {n_clusters}, 噪声点: {n_noise}")
+      ```
+
+  - title: "层次聚类与评估"
+    content: |
+      ## 7.3 层次聚类
+
+      ```python
+      from sklearn.cluster import AgglomerativeClustering
+      import scipy.cluster.hierarchy as sch
+
+      # 树状图
+      dendrogram = sch.dendrogram(sch.linkage(X_scaled, method='ward'))
+      plt.title('Dendrogram')
+      plt.xlabel('Samples')
+      plt.ylabel('Distance')
+      plt.show()
+
+      # 层次聚类
+      hc = AgglomerativeClustering(n_clusters=3, linkage='ward')
+      labels = hc.fit_predict(X_scaled)
+      ```
+
+      ## 7.4 轮廓系数
+
+      $s = \\frac{b - a}{max(a, b)}$, 其中 a=簇内距离,b=最近簇距离,s∈[-1,1]
+
+      ```python
+      from sklearn.metrics import silhouette_score
+
+      sil_score = silhouette_score(X_scaled, labels)
+      print(f"轮廓系数: {sil_score:.4f}")  # 越接近1越好
+      ```

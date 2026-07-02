@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>课堂模块Mock API测试</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark {
+      background-color: #1f1f1f;
+      color: #f0f0f0;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .sidebar {
+      width: 250px;
+      padding: 10px;
+      transition: background-color 0.3s;
+    }
+    .content {
+      flex: 1;
+      padding: 10px;
+    }
+    .card {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+    .dark .card {
+      background-color: #2d2d2d;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+    button {
+      background-color: #1890ff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #40a9ff;
+    }
+    .dark button {
+      background-color: #177ddc;
+    }
+    .dark button:hover {
+      background-color: #3390e5;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow: auto;
+      max-height: 400px;
+      transition: background-color 0.3s;
+    }
+    .dark pre {
+      background-color: #333;
+    }
+    ul.test-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.test-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .dark ul.test-list li {
+      border-bottom: 1px solid #444;
+    }
+    ul.test-list li:hover {
+      background-color: #f0f0f0;
+    }
+    .dark ul.test-list li:hover {
+      background-color: #383838;
+    }
+    .theme-switch {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .theme-switch span {
+      margin-right: 10px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 20px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #1890ff;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .dark input:checked + .slider {
+      background-color: #177ddc;
+    }
+    .message {
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .message.show {
+      opacity: 1;
+    }
+    .message.success {
+      background-color: #f6ffed;
+      border: 1px solid #b7eb8f;
+      color: #52c41a;
+    }
+    .dark .message.success {
+      background-color: rgba(82, 196, 26, 0.2);
+      border: 1px solid rgba(82, 196, 26, 0.5);
+      color: #73d13d;
+    }
+    .message.error {
+      background-color: #fff2f0;
+      border: 1px solid #ffccc7;
+      color: #ff4d4f;
+    }
+    .dark .message.error {
+      background-color: rgba(255, 77, 79, 0.2);
+      border: 1px solid rgba(255, 77, 79, 0.5);
+      color: #ff7875;
+    }
+    .message.info {
+      background-color: #e6f7ff;
+      border: 1px solid #91d5ff;
+      color: #1890ff;
+    }
+    .dark .message.info {
+      background-color: rgba(24, 144, 255, 0.2);
+      border: 1px solid rgba(24, 144, 255, 0.5);
+      color: #40a9ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-switch">
+    <span>暗色主题</span>
+    <label class="switch">
+      <input type="checkbox" id="themeSwitch">
+      <span class="slider"></span>
+    </label>
+  </div>
+  
+  <h1>课堂模块Mock API测试</h1>
+  
+  <div id="messageContainer"></div>
+  
+  <div class="container">
+    <div class="sidebar">
+      <div class="card">
+        <h3>测试项</h3>
+        <ul class="test-list" id="testList">
+          <li data-test="classroom-list">获取课堂列表</li>
+          <li data-test="classroom-detail">获取课堂详情</li>
+          <li data-test="classroom-courses">获取课堂课程</li>
+          <li data-test="classroom-students">获取课堂学生</li>
+          <li data-test="classroom-analytics">获取学情分析</li>
+          <li data-test="classroom-resources">获取教学资源</li>
+          <li data-test="classroom-cloud-files">获取云盘文件</li>
+          <li data-test="add-course">添加课程</li>
+          <li data-test="update-course">更新课程</li>
+          <li data-test="publish-course">发布课程</li>
+          <li data-test="delete-course">删除课程</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="content">
+      <div class="card">
+        <h2 id="testTitle">测试结果</h2>
+        <div id="testControls"></div>
+        <pre id="testResult">选择左侧测试项开始测试</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 引入依赖 -->
+  <script src="https://unpkg.com/vue@3.2.37/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/axios@0.27.2/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/mockjs@1.1.0/dist/mock.js"></script>
+  <script src="https://unpkg.com/dayjs@1.11.5/dayjs.min.js"></script>
+  
+  <script>
+    // 设置axios默认配置
+    axios.defaults.baseURL = '/api';
+    axios.defaults.headers.common['Content-Type'] = 'application/json';
+    
+    // 导入模拟数据
+    (async function() {
+      try {
+        // 实际项目中这些模块应该已由Vite/Webpack引入
+        await import('../mock/index.js');
+        
+        // 初始化测试UI
+        initTestUI();
+      } catch (error) {
+        showMessage(`Mock模块加载失败: ${error.message}`, 'error');
+        console.error('Mock模块加载失败:', error);
+      }
+    })();
+    
+    // 显示消息通知
+    function showMessage(text, type = 'info') {
+      const container = document.getElementById('messageContainer');
+      const message = document.createElement('div');
+      message.className = `message ${type}`;
+      message.textContent = text;
+      container.appendChild(message);
+      
+      // 显示消息
+      setTimeout(() => {
+        message.classList.add('show');
+      }, 10);
+      
+      // 3秒后隐藏
+      setTimeout(() => {
+        message.classList.remove('show');
+        setTimeout(() => {
+          container.removeChild(message);
+        }, 300);
+      }, 3000);
+    }
+    
+    // 主题切换
+    document.getElementById('themeSwitch').addEventListener('change', function() {
+      if (this.checked) {
+        document.body.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+    
+    // 从本地存储中恢复主题设置
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+      document.getElementById('themeSwitch').checked = true;
+    }
+    
+    // 初始化测试UI
+    function initTestUI() {
+      const testList = document.getElementById('testList');
+      const testTitle = document.getElementById('testTitle');
+      const testResult = document.getElementById('testResult');
+      const testControls = document.getElementById('testControls');
+      
+      // 测试项点击事件
+      testList.addEventListener('click', function(e) {
+        if (e.target.tagName === 'LI') {
+          const testName = e.target.getAttribute('data-test');
+          testTitle.textContent = e.target.textContent;
+          
+          // 清空之前的控件
+          testControls.innerHTML = '';
+          
+          // 为特定测试添加控件
+          setupTestControls(testName, testControls);
+          
+          // 运行测试
+          runTest(testName);
+        }
+      });
+      
+      // 初始显示第一个测试
+      if (testList.firstElementChild) {
+        testList.firstElementChild.click();
+      }
+    }
+    
+    // 为特定测试设置控件
+    function setupTestControls(testName, container) {
+      switch (testName) {
+        case 'classroom-list':
+          // 添加状态选择按钮
+          ['ongoing', 'upcoming', 'past'].forEach(status => {
+            const btn = document.createElement('button');
+            btn.textContent = status === 'ongoing' ? '进行中' : status === 'upcoming' ? '即将开始' : '已结束';
+            btn.setAttribute('data-status', status);
+            btn.onclick = () => {
+              runTest('classroom-list', { status });
+            };
+            container.appendChild(btn);
+          });
+          
+          // 添加角色选择按钮
+          ['student', 'teacher', 'admin'].forEach(role => {
+            const btn = document.createElement('button');
+            btn.textContent = role === 'student' ? '学生视图' : role === 'teacher' ? '教师视图' : '管理员视图';
+            btn.setAttribute('data-role', role);
+            btn.onclick = () => {
+              const statusBtn = container.querySelector('[data-status].active') || container.querySelector('[data-status]');
+              const status = statusBtn.getAttribute('data-status');
+              runTest('classroom-list', { status, role });
+            };
+            container.appendChild(btn);
+          });
+          break;
+          
+        case 'classroom-detail':
+          // 添加课堂选择按钮
+          for (let i = 1; i <= 5; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = `课堂 ${i}`;
+            btn.setAttribute('data-id', i);
+            btn.onclick = () => {
+              runTest('classroom-detail', { id: i });
+            };
+            container.appendChild(btn);
+          }
+          break;
+          
+        case 'classroom-analytics':
+          // 添加分析类型按钮
+          ['overview', 'courses', 'students', 'chapters'].forEach(type => {
+            const btn = document.createElement('button');
+            btn.textContent = type === 'overview' ? '总览' : 
+                            type === 'courses' ? '课程分析' : 
+                            type === 'students' ? '学生分析' : '章节分析';
+            btn.setAttribute('data-type', type);
+            btn.onclick = () => {
+              runTest('classroom-analytics', { type, classroomId: 2 });
+            };
+            container.appendChild(btn);
+          });
+          break;
+          
+        case 'add-course':
+          // 添加创建课程按钮
+          const addBtn = document.createElement('button');
+          addBtn.textContent = '添加课程';
+          addBtn.onclick = () => {
+            const courseData = {
+              name: '新增测试课程',
+              type: 'practice',
+              status: 'unpublished',
+              chapter: '测试章节',
+              isRequired: true
+            };
+            runTest('add-course', { classroomId: 2, courseData });
+          };
+          container.appendChild(addBtn);
+          break;
+          
+        // 更多控件...
+      }
+    }
+    
+    // 运行测试
+    async function runTest(testName, params = {}) {
+      const testResult = document.getElementById('testResult');
+      testResult.textContent = '测试执行中...';
+      
+      try {
+        let result;
+        
+        switch(testName) {
+          case 'classroom-list': {
+            const { status = 'ongoing', role = 'teacher' } = params;
+            // 假设API结构
+            result = await axios.get(`/classroom/list?status=${status}&role=${role}`);
+            break;
+          }
+          
+          case 'classroom-detail': {
+            const { id = 2 } = params;
+            result = await axios.get(`/classroom/${id}`);
+            break;
+          }
+          
+          case 'classroom-courses': {
+            const { classroomId = 2 } = params;
+            result = await axios.get(`/classroom/${classroomId}/courses`);
+            break;
+          }
+          
+          case 'classroom-students': {
+            const { classroomId = 2 } = params;
+            result = await axios.get(`/classroom/${classroomId}/students`);
+            break;
+          }
+          
+          case 'classroom-analytics': {
+            const { type = 'overview', classroomId = 2 } = params;
+            result = await axios.get(`/classroom/analytics/${type}?classroomId=${classroomId}`);
+            break;
+          }
+          
+          case 'classroom-resources': {
+            const { classroomId = 2, module } = params;
+            const url = module ? 
+              `/classroom/resources?classroomId=${classroomId}&module=${module}` : 
+              `/classroom/resources?classroomId=${classroomId}`;
+            result = await axios.get(url);
+            break;
+          }
+          
+          case 'classroom-cloud-files': {
+            const { classroomId = 2, path = '/', parentId } = params;
+            const url = parentId ?
+              `/classroom/cloud-files?classroomId=${classroomId}&parentId=${parentId}` :
+              `/classroom/cloud-files?classroomId=${classroomId}&path=${path}`;
+            result = await axios.get(url);
+            break;
+          }
+          
+          case 'add-course': {
+            const { classroomId = 2, courseData } = params;
+            result = await axios.post(`/classroom/${classroomId}/courses`, courseData);
+            break;
+          }
+          
+          case 'update-course': {
+            const { courseId = '2-1', data = { name: '更新后的课程名称' } } = params;
+            result = await axios.put(`/classroom/courses/${courseId}`, data);
+            break;
+          }
+          
+          case 'publish-course': {
+            const { courseId = '2-2' } = params;
+            const now = dayjs();
+            result = await axios.post(`/classroom/courses/${courseId}/publish`, {
+              startDate: now.format('YYYY-MM-DD HH:mm:ss'),
+              endDate: now.add(15, 'day').format('YYYY-MM-DD HH:mm:ss')
+            });
+            break;
+          }
+          
+          case 'delete-course': {
+            const { courseId = '2-3' } = params;
+            result = await axios.delete(`/classroom/courses/${courseId}`);
+            break;
+          }
+          
+          default:
+            throw new Error('未知的测试项');
+        }
+        
+        // 显示结果
+        testResult.textContent = JSON.stringify(result.data, null, 2);
+        
+        // 成功消息
+        showMessage('测试执行成功', 'success');
+      } catch (error) {
+        console.error('测试执行失败:', error);
+        testResult.textContent = error.response ? 
+          JSON.stringify(error.response.data, null, 2) : 
+          `测试执行失败: ${error.message}`;
+        
+        // 错误消息
+        showMessage(`测试执行失败: ${error.message}`, 'error');
+      }
+    }
+  </script>
+</body>
+</html> 

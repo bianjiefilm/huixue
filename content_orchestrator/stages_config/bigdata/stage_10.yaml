@@ -1,0 +1,39 @@
+stage_id: stage_10
+course: bigdata
+course_db_id: 101
+title: Sqoop数据迁移工具
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- Sqoop架构与工作原理
+- 关系型数据库与HDFS/Hive/HBase互导
+- Sqoop导入（import）流程
+- Sqoop导出（export）流程
+- 增量导入策略
+- 四、常见模式与技巧
+- 自由查询导入
+- 数据压缩与并行度
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 7
+topics_to_avoid:
+- Sqoop Job与调度
+- 直接模式（direct mode）底层原理
+- Sqoop Metastore配置
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个将MySQL表导入到Hive的Sqoop命令

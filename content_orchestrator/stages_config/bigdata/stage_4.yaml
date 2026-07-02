@@ -1,0 +1,39 @@
+stage_id: stage_4
+course: bigdata
+course_db_id: 101
+title: MapReduce分布式计算原理
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- MapReduce核心思想（分而治之）
+- Map阶段与Reduce阶段
+- Combiner与Partitioner
+- Shuffle与Sort过程
+- Job与Task运行流程
+- 四、常见模式与技巧
+- 拓扑感知计算
+- 推测执行机制
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 1
+topics_to_avoid:
+- Java MapReduce编程
+- InputFormat/OutputFormat
+- 多输入/多输出
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个WordCount的MapReduce伪代码逻辑

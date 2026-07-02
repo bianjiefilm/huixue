@@ -1,0 +1,38 @@
+stage_id: 5
+course: data_collection
+course_db_id: 4
+stage_name: 动态页面处理
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- JavaScript 渲染原理与静态HTML的差异
+- Selenium WebDriver 架构（Chrome/Firefox/Edge）
+- 元素定位方法（By.ID/By.CLASS_NAME/By.XPATH/By.CSS_SELECTOR）
+- 显式等待 vs 隐式等待
+- Selenium 页面交互（点击/输入/滚动/切换Frame）
+- Playwright vs Selenium 对比（速度/API/等待机制）
+- Playwright 基本操作（page.goto/click/fill/evaluate）
+- 浏览器无头模式与反检测配置
+- 四、常见模式与技巧
+- 执行 JavaScript 片段注入
+- 下载文件处理
+- 截图与PDF保存
+- 五、评测标准
+expected_handbook_min_chars: 3000
+expected_questions: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主，对比 Selenium 和 Playwright 的 API 差异
+- 代码块对比两种框架的等效写法
+prerequisites:
+- 关卡1: 数据采集概述与工具选型
+- 关卡3: HTML 解析与 BeautifulSoup
+topics_to_avoid:
+- 具体反爬对抗手段（放入关卡8）
+codex_review_required: true
+baseline_code_template: 一个使用Selenium模拟登录并获取登录后页面内容的Python函数

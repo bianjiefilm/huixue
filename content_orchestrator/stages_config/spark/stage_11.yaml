@@ -1,0 +1,42 @@
+stage_id: stage_11
+course: spark
+course_db_id: 102
+title: Spark性能优化
+difficulty: advanced
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 数据倾斜成因与解决方案
+- Shuffle优化（coalesce/repartition）
+- 内存管理（堆内/堆外内存）
+- GC调优（JVM参数）
+- 并行度设置
+- 数据序列化（Kryo）
+- 广播大变量
+- 四、常见模式与技巧
+- Spark UI分析
+- Spark Conf调参
+- 资源动态分配
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 4
+topics_to_avoid:
+- 集群运维
+- 底层网络协议
+- Kubernetes部署
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个使用spark-submit提交优化后的WordCount任务的配置

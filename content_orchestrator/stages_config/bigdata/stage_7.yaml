@@ -1,0 +1,40 @@
+stage_id: stage_7
+course: bigdata
+course_db_id: 101
+title: Hive数据仓库基础
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- Hive架构与工作原理（Driver/Compiler/Executor）
+- Hive与HDFS/MR的关系
+- 数据类型（基本类型与复杂类型）
+- 数据库与表操作（DDL）
+- 分区表与分桶表
+- 四、常见模式与技巧
+- 内部表与外部表
+- SerDe序列化机制
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```标注
+prerequisites:
+- 1
+- 4
+topics_to_avoid:
+- HiveServer2/Beeline配置
+- UDF/UDTF开发
+- 存储格式（ORC/Parquet）深度调优
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'
+expected_questions_count: 10
+baseline_code_template: 一个创建Hive表并导入数据的SQL脚本

@@ -1,0 +1,43 @@
+stage_id: stage_1
+course: python
+course_db_id: 100
+title: 变量与数据类型
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 变量赋值与命名规则
+- 基本数据类型（整数、浮点数、字符串、布尔值）
+- 类型转换（int/float/str/bool）
+- 运算符（算术、比较、逻辑）
+- 字符串基础（引号、转义字符、原始字符串）
+- None空值
+- 四、常见模式与技巧
+- 多变量赋值
+- 链式比较
+- 类型查询
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_questions_count: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 2
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```python标注
+prerequisites: []
+topics_to_avoid:
+- 装饰器
+- 生成器与迭代器
+- 闭包
+- 面向对象编程
+- 复数类型
+- bytes类型
+baseline_code_hint: 一个计算两数之和的函数
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'

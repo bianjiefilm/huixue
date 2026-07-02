@@ -1,0 +1,38 @@
+stage_id: 4
+course_db_id: 4
+order_in_practice: 4
+title: "Scrapy 框架基础"
+difficulty: intermediate
+difficulty_score: 2
+
+knowledge_points:
+  - Scrapy 框架架构 (Engine / Scheduler / Downloader / Spider / Item Pipeline)
+  - Spider 类的定义与 start_requests / parse 方法
+  - Item 和 ItemLoader 的定义与使用
+  - Item Pipeline 的处理流程 (open_spider / process_item / close_spider)
+  - CSS 选择器和 XPath 表达式在 Spider 中的应用
+  - Item Pipeline 数据清洗与持久化
+  - Scrapy 命令行工具 (scrapy crawl / genspider)
+  - Request 和 Response 对象
+  - 去重与请求调度
+
+difficulty_progression:
+  - "阶段1-2: HTTP + HTML 解析基础已掌握"
+  - "本关引入: 框架级工具 Scrapy, 需要理解各组件协作"
+  - "下一关前置: DC05 动态页面依赖 Spider 的 CSS 选择器经验"
+
+learning_objectives:
+  - 理解 Scrapy 异步数据流的核心组件及其协作关系
+  - 能够使用 scrapy genspider 创建新 Spider 并实现 start_urls 和 parse
+  - 掌握 Item 定义、ItemLoader 填充和 Pipeline 处理的全链路
+  - 熟练运用 CSS 选择器和 XPath 从 HTML 中提取结构化数据
+  - 理解请求调度与去重机制, 能在 settings.py 中配置并发和延迟
+
+content_keywords:
+  - Scrapy, Spider, Item, ItemLoader, Pipeline, CSS, XPath
+  - start_urls, parse, yield, Request, Response, CrawlSpider
+  - Item Pipeline, open_spider, process_item, close_spider
+  - settings.py, ROBOTSTXT_OBEY, CONCURRENT_REQUESTS, DOWNLOAD_DELAY
+  - scrapy crawl, scrapy genspider, scrapy list
+
+practice_id: 4

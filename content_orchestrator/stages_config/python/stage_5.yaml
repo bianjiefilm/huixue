@@ -1,0 +1,42 @@
+stage_id: stage_5
+course: python
+course_db_id: 100
+title: 列表与元组
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 列表创建与基本操作（索引、切片、追加、插入、删除）
+- 列表常用方法（append/extend/pop/remove/sort/reverse）
+- 元组创建与基本操作（不可变性）
+- 列表与元组的区别
+- 列表推导式
+- 多维列表（嵌套列表）
+- 常见错误与注意事项
+- 四、常见模式与技巧
+- 列表过滤与映射
+- 列表排序模式
+- 五、评测标准
+expected_handbook_min_chars: 3500
+expected_questions_count: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 6
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主
+- 代码块用```python标注
+prerequisites:
+- 1
+topics_to_avoid:
+- 装饰器
+- 生成器与迭代器
+- 闭包
+- 面向对象编程
+baseline_code_hint: 一个过滤列表中偶数的函数
+codex_review_required: true
+custom_constraints: {}
+metadata:
+  author: auto
+  created_date: '2026-04-23'

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>极简Vue测试</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/ant-design-vue@4/dist/ant-design-vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4/dist/reset.css">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-box { border: 1px solid #ddd; padding: 20px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>极简Vue测试</h1>
+        <div class="test-box">
+            <p>Vue版本: {{ vueVersion }}</p>
+            <p>计数器: {{ count }}</p>
+            <button @click="count++">点击+1</button>
+        </div>
+        <div class="test-box">
+            <a-button type="primary" @click="showMessage">Ant Design按钮</a-button>
+            <p v-if="message">{{ message }}</p>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+        const { Button, message } = Antd;
+
+        createApp({
+            setup() {
+                const vueVersion = ref('3.x');
+                const count = ref(0);
+                const message = ref('');
+
+                const showMessage = () => {
+                    message.success('Ant Design工作正常！');
+                    message.value = '按钮被点击了！';
+                };
+
+                return { vueVersion, count, message, showMessage };
+            },
+            components: { AButton: Button }
+        }).use(Antd).mount('#app');
+
+        console.log('极简Vue应用已加载');
+    </script>
+</body>
+</html>

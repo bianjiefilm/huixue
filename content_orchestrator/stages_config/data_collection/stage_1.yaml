@@ -1,0 +1,37 @@
+stage_id: 1
+course: data_collection
+course_db_id: 4
+stage_name: 数据采集概述与工具选型
+difficulty: beginner
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- 数据采集的定义与价值（辅助决策、风控、训练语料）
+- 常见数据来源分类（网页、API、日志、数据库、文件）
+- 工具选型三维度（性能/维护性/反爬抵抗）
+- requests / httpx / urllib 的对比与适用场景
+- BeautifulSoup / lxml / parsel 的解析能力差异
+- Scrapy / Playwright / Selenium 的适用场景
+- 气象数据、股票数据、新闻资讯等公开数据源
+- 四、常见模式与技巧
+- robots.txt 遵守与 ethical scraping
+- 采集频率控制与礼貌请求
+- 数据源质量评估维度（完整性/准确性/时效性/可用性）
+- 五、评测标准
+expected_handbook_min_chars: 3000
+expected_questions: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主，表格对比工具优缺点
+- 代码块用```标注
+prerequisites: []
+topics_to_avoid:
+- 具体反爬绕过技术（放入关卡11）
+- 分布式采集架构（放入项目实训阶段）
+- 数据库写入细节
+codex_review_required: true
+baseline_code_template: 一个根据输入场景推荐数据采集工具的Python函数

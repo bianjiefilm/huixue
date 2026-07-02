@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>试卷库和试题库 Mock API 测试</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mockjs/dist/mock.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    .test-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .test-section h3 {
+      margin-top: 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .test-controls {
+      margin-bottom: 15px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin-right: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 15px;
+      max-height: 300px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+    .param-row {
+      margin-bottom: 10px;
+    }
+    input, select {
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+    label {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>试卷库和试题库 Mock API 测试</h1>
+    <p>本页面用于测试 Mock.js 模拟的试卷库和试题库相关 API。</p>
+    
+    <!-- 试卷库测试 -->
+    <div class="test-section">
+      <h2>试卷库 API 测试</h2>
+      
+      <div class="test-section">
+        <h3>获取试卷列表</h3>
+        <div class="test-controls">
+          <div class="param-row">
+            <label for="paper-keyword">关键词:</label>
+            <input type="text" id="paper-keyword" placeholder="搜索关键词">
+            
+            <label for="paper-difficulty">难度:</label>
+            <select id="paper-difficulty">
+              <option value="">全部</option>
+              <option value="easy">简单</option>
+              <option value="medium">中等</option>
+              <option value="hard">困难</option>
+            </select>
+            
+            <label for="paper-source">来源:</label>
+            <select id="paper-source">
+              <option value="all">全部</option>
+              <option value="system">系统</option>
+              <option value="personal">个人</option>
+            </select>
+          </div>
+          <button id="get-papers">获取试卷列表</button>
+        </div>
+        <div id="papers-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>创建试卷</h3>
+        <div class="test-controls">
+          <div class="param-row">
+            <label for="new-paper-title">标题:</label>
+            <input type="text" id="new-paper-title" value="测试试卷">
+            
+            <label for="new-paper-category">分类:</label>
+            <input type="text" id="new-paper-category" value="basic">
+            
+            <label for="new-paper-difficulty">难度:</label>
+            <select id="new-paper-difficulty">
+              <option value="easy">简单</option>
+              <option value="medium">中等</option>
+              <option value="hard">困难</option>
+            </select>
+            
+            <label for="new-paper-type">类型:</label>
+            <select id="new-paper-type">
+              <option value="manual">手动创建</option>
+              <option value="template">模板创建</option>
+            </select>
+          </div>
+          <button id="create-paper">创建试卷</button>
+        </div>
+        <div id="create-paper-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>获取试卷详情</h3>
+        <div class="test-controls">
+          <div class="param-row">
+            <label for="paper-id">试卷ID:</label>
+            <input type="text" id="paper-id" placeholder="输入试卷ID">
+          </div>
+          <button id="get-paper-detail">获取详情</button>
+        </div>
+        <div id="paper-detail-result" class="result"></div>
+      </div>
+    </div>
+    
+    <!-- 试题库测试 -->
+    <div class="test-section">
+      <h2>试题库 API 测试</h2>
+      
+      <div class="test-section">
+        <h3>获取试题列表</h3>
+        <div class="test-controls">
+          <div class="param-row">
+            <label for="question-keyword">关键词:</label>
+            <input type="text" id="question-keyword" placeholder="搜索关键词">
+            
+            <label for="question-type">类型:</label>
+            <select id="question-type">
+              <option value="">全部</option>
+              <option value="single">单选题</option>
+              <option value="multiple">多选题</option>
+              <option value="judge">判断题</option>
+              <option value="essay">简答题</option>
+            </select>
+            
+            <label for="question-difficulty">难度:</label>
+            <select id="question-difficulty">
+              <option value="">全部</option>
+              <option value="easy">简单</option>
+              <option value="medium">中等</option>
+              <option value="hard">困难</option>
+            </select>
+          </div>
+          <button id="get-questions">获取试题列表</button>
+        </div>
+        <div id="questions-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>创建试题</h3>
+        <div class="test-controls">
+          <div class="param-row">
+            <label for="new-question-type">类型:</label>
+            <select id="new-question-type">
+              <option value="single">单选题</option>
+              <option value="multiple">多选题</option>
+              <option value="judge">判断题</option>
+              <option value="essay">简答题</option>
+            </select>
+            
+            <label for="new-question-content">内容:</label>
+            <input type="text" id="new-question-content" value="这是一个测试题目" style="width: 250px;">
+          </div>
+          <div class="param-row">
+            <label for="new-question-difficulty">难度:</label>
+            <select id="new-question-difficulty">
+              <option value="easy">简单</option>
+              <option value="medium">中等</option>
+              <option value="hard">困难</option>
+            </select>
+            
+            <label for="new-question-score">分值:</label>
+            <input type="number" id="new-question-score" value="5" min="1" max="100">
+          </div>
+          <button id="create-question">创建试题</button>
+        </div>
+        <div id="create-question-result" class="result"></div>
+      </div>
+      
+      <div class="test-section">
+        <h3>获取试题详情</h3>
+        <div class="test-controls">
+          <div class="param-row">
+            <label for="question-id">试题ID:</label>
+            <input type="text" id="question-id" placeholder="输入试题ID">
+          </div>
+          <button id="get-question-detail">获取详情</button>
+        </div>
+        <div id="question-detail-result" class="result"></div>
+      </div>
+    </div>
+    
+    <!-- 导入 Mock -->
+    <script type="module">
+      // 导入 Mock 定义
+      // 注: 这里我们直接在前端导入，实际项目中应该由全局 Mock 加载
+      import '../mock/exam-bank.ts';
+      import '../mock/question-bank.ts';
+      
+      // 格式化 JSON 输出
+      function formatJson(json) {
+        if (typeof json === 'string') {
+          try {
+            json = JSON.parse(json);
+          } catch(e) {
+            return json;
+          }
+        }
+        return JSON.stringify(json, null, 2);
+      }
+      
+      // 显示结果
+      function showResult(elementId, data, isSuccess = true) {
+        const element = document.getElementById(elementId);
+        element.textContent = formatJson(data);
+        element.classList.remove('success', 'error');
+        element.classList.add(isSuccess ? 'success' : 'error');
+      }
+      
+      // 试卷库 API 测试
+      document.getElementById('get-papers').addEventListener('click', async () => {
+        try {
+          const keyword = document.getElementById('paper-keyword').value;
+          const difficulty = document.getElementById('paper-difficulty').value;
+          const source = document.getElementById('paper-source').value;
+          
+          let url = '/api/exam/papers?page=1&pageSize=10';
+          if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+          if (difficulty) url += `&difficulty=${difficulty}`;
+          if (source && source !== 'all') url += `&source=${source}`;
+          
+          const response = await axios.get(url);
+          showResult('papers-result', response.data);
+        } catch (error) {
+          showResult('papers-result', error.response?.data || error.message, false);
+        }
+      });
+      
+      document.getElementById('create-paper').addEventListener('click', async () => {
+        try {
+          const title = document.getElementById('new-paper-title').value;
+          const category = document.getElementById('new-paper-category').value;
+          const difficulty = document.getElementById('new-paper-difficulty').value;
+          const paperType = document.getElementById('new-paper-type').value;
+          
+          const response = await axios.post('/api/exam/papers', {
+            title,
+            category,
+            difficulty,
+            paperType
+          });
+          showResult('create-paper-result', response.data);
+        } catch (error) {
+          showResult('create-paper-result', error.response?.data || error.message, false);
+        }
+      });
+      
+      document.getElementById('get-paper-detail').addEventListener('click', async () => {
+        try {
+          const paperId = document.getElementById('paper-id').value;
+          if (!paperId) throw new Error('请输入试卷ID');
+          
+          const response = await axios.get(`/api/exam/papers/${paperId}`);
+          showResult('paper-detail-result', response.data);
+        } catch (error) {
+          showResult('paper-detail-result', error.response?.data || error.message, false);
+        }
+      });
+      
+      // 试题库 API 测试
+      document.getElementById('get-questions').addEventListener('click', async () => {
+        try {
+          const keyword = document.getElementById('question-keyword').value;
+          const type = document.getElementById('question-type').value;
+          const difficulty = document.getElementById('question-difficulty').value;
+          
+          let url = '/api/exam/questions?page=1&pageSize=10&source=all';
+          if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+          if (type) url += `&type=${type}`;
+          if (difficulty) url += `&difficulty=${difficulty}`;
+          
+          const response = await axios.get(url);
+          showResult('questions-result', response.data);
+        } catch (error) {
+          showResult('questions-result', error.response?.data || error.message, false);
+        }
+      });
+      
+      document.getElementById('create-question').addEventListener('click', async () => {
+        try {
+          const type = document.getElementById('new-question-type').value;
+          const content = document.getElementById('new-question-content').value;
+          const difficulty = document.getElementById('new-question-difficulty').value;
+          const score = parseInt(document.getElementById('new-question-score').value);
+          
+          const questionData = {
+            type,
+            content,
+            difficulty,
+            score,
+            category: ['basic'], // 简化版本固定使用basic分类
+          };
+          
+          // 根据题型设置不同的属性
+          if (type === 'single') {
+            questionData.options = ['选项A', '选项B', '选项C', '选项D'];
+            questionData.answer = [0]; // A为正确答案
+          } else if (type === 'multiple') {
+            questionData.options = ['选项A', '选项B', '选项C', '选项D'];
+            questionData.answer = [0, 1]; // A和B为正确答案
+          } else if (type === 'judge') {
+            questionData.answer = true;
+          } else if (type === 'essay') {
+            questionData.referenceAnswer = '这里是简答题的参考答案';
+          }
+          
+          const response = await axios.post('/api/exam/questions', questionData);
+          showResult('create-question-result', response.data);
+        } catch (error) {
+          showResult('create-question-result', error.response?.data || error.message, false);
+        }
+      });
+      
+      document.getElementById('get-question-detail').addEventListener('click', async () => {
+        try {
+          const questionId = document.getElementById('question-id').value;
+          if (!questionId) throw new Error('请输入试题ID');
+          
+          const response = await axios.get(`/api/exam/questions/${questionId}`);
+          showResult('question-detail-result', response.data);
+        } catch (error) {
+          showResult('question-detail-result', error.response?.data || error.message, false);
+        }
+      });
+    </script>
+  </div>
+</body>
+</html> 

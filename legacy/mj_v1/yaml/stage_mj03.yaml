@@ -1,0 +1,104 @@
+name: stage_mj03
+course: 数据挖掘
+stage: 3
+title: 数据预处理与特征工程
+order_in_practice: 3
+difficulty: intermediate
+
+description: |
+  缺失值处理、异常值处理、编码(One-Hot/Label/Ordinal)、
+  标准化(z-score/MinMax)、特征选择(方差过滤/相关性)。
+
+learning_objectives:
+  - 掌握缺失值填充策略与实现
+  - 掌握类别型特征的编码方法
+  - 掌握数值特征标准化方法
+  - 掌握基于方差和相关的特征选择
+
+handbook_word_count: 1800
+
+chapters:
+  - title: "编码方法"
+    content: |
+      ## 3.1 标签编码与独热编码
+
+      ```python
+      from sklearn.preprocessing import LabelEncoder, OneHotEncoder, OrdinalEncoder
+
+      # 标签编码(仅用于有序类别)
+      le = LabelEncoder()
+      df['size_encoded'] = le.fit_transform(df['size'])  # S/M/L → 0/1/2
+
+      # 独热编码(用于无序类别)
+      pd.get_dummies(df, columns=['color'], prefix='color')
+      # 或
+      ohe = OneHotEncoder(sparse=False, drop='first')
+      encoded = ohe.fit_transform(df[['color']])
+
+      # 有序编码(Ordinal)
+      size_order = {'small': 0, 'medium': 1, 'large': 2}
+      df['size_ord'] = df['size'].map(size_order)
+      ```
+
+  - title: "标准化与归一化"
+    content: |
+      ## 3.2 z-score 标准化
+
+      将数据转换为均值0、标准差1的分布:
+
+      ```python
+      from sklearn.preprocessing import StandardScaler
+
+      scaler = StandardScaler()
+      X_scaled = scaler.fit_transform(X)
+      # scaler.mean_  → 均值
+      # scaler.scale_  → 标准差
+      ```
+
+      ## 3.3 MinMax 归一化
+
+      将数据缩放到 [0, 1] 区间:
+
+      ```python
+      from sklearn.preprocessing import MinMaxScaler
+
+      scaler = MinMaxScaler()
+      X_norm = scaler.fit_transform(X)
+      # 公式: X_norm = (X - X.min()) / (X.max() - X.min())
+      ```
+
+  - title: "特征选择"
+    content: |
+      ## 3.4 方差过滤
+
+      ```python
+      from sklearn.feature_selection import VarianceThreshold
+
+      # 删除方差为0的特征(所有样本值相同)
+      selector = VarianceThreshold(threshold=0.0)
+      X_selected = selector.fit_transform(X)
+      # selector.get_support() → 各特征是否被保留
+      ```
+
+      ## 3.5 相关性特征选择
+
+      删除与目标变量高度相关的特征,避免多重共线性:
+
+      ```python
+      # 计算与目标的相关性
+      corr_with_target = df.corr()['target'].abs().sort_values(ascending=False)
+      # 删除与target相关性<0.1的特征
+      low_corr_features = corr_with_target[corr_with_target < 0.1].index.tolist()
+      df = df.drop(columns=low_corr_features)
+      ```
+
+      ## 3.6 训练/测试集划分
+
+      ```python
+      from sklearn.model_selection import train_test_split
+
+      X_train, X_test, y_train, y_test = train_test_split(
+          X, y, test_size=0.2, random_state=42, stratify=y
+      )
+      # stratify=y 保证训练/测试集类别比例一致
+      ```

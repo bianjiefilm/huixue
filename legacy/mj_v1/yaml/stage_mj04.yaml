@@ -1,0 +1,108 @@
+name: stage_mj04
+course: 数据挖掘
+stage: 4
+title: "监督学习: 分类基础"
+order_in_practice: 4
+difficulty: intermediate
+
+description: |
+  逻辑回归(Logistic Regression)原理与 sklearn 实现、
+  决策树(Decision Tree)原理与可视化、混淆矩阵与 AUC。
+
+learning_objectives:
+  - 掌握逻辑回归原理( sigmoid 函数、交叉熵损失)
+  - 掌握 sklearn LogisticRegression 使用方法
+  - 掌握决策树 sklearn DecisionTreeClassifier
+  - 掌握混淆矩阵、精确率、召回率、F1、AUC 评估
+
+handbook_word_count: 1800
+
+chapters:
+  - title: "逻辑回归"
+    content: |
+      ## 4.1 原理
+
+      逻辑回归使用 sigmoid 函数将线性组合映射到 [0,1]:
+
+      $P(y=1|x) = \\frac{1}{1 + e^{-z}}$, 其中 $z = w^Tx + b$
+
+      ```python
+      from sklearn.linear_model import LogisticRegression
+      from sklearn.model_selection import train_test_split
+
+      X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+      model = LogisticRegression(max_iter=1000, random_state=42)
+      model.fit(X_train, y_train)
+      y_pred = model.predict(X_test)
+      y_prob = model.predict_proba(X_test)[:, 1]  # 类别1的概率
+      ```
+
+  - title: "决策树"
+    content: |
+      ## 4.2 决策树原理
+
+      决策树通过递归分裂最大化信息增益(Information Gain)或基尼系数(Gini):
+
+      ```python
+      from sklearn.tree import DecisionTreeClassifier, plot_tree
+
+      clf = DecisionTreeClassifier(
+          max_depth=5,        # 最大深度
+          min_samples_split=10, # 分裂所需最小样本数
+          min_samples_leaf=5,  # 叶节点最小样本数
+          criterion='gini',     # 'gini' 或 'entropy'
+          random_state=42
+      )
+      clf.fit(X_train, y_train)
+      y_pred = clf.predict(X_test)
+
+      # 可视化
+      import matplotlib.pyplot as plt
+      plt.figure(figsize=(20, 10))
+      plot_tree(clf, feature_names=feature_names, class_names=['No', 'Yes'], filled=True)
+      plt.title('Decision Tree')
+      plt.show()
+      ```
+
+  - title: "模型评估"
+    content: |
+      ## 4.3 混淆矩阵与指标
+
+      ```python
+      from sklearn.metrics import (
+          confusion_matrix, accuracy_score, precision_score,
+          recall_score, f1_score, roc_auc_score, classification_report
+      )
+
+      cm = confusion_matrix(y_test, y_pred)
+      print(cm)
+      # [[TN, FP], [FN, TP]]
+
+      print(f"准确率: {accuracy_score(y_test, y_pred):.4f}")
+      print(f"精确率: {precision_score(y_test, y_pred):.4f}")
+      print(f"召回率: {recall_score(y_test, y_pred):.4f}")
+      print(f"F1: {f1_score(y_test, y_pred):.4f}")
+      print(f"AUC: {roc_auc_score(y_test, y_prob):.4f}")
+
+      print(classification_report(y_test, y_pred, target_names=['No', 'Yes']))
+      ```
+
+      ## 4.4 ROC 曲线
+
+      ```python
+      from sklearn.metrics import roc_curve, auc
+      import matplotlib.pyplot as plt
+
+      fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+      roc_auc = auc(fpr, tpr)
+
+      plt.figure(figsize=(8, 6))
+      plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC (AUC = {roc_auc:.2f})')
+      plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+      plt.xlabel('False Positive Rate')
+      plt.ylabel('True Positive Rate')
+      plt.title('ROC Curve')
+      plt.legend()
+      plt.show()
+      ```

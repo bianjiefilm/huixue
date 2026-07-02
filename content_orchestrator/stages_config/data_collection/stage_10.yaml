@@ -1,0 +1,36 @@
+stage_id: 10
+course_db_id: 4
+order_in_practice: 10
+title: "数据质量检查"
+difficulty: intermediate
+difficulty_score: 3
+
+knowledge_points:
+  - 数据去重: set()、字典键唯一性、pandas.drop_duplicates
+  - 缺失值检测: None、NaN、空字符串、默认值识别
+  - 缺失值处理: 填充策略(均值/中位数/众数/前后值)、删除行
+  - 数据类型校验: str/int/float/bool 类型一致性检查
+  - 格式校验: 手机号、邮箱、URL、日期格式正则
+  - 范围校验: 数值区间、枚举值集合
+  - 跨字段校验: 依赖关系、一致性检查
+  - 数据清洗流程: 检测 → 分析 → 处理 → 验证
+
+difficulty_progression:
+  - "阶段9: 日志解析与数据统计已掌握"
+  - "本关引入: 数据质量检测与清洗, 确保数据可用性"
+  - "下一关前置: DC11 项目实战依赖本关的数据清洗经验"
+
+learning_objectives:
+  - 能够识别并去除重复数据
+  - 掌握多种缺失值处理策略
+  - 能够使用正则表达式进行格式校验
+  - 理解跨字段一致性校验逻辑
+
+content_keywords:
+  - 去重, drop_duplicates, set, 字典键
+  - 缺失值, NaN, None, fillna, 填充策略
+  - 数据类型, type(), isinstance, 格式校验
+  - 正则校验, re.match, 手机号, 邮箱, URL
+  - 范围校验, min/max, 枚举, 一致性
+
+practice_id: 4

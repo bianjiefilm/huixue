@@ -1,0 +1,83 @@
+name: stage_mj08
+course: 数据挖掘
+stage: 8
+title: "无监督学习: 降维"
+order_in_practice: 8
+difficulty: intermediate
+
+description: |
+  PCA 主成分分析原理与 sklearn 实现、方差解释率、
+  t-SNE 可视化降维、核PCA。
+
+learning_objectives:
+  - 掌握 PCA 降维原理与方差解释率
+  - 掌握 sklearn PCA API 使用
+  - 掌握 t-SNE 的局部保持特性
+  - 能够选择合适的降维维度
+
+handbook_word_count: 1600
+
+chapters:
+  - title: "PCA 主成分分析"
+    content: |
+      ## 8.1 原理
+
+      PCA 通过正交变换将高维数据投影到低维,同时最大化保留方差:
+
+      ```python
+      from sklearn.decomposition import PCA
+      from sklearn.preprocessing import StandardScaler
+
+      scaler = StandardScaler()
+      X_scaled = scaler.fit_transform(X)
+
+      # 1. 先用 PCA 看方差解释率
+      pca_full = PCA()
+      pca_full.fit(X_scaled)
+      cumvar = pca_full.explained_variance_ratio_.cumsum()
+
+      plt.figure(figsize=(8, 4))
+      plt.plot(range(1, len(cumvar)+1), cumvar, 'bo-')
+      plt.axhline(y=0.95, color='r', linestyle='--', label='95% variance')
+      plt.xlabel('Number of Components')
+      plt.ylabel('Cumulative Explained Variance')
+      plt.title('PCA Cumulative Explained Variance')
+      plt.legend()
+      plt.show()
+
+      # 2. 选择保留 95% 方差的维度
+      n_components = (cumvar < 0.95).sum() + 1
+      pca = PCA(n_components=n_components)
+      X_pca = pca.fit_transform(X_scaled)
+      print(f"保留 {n_components} 个主成分, 解释方差: {cumvar[n_components-1]:.4f}")
+      ```
+
+  - title: "t-SNE 可视化"
+    content: |
+      ## 8.2 t-SNE
+
+      t-SNE 通过保持局部邻域关系在高维空间到2D/3D的映射,适合可视化:
+
+      ```python
+      from sklearn.manifold import TSNE
+
+      tsne = TSNE(n_components=2, perplexity=30, random_state=42, n_iter=1000)
+      X_tsne = tsne.fit_transform(X_scaled)
+
+      plt.figure(figsize=(10, 8))
+      plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, cmap='viridis', alpha=0.6)
+      plt.colorbar(label='Label')
+      plt.title('t-SNE Visualization')
+      plt.xlabel('t-SNE 1')
+      plt.ylabel('t-SNE 2')
+      plt.show()
+      ```
+
+      ## 8.3 降维方法对比
+
+      | 方法 | 降维目标 | 计算复杂度 | 可逆性 |
+      |------|---------|-----------|--------|
+      | PCA | 最大方差保留 | O(n·d²) | 可逆 |
+      | LDA | 类别可分性 | O(n·d·k) | 可逆 |
+      | t-SNE | 局部邻域保持 | O(n²) | 不可逆 |
+      | UMAP | 全局+局部保持 | O(n log n) | 不可逆 |

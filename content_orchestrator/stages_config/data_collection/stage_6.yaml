@@ -1,0 +1,38 @@
+stage_id: 6
+course: data_collection
+course_db_id: 4
+stage_name: API 数据采集
+difficulty: intermediate
+knowledge_points:
+- 一、任务类型
+- 二、学习环境
+- 三、知识点讲解
+- RESTful API 基础（GET/POST/PUT/DELETE）
+- JSON 响应解析与数据结构
+- 请求认证（API Key / Bearer Token / OAuth2）
+- 分页处理（offset/page/cursor）
+- 限流与错误码处理
+- GraphQL 数据查询基础
+- 常用免费 API 推荐（Tushare/心知天气/国家数据）
+- requests 与 httpx 对比（异步API调用）
+- 四、常见模式与技巧
+- 自动重试与指数退避
+- 大规模数据分页采集
+- API 数据质量检查
+- 五、评测标准
+expected_handbook_min_chars: 3000
+expected_questions: 10
+expected_test_cases_visible: 2
+expected_test_cases_hidden: 4
+total_score: 100
+style_reference:
+- 五段结构(任务类型/学习环境/知识点/常见模式/评测标准)
+- 中文为主，展示实际 API 调用代码
+- 对比认证方式（API Key vs Bearer vs OAuth2）
+prerequisites:
+- 关卡2: HTTP 协议与请求基础
+topics_to_avoid:
+- OAuth2 完整实现细节
+- 复杂 GraphQL 查询
+codex_review_required: true
+baseline_code_template: 一个分页调用API并聚合所有数据的Python函数

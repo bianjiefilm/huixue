@@ -1,0 +1,136 @@
+name: stage_bd09
+course: 大数据
+stage: 9
+title: HBase NoSQL 数据库
+order_in_practice: 9
+difficulty: intermediate
+
+description: |
+  HBase row key 加盐设计、Region 数量估算、热点 row key 检测、
+  Block Cache 命中率; 含时序数据存储的业务案例。
+
+learning_objectives:
+  - 能给定 prefix / timestamp / salt 数, 设计带盐 row key
+  - 能给定表大小与单 Region 容量, 计算 Region 数
+  - 能给定 row key 前缀计数 dict, 判断是否存在热点
+  - 能给定总读 / 缓存命中, 计算 Block Cache 命中率
+
+handbook_word_count: 2700
+
+chapters:
+  - title: "HBase 与 NoSQL 数据模型"
+    content: |
+      ## 1.1 HBase 是什么
+
+      HBase (2008-) 是 Google BigTable 的开源实现, 大数据生态的列存 NoSQL:
+      - **存储**: HDFS (复习 BD02-03), 自动分片
+      - **数据模型**: row → column family → column → value, 多维稀疏
+      - **特点**: 支持随机读写 (HDFS 不支持), 强一致性, 横向扩展
+
+      与 Hive 区别:
+      - Hive: 数据仓库, SQL 接口, 全表扫描分析
+      - HBase: NoSQL, key-value 接口, 单 row 随机读写
+
+      ## 1.2 Row Key: 设计的核心
+
+      HBase 的 row 按 row key 字典序存储, row key 设计直接决定性能:
+      - **range 查询**: 邻近 row key 物理相邻, 范围扫描快
+      - **热点**: 所有写入集中到 1 个 region (1 个机器), 性能瓶颈
+
+      经典模式: timestamp 做 row key → 写入永远在最新 region → 热点。
+
+      解决: **加盐 (salting)** — 给 row key 加随机/hash 前缀, 写入分散到多个 region。
+
+      ## 1.3 加盐设计
+
+      简单加盐方案 (本关 design_row_key_with_salt):
+      - 输入: prefix (业务前缀, 如 "user"), timestamp (整数), salt_count (盐桶数)
+      - salt = timestamp % salt_count
+      - row key 格式: "{salt}-{prefix}-{timestamp}"
+
+      例: prefix="event", timestamp=1714003200, salt_count=4:
+      - salt = 1714003200 % 4 = 0
+      - row_key = "0-event-1714003200"
+
+      工程实务: salt_count 通常等于 region 数, 让写入均匀分布到所有 region。
+
+  - title: "Region 容量与热点检测"
+    content: |
+      ## 2.1 Region: HBase 的分片单元
+
+      表按 row key 范围切成多个 region, 每个 region 由一台 RegionServer 服务。给定表大小 T 与单 region 目标大小 r (默认 10 GB):
+
+      $\text{region\_count} = \lceil T / r \rceil$
+
+      工程实务:
+      - region 太小 (< 1 GB): region 数过多, master 元数据膨胀
+      - region 太大 (> 50 GB): 单 region 故障恢复慢, hot region 难拆分
+      - 默认 10 GB 是经验最优
+
+      ## 2.2 热点 row key 检测
+
+      生产环境定期统计 row key 前缀分布。给定前缀计数 dict 与总 row 数, 若**任一前缀** > total × threshold (默认 50%) → 存在热点。
+
+      简化逻辑 (本关 is_hot_row_key):
+      - 遍历每个前缀的 count
+      - 任一 count 超过 total × threshold → True (存在热点)
+      - 全部都不超过 → False
+
+      工程实务: 检测到热点 → (a) 加盐重新设计, (b) 拆分 region, (c) 热点缓存。
+
+      ## 2.3 Region 拆分 (Split)
+
+      当某个 region > region_max_size (默认 10 GB), HBase 自动拆分:
+      - 找中间 row key
+      - 拆成两个 region
+      - 重新分配到 RegionServer
+
+      工程实务: 频繁 split 影响性能, 设计阶段 row key 加盐避免热点是更好做法。
+
+  - title: "Block Cache 与业务案例"
+    content: |
+      ## 3.1 Block Cache 命中率
+
+      HBase RegionServer 维护内存 Block Cache, 缓存最近读取的 HFile block。
+
+      命中率:
+      $\text{hit\_rate} = \text{cache\_hits} / \text{total\_reads}$
+
+      简化实现 (本关 compute_block_cache_hit_rate)。
+
+      工程实务:
+      - hit_rate > 0.9: 缓存配置优秀
+      - 0.5-0.9: 正常工作
+      - < 0.5: 缓存太小或 row key 设计差 (随机读太多)
+
+      ## 3.2 业务案例: 时序数据存储
+
+      场景: IoT 平台, 100 万设备, 每秒上报数据 1 条, 每天 86 亿条:
+
+      设计:
+      1. **Row key 加盐** (本关 design_row_key_with_salt): salt-device_id-timestamp, salt_count=16
+      2. **表规划**:
+         - 日数据量: 86 亿 × 100 字节 = 800 GB
+         - 90 天保留: 72 TB
+      3. **Region 数** (本关 compute_region_count): 72 TB / 10 GB = 7200 regions
+      4. **集群规模**: 100 RegionServer × 72 region/RS = 100 节点
+      5. **热点检测** (本关): 监控 device_id 前缀分布, > 50% 单设备 → 加盐有效防止
+      6. **缓存命中率** (本关 compute_block_cache_hit_rate): 目标 > 0.9, 监控
+
+      ## 3.3 工程口诀
+
+      - **Row key 必加盐**: 防热点
+      - **Region 默认 10 GB**: 经验最优
+      - **Block cache > 90%**: 健康线
+      - **HBase ≠ MySQL**: 不要做关系型操作 (没有 join, 弱事务)
+      - **HBase 适合时序 / 用户画像 / 高写入**: 不适合分析查询
+
+      ## 3.4 现代替代
+
+      HBase 在新项目较少用了:
+      - **Cassandra**: 多主架构, 分布式更彻底
+      - **TiKV / TiDB**: 强一致 + 分布式 SQL
+      - **DynamoDB**: AWS 托管 NoSQL
+      - **MongoDB**: 文档 NoSQL
+
+      但 HBase 概念 (row key 加盐 / region 拆分 / block cache) 在所有 LSM-tree NoSQL 中通用。

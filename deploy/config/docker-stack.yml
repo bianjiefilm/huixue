@@ -1,0 +1,242 @@
+# =============================================================================
+# 慧学 Docker Swarm 部署配置
+# =============================================================================
+# 适用于三服务器集群
+#
+# 部署命令：
+#   docker stack deploy -c docker-stack.yml huixue
+#
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL 数据库 - 部署在节点一（存储节点）
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == bigdata-platform
+      resources:
+        limits:
+          memory: 2G
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    environment:
+      POSTGRES_DB: huixue
+      POSTGRES_USER: huixue
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-huixue123}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - huixue-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U huixue"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Redis 缓存 - 部署在节点一
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == bigdata-platform
+      resources:
+        limits:
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - huixue-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # 镜像仓库 - 部署在节点一
+  # ---------------------------------------------------------------------------
+  registry:
+    image: registry:2
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == bigdata-platform
+      resources:
+        limits:
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    ports:
+      - "5000:5000"
+    volumes:
+      - registry-data:/var/lib/registry
+    networks:
+      - huixue-net
+    environment:
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+
+  # ---------------------------------------------------------------------------
+  # 后端服务 - 部署在节点三（管理节点，可访问文件）
+  # ---------------------------------------------------------------------------
+  backend:
+    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-backend:latest
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == huixuedashuju-PowerEdge-R730xd
+      replicas: ${BACKEND_REPLICAS:-1}
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    ports:
+      - "8000:8000"
+    volumes:
+      - student-work:/app/student_work
+      # 授权文件 - 使用命名卷
+      - license-data:/app/license
+      # 课程资源目录 - 使用命名卷
+      - type: volume
+        source: ziyuan-data
+        target: /app/ziyuan_data
+      # Docker Socket（用于容器管理）
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DATABASE_URL=postgresql://huixue:huixue123@db:5432/huixue
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY:-huixue-secret-key-change-in-production}
+      - RESOURCE_BASE_DIR=/app/ziyuan_data
+      - HUIXUE_RESOURCE_DIR=/app/ziyuan_data
+      - CONTAINER_STUDENT_WORK_BASE=/app/student_work
+      # 授权配置
+      - LICENSE_PATH=/app/license/license.json
+      - LICENSE_CHECK_INTERVAL=604800  # 7天
+      # Host机器码（容器环境需要，从环境变量读取）
+      - HOST_MACHINE_CODE=${HOST_MACHINE_CODE:-}
+      # Jupyter 配置
+      - JUPYTER_BASE_URL=http://jupyter:8888
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-huixue_token}
+      # 飞书通知（可选）
+      - FEISHU_WEBHOOK_URL=${FEISHU_WEBHOOK_URL:-}
+      - FEISHU_APP_ID=${FEISHU_APP_ID:-}
+      - FEISHU_APP_SECRET=${FEISHU_APP_SECRET:-}
+      - FEISHU_CHAT_ID=${FEISHU_CHAT_ID:-}
+      - FEISHU_POLLING_INTERVAL=30  # 轮询间隔（秒）
+      # AgentPilot AI（可选）
+      - AGENTPILOT_API_KEY=${AGENTPILOT_API_KEY:-}
+      - AGENTPILOT_WORKSPACE_ID=${AGENTPILOT_WORKSPACE_ID:-}
+      - AGENTPILOT_API_URL=${AGENTPILOT_API_URL:-}
+    networks:
+      - huixue-net
+    depends_on:
+      - db
+      - redis
+
+  # ---------------------------------------------------------------------------
+  # 前端服务 - 部署在节点三（管理节点）
+  # ---------------------------------------------------------------------------
+  frontend:
+    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-frontend:latest
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == huixuedashuju-PowerEdge-R730xd
+      replicas: ${FRONTEND_REPLICAS:-1}
+      resources:
+        limits:
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    ports:
+      - "3000:80"
+    volumes:
+      - type: volume
+        source: huixue-nginx-cache
+        target: /var/cache/nginx
+    networks:
+      - huixue-net
+    depends_on:
+      - backend
+
+# =============================================================================
+# 网络
+# =============================================================================
+networks:
+  huixue-net:
+    driver: overlay
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.0.0/24
+
+# =============================================================================
+# 数据卷
+# =============================================================================
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  registry-data:
+    driver: local
+  student-work:
+    driver: local
+  license-data:
+    driver: local
+  ziyuan-data:
+    driver: local
+  huixue-nginx-cache:
+    driver: local
