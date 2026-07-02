@@ -12,17 +12,17 @@
 
 - **Status**: Deployed and verified on school environment, 2026-05-07 10:51 CST.
 - **Deployed commit**: `9769db6` (`fix(frontend): stabilize learning analytics auth`).
-- **Artifact**: `oss://huixuekeijxueyuan/deploy/huixue/20260507104940-9769db6-frontend.tgz`.
+- **Artifact**: `oss://<慧学OSS-Bucket>/deploy/huixue/20260507104940-9769db6-frontend.tgz`.
 - **Integrity**: local and school sha256 `9f9488f8891d41455f152d134ee44ca3eb88b94ae753b2d454dffb0d890e767a`; school download verified with `sha256sum -c`.
 - **School frontend**: `index-BLTOgNVo.js`, `LearningAnalytics-DepgkwqA.js`; old `LearningAnalytics-DloZfLCk.js` now returns 404.
 - **School DB evidence**: `SELECT c.id, c.name, c.teacher_id, u.username ... WHERE c.id=1703;` returned `1703 | 某电商货品销售分析案例实验班 | 6 | school_admin`.
-- **Browser UAT**: Browser Use opened `http://100.74.141.3:3000/#/classroom/1703/learning-analytics`; network showed `GET /api/v1/classrooms/1703/learning/overview?teacher_id=6 => 200`; console summary: `Errors: 0, Warnings: 0`; page did not show `未授权`.
+- **Browser UAT**: Browser Use opened `http://<慧学服务器1-IP>:3000/#/classroom/1703/learning-analytics`; network showed `GET /api/v1/classrooms/1703/learning/overview?teacher_id=6 => 200`; console summary: `Errors: 0, Warnings: 0`; page did not show `未授权`.
 
 ## Deployment Log: Phase J frontend classroom navigation fix
 
 - **Status**: Deployed and verified on school environment, 2026-05-06 21:53 CST.
 - **Deployed commit**: `1239af5` (`phase-j: fix ClassroomListView reload + atomic frontend deploy`).
-- **Artifact**: `oss://huixuekeijxueyuan/deploy/huixue/huixue-frontend-1778074991-1239af5.tgz`.
+- **Artifact**: `oss://<慧学OSS-Bucket>/deploy/huixue/huixue-frontend-1778074991-1239af5.tgz`.
 - **Integrity**: local and school sha256 `b395f952fbfbf85d1885b3e2a198d37fa08fc0a46d5b36c8cc54cef1edafcc76`; school download verified with `sha256sum -c`.
 - **School frontend**: `index-DokYba3Y.js`, 400 assets in `huixue-frontend:/usr/share/nginx/html/assets`.
 - **Evidence**: school DB `SELECT COUNT(*) FROM tasks;` returned `92`; sampled assets `BasicLayout-BhH7_2gS.js`, `detail-BCvv3ztS.js`, `practice-DghvxFlO.js`, `challenge-5UZ3MWpM.js`, `EnvironmentConflictDialog-x3nVFexU.js`, `MonacoEditor-DqqGmrLn.js`, and `ClassroomListView-PWRmSDFL.js` returned HTTP 200.
@@ -60,7 +60,7 @@
 ## P3: 学校 DB 容器历史漂移
 
 - **Status**: 运维清理项，不影响产品运行。
-- **Observed**: `huixue-db` stopped 容器与当前运行中 `743a1e751097_node1-data_db_1` 同存。
+- **Observed**: `huixue-db` stopped 容器与当前运行中 `<慧学-DB容器名>` 同存。
 - **Policy**: 文档与验收命令以 `docker ps` 实查为准；不擅自删除 stopped 容器。
 - **Next**: 由运维窗口统一清点历史容器。
 
@@ -73,7 +73,7 @@
 
 - **Status**: 文档/验收脚本维护项，不影响产品功能。
 - **Observed**: 旧示例 `/api/v1/teachers/{teacher_id}/practices/{practice_id}/tasks/{task_id}/submissions` 返回 404；学校真实 route 为 `/api/v1/teachers/{teacher_id}/classrooms/{classroom_id}/courses/{course_id}/submissions`。
-- **Next**: 下次文档维护时同步 `.codex/commands/tempo-course-auditor.md` 与 `.claude/commands/tempo-course-auditor.md` 的 Z1 示例。
+- **Next**: 下次文档维护时同步 `.codex/commands/huixue-course-auditor.md` 与 `.claude/commands/huixue-course-auditor.md` 的 Z1 示例。
 
 ## P3: add-to-classroom malformed body 先触发 422
 
@@ -123,7 +123,7 @@
 ## 部署日志: course_resources 重复入库清理 (2026-07-02)
 
 - **背景**: 8 门课程包 course_resources 表存在同 (course_id, url) 重复入库,最严重的单条视频重复 6 次 (Python 课程多条)。
-- **操作** (学校 `743a1e751097_node1-data_db_1` psql 直接执行,无需 OSS 中转 — 纯 DB 操作):
+- **操作** (学校 `<慧学-DB容器名>` psql 直接执行,无需 OSS 中转 — 纯 DB 操作):
   1. 备份: `CREATE TABLE backup_course_resources_dedupe_20260702 AS SELECT * FROM course_resources;` (2049 行全量备份)
   2. 确认 `course_resources.id` 无被其他表外键引用 (pg_constraint 查询为空,删除安全)
   3. 去重: `DELETE FROM course_resources WHERE id NOT IN (SELECT MIN(id) FROM course_resources GROUP BY course_id, url);` 删除 634 行

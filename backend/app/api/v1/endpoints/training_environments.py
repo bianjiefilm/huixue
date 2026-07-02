@@ -541,8 +541,8 @@ def _resolve_training_env_type(training: db_models.Training, db: Session) -> str
         if training_type_str == 'CODING':
             env_type = 'JUPYTER'
         elif training_type_str == 'DRAG_DROP' or training_type_str == 'DRAG-DROP' or 'DRAG' in training_type_str:
-            env_type = 'TEMPO_BI'  # BI实训使用TEMPO_BI环境类型
-            logger.info(f"[环境类型解析] 识别为BI实训，设置env_type=TEMPO_BI")
+            env_type = 'HUIXUE_BI'  # BI实训使用HUIXUE_BI环境类型
+            logger.info(f"[环境类型解析] 识别为BI实训，设置env_type=HUIXUE_BI")
     
     if not env_type:
         env_type = "JUPYTER"
@@ -698,16 +698,16 @@ async def create_superset_embed_token(
     
     env_type = _resolve_training_env_type(training, db)
     logger.info(f"[Superset嵌入] 解析环境类型: training_type={training.training_type}, env_type={env_type}")
-    if env_type.upper() != "TEMPO_BI":
-        logger.warning(f"[Superset嵌入] 环境类型不匹配: env_type={env_type}, 期望=TEMPO_BI")
+    if env_type.upper() != "HUIXUE_BI":
+        logger.warning(f"[Superset嵌入] 环境类型不匹配: env_type={env_type}, 期望=HUIXUE_BI")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"仅BI实训支持 Superset 嵌入，当前环境类型: {env_type}"
         )
     
-    # 明确查找 TEMPO_BI 类型的容器
+    # 明确查找 HUIXUE_BI 类型的容器
     status_info = container_manager.get_container_status_by_training(
-        training_id, user_id, db, env_type="TEMPO_BI"
+        training_id, user_id, db, env_type="HUIXUE_BI"
     )
     logger.info(f"[Superset嵌入] 容器状态信息: {status_info}")
     host_port = status_info.get("host_port")
@@ -2493,7 +2493,7 @@ async def launch_jupyter(
                 base_url = getattr(settings, 'JUPYTER_BASE_URL', None)
                 if not base_url:
                     # 从请求头获取原始主机
-                    base_url = "http://100.74.141.3"  # 默认服务器IP
+                    base_url = "http://<慧学服务器1-IP>"  # 默认服务器IP
                 result["data"]["url"] = f"{base_url}:{host_port}/lab?token=huixue_token"
                 logger.info(f"[JUPYTER_LAUNCH] 返回动态URL: {result['data']['url']}")
         # 如果状态是 starting，也返回共享的 Jupyter URL 以便前端可以显示

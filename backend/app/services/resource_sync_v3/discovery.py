@@ -278,7 +278,7 @@ class ResourceDiscoveryService:
                     }
                 else:
                     return {
-                        'env_type': 'TEMPO_BI',
+                        'env_type': 'HUIXUE_BI',
                         'docker_image_name': 'apache/superset:latest'
                     }
         else:

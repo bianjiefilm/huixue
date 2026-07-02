@@ -88,7 +88,7 @@ services:
   # 后端 API (FastAPI) — 可调度到任意节点
   # ---------------------------------------------------------------------------
   backend:
-    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-backend:latest
+    image: ${REGISTRY_URL:-<慧学内网物理IP-1>:5000}/huixue-backend:latest
     deploy:
       replicas: 1
       placement:
@@ -127,7 +127,7 @@ services:
       - LICENSE_PATH=/app/license/license.json
       - HOST_MACHINE_CODE=${HOST_MACHINE_CODE:-efa7f3332140e8de92d9a14159376b54c260299f6b3c705a4d123dbfd0a846e7}
       # Jupyter 配置 — 使用内网 IP
-      - JUPYTER_BASE_URL=http://172.16.100.41:8888
+      - JUPYTER_BASE_URL=http://<慧学内网物理IP-1>:8888
       - JUPYTER_TOKEN=${JUPYTER_TOKEN:-huixue_token}
       # PromptPilot
       - AGENTPILOT_API_KEY=${AGENTPILOT_API_KEY:-f615ee84-e781-43eb-9393-d88ab1030156}
@@ -148,7 +148,7 @@ services:
   # 前端 (Vue + Nginx) — 可调度到任意节点
   # ---------------------------------------------------------------------------
   frontend:
-    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-frontend:latest
+    image: ${REGISTRY_URL:-<慧学内网物理IP-1>:5000}/huixue-frontend:latest
     deploy:
       replicas: 1
       restart_policy:
@@ -165,7 +165,7 @@ services:
   # Jupyter 实训环境 — 绑定 manager（需要访问 NFS 数据）
   # ---------------------------------------------------------------------------
   jupyter:
-    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-jupyter:latest
+    image: ${REGISTRY_URL:-<慧学内网物理IP-1>:5000}/huixue-jupyter:latest
     deploy:
       replicas: 1
       placement:
@@ -194,7 +194,7 @@ services:
       --NotebookApp.token='${JUPYTER_TOKEN:-huixue_token}'
       --NotebookApp.allow_origin='*'
       --NotebookApp.disable_check_xsrf=True
-      --NotebookApp.tornado_settings="{'headers': {'Content-Security-Policy': \"frame-ancestors 'self' http://172.16.100.41:3000 http://100.74.141.3:3000\"}}"
+      --NotebookApp.tornado_settings="{'headers': {'Content-Security-Policy': \"frame-ancestors 'self' http://<慧学内网物理IP-1>:3000 http://<慧学服务器1-IP>:3000\"}}"
       --allow-root
     networks:
       - huixue-overlay

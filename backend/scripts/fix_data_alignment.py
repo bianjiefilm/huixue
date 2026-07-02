@@ -262,8 +262,8 @@ def fill_training_environments(db):
             is_active=True,
         ),
         models.TrainingEnvironment(
-            name="Tempo BI",
-            environment_type="TEMPO_BI",
+            name="慧学 BI",
+            environment_type="HUIXUE_BI",
             docker_image="huixue/superset:latest",
             description="BI 数据可视化分析环境 (Apache Superset)",
             default_memory="4Gi",

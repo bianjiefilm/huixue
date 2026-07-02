@@ -112,7 +112,7 @@ services:
   # 后端服务 - 部署在节点三（管理节点，可访问文件）
   # ---------------------------------------------------------------------------
   backend:
-    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-backend:latest
+    image: ${REGISTRY_URL:-<慧学内网物理IP-1>:5000}/huixue-backend:latest
     deploy:
       placement:
         constraints:
@@ -181,7 +181,7 @@ services:
   # 前端服务 - 部署在节点三（管理节点）
   # ---------------------------------------------------------------------------
   frontend:
-    image: ${REGISTRY_URL:-172.16.100.41:5000}/huixue-frontend:latest
+    image: ${REGISTRY_URL:-<慧学内网物理IP-1>:5000}/huixue-frontend:latest
     deploy:
       placement:
         constraints:

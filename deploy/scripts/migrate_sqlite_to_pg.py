@@ -12,7 +12,7 @@ BACKEND_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'backend')
 sys.path.insert(0, BACKEND_DIR)
 
 SQLITE_PATH = os.path.join(BACKEND_DIR, 'huixue_local.db')
-PG_URL = os.environ.get('DATABASE_URL', 'postgresql://huixue:huixue123@192.168.109.42:5432/huixue')
+PG_URL = os.environ.get('DATABASE_URL', 'postgresql://huixue:huixue123@<慧学内网IP-1>:5432/huixue')
 
 # Tables with production data to preserve (don't overwrite)
 PRESERVE_TABLES = {'api_users', 'user_profiles', 'schools', 'organizations'}

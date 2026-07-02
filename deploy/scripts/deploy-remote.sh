@@ -28,8 +28,8 @@ echo_success() {
 }
 
 # 配置变量
-MANAGER_IP="172.16.100.41"
-WORKER_IPS=("172.16.100.146" "172.16.100.176")
+MANAGER_IP="<慧学内网物理IP-1>"
+WORKER_IPS=("<慧学内网物理IP-2备>" "<慧学内网物理IP-3备>")
 NODE1_HOSTNAME="bigdata-platform"
 NODE2_HOSTNAME="dashujuyingyong"
 NODE3_HOSTNAME="huixuedashuju-PowerEdge-R730xd"

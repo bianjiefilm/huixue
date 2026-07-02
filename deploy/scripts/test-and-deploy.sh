@@ -29,9 +29,9 @@ echo_fail() { echo -e "${RED}[FAIL]${NC} $1"; }
 echo_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 
 # 配置
-NODE1_IP="172.16.100.41"
-NODE2_IP="172.16.100.146"
-NODE3_IP="172.16.100.176"
+NODE1_IP="<慧学内网物理IP-1>"
+NODE2_IP="<慧学内网物理IP-2备>"
+NODE3_IP="<慧学内网物理IP-3备>"
 NODE1_NAME="bigdata-platform"
 NODE2_NAME="dashujuyingyong"
 NODE3_NAME="huixuedashuju"

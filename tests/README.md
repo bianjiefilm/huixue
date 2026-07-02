@@ -8,9 +8,9 @@
 
 | 变量名 | 默认值 | 说明 |
 |--------|--------|------|
-| `TEST_BASE_URL` | `http://100.74.141.3:3000` | 前端地址 |
-| `TEST_API_URL` | `http://100.74.141.3:8000` | 后端 API 地址 |
-| `TEST_JUPYTER_URL` | `http://100.74.141.3:8888` | Jupyter 服务地址 |
+| `TEST_BASE_URL` | `http://<慧学服务器1-IP>:3000` | 前端地址 |
+| `TEST_API_URL` | `http://<慧学服务器1-IP>:8000` | 后端 API 地址 |
+| `TEST_JUPYTER_URL` | `http://<慧学服务器1-IP>:8888` | Jupyter 服务地址 |
 | `PLAYWRIGHT_HEADLESS` | `true` | Playwright 是否无头模式 |
 | `PLAYWRIGHT_SLOWMO` | `0` | Playwright 操作延迟（毫秒） |
 | `PLAYWRIGHT_VIEWPORT_WIDTH` | `1920` | 浏览器视口宽度 |
@@ -207,16 +207,16 @@ pytest tests/ -v -r s
 pytest tests/l1/test_m11_bi_api.py::test_bi_scene_detail -v -s
 
 # 查看后端是否实现了对应端点
-curl -s http://100.74.141.3:8000/api/bi/scenes/1/detail | head -20
-curl -s http://100.74.141.3:8000/api/jupyter/1/url | head -20
+curl -s http://<慧学服务器1-IP>:8000/api/bi/scenes/1/detail | head -20
+curl -s http://<慧学服务器1-IP>:8000/api/jupyter/1/url | head -20
 ```
 
 ### 连接超时
 
 确认 Tailscale VPN 已连接，且目标服务器可达：
 ```bash
-ping 100.74.141.3
-curl http://100.74.141.3:8000/api/login
+ping <慧学服务器1-IP>
+curl http://<慧学服务器1-IP>:8000/api/login
 ```
 
 ### Playwright 无法启动
@@ -231,7 +231,7 @@ playwright install --with-deps chromium
 
 检查后端登录接口：
 ```bash
-curl -X POST http://100.74.141.3:8000/api/login \
+curl -X POST http://<慧学服务器1-IP>:8000/api/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin123"}'
 ```

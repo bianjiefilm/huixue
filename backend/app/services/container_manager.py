@@ -48,9 +48,9 @@ class ContainerManager:
         self._swarm_initialized = False
         self._docker_fallback = False  # Docker不可用时的fallback模式
         # NFS共享存储配置
-        # 物理IP: 172.16.100.41 (Server 1内网IP)
+        # 物理IP: <慧学内网物理IP-1> (Server 1内网IP)
         self.NFS_STORAGE_BASE = "/data/huixue_storage"
-        self.NFS_SERVER_IP = "172.16.100.41"  # 使用物理网卡内网IP，非VPN地址
+        self.NFS_SERVER_IP = "<慧学内网物理IP-1>"  # 使用物理网卡内网IP，非VPN地址
 
     def _ensure_swarm_initialized(self):
         """Swarm已弃用，直接调用普通初始化"""
@@ -97,15 +97,15 @@ class ContainerManager:
     ) -> List[dict]:
         """
         准备Swarm服务卷挂载配置 - 使用NFS共享存储
-        支持跨节点挂载，使用物理IP 172.16.100.41
+        支持跨节点挂载，使用物理IP <慧学内网物理IP-1>
         """
         mounts = []
 
         # 1. 学生工作目录 - 使用NFS实现跨节点共享存储
-        # NFS服务器使用物理IP (172.16.100.41)，避免VPN导致的权限问题
+        # NFS服务器使用物理IP (<慧学内网物理IP-1>)，避免VPN导致的权限问题
         # 使用volume driver实现NFS挂载
         student_workspace = f"{self.NFS_STORAGE_BASE}/student_workspaces/{user_id}"
-        nfs_server = self.NFS_SERVER_IP  # 172.16.100.41
+        nfs_server = self.NFS_SERVER_IP  # <慧学内网物理IP-1>
 
         # 确保在manager节点上创建必要的目录
         try:
@@ -240,7 +240,7 @@ class ContainerManager:
                 env_upper = env_type.upper()
                 if env_upper == "JUPYTER":
                     image_name = "huixue-jupyter:latest"
-                elif env_upper == "TEMPO_BI":
+                elif env_upper == "HUIXUE_BI":
                     # 优先使用本地镜像，失败时回退到Docker Hub
                     image_name = "huixue-superset:latest"
                 elif env_upper == "TEMPO_AI":
@@ -271,7 +271,7 @@ class ContainerManager:
             # 为Jupyter容器准备自定义命令（包含CSP配置）
             command = None
             if env_type.upper() == "JUPYTER":
-                csp_origins = "'self' http://localhost:3000 http://100.74.141.3:3000 http://172.16.100.41:3000 http://localhost:3001"
+                csp_origins = "'self' http://localhost:3000 http://<慧学服务器1-IP>:3000 http://<慧学内网物理IP-1>:3000 http://localhost:3001"
                 command = [
                     "jupyter", "notebook",
                     "--ip=0.0.0.0",
@@ -536,7 +536,7 @@ class ContainerManager:
                 if knime_dir.exists():
                     volumes[str(knime_dir.resolve())] = {"bind": "/knime-workspace", "mode": "rw"}
         
-        if env_type.upper() == "TEMPO_BI":
+        if env_type.upper() == "HUIXUE_BI":
             superset_config_path = None
             if settings.SUPERSET_CONFIG_PATH:
                 candidate = Path(settings.SUPERSET_CONFIG_PATH).expanduser()
@@ -622,7 +622,7 @@ class ContainerManager:
             env_vars["JUPYTER_ENABLE_LAB"] = "yes"
             env_vars["JUPYTER_PORT"] = "8888"
         
-        elif env_type.upper() == "TEMPO_BI":  # Apache Superset
+        elif env_type.upper() == "HUIXUE_BI":  # Apache Superset
             # Superset需要安全的SECRET_KEY才能启动
             # 生成一个安全的SECRET_KEY（至少42字符）
             superset_secret_key = secrets.token_urlsafe(42)
@@ -714,7 +714,7 @@ class ContainerManager:
         """根据环境类型获取容器内部端口"""
         port_mapping = {
             "JUPYTER": 8888,
-            "TEMPO_BI": 8088,  # Superset
+            "HUIXUE_BI": 8088,  # Superset
             "TEMPO_AI": 6901,   # VNC Web端口
             "VDI_PYCHARM": 6901,
         }
@@ -859,10 +859,10 @@ class ContainerManager:
             if env_upper == "JUPYTER":
                 image_name = "huixue-jupyter:latest"
                 logger.info(f"使用默认Jupyter镜像: {image_name}")
-            elif env_upper == "TEMPO_BI":
+            elif env_upper == "HUIXUE_BI":
                 # 优先使用本地镜像，失败时回退到Docker Hub
                 image_name = "huixue-superset:latest"
-                logger.warning("TrainingEnvironment表无TEMPO_BI配置，使用默认Superset镜像")
+                logger.warning("TrainingEnvironment表无HUIXUE_BI配置，使用默认Superset镜像")
             elif env_upper == "TEMPO_AI":
                 image_name = "cfprot/knime:latest"
                 logger.warning("TrainingEnvironment表无TEMPO_AI配置，使用默认KNIME镜像")
@@ -887,8 +887,8 @@ class ContainerManager:
         container_port = self._get_container_port(env_type)
         host_port = None
 
-        # 确保TEMPO_BI的Superset镜像存在，如不存在则尝试拉取
-        if env_type.upper() == "TEMPO_BI":
+        # 确保HUIXUE_BI的Superset镜像存在，如不存在则尝试拉取
+        if env_type.upper() == "HUIXUE_BI":
             try:
                 self._ensure_image_available(image_name)
             except Exception as img_err:
@@ -902,7 +902,7 @@ class ContainerManager:
         # 为Jupyter容器准备自定义命令（包含CSP配置）
         command = None
         if env_type.upper() == "JUPYTER":
-            csp_origins = "'self' http://localhost:3000 http://100.74.141.3:3000 http://localhost:3001 http://localhost:8000"
+            csp_origins = "'self' http://localhost:3000 http://<慧学服务器1-IP>:3000 http://localhost:3001 http://localhost:8000"
             command = [
                 "jupyter", "notebook",
                 "--ip=0.0.0.0",
@@ -961,7 +961,7 @@ class ContainerManager:
                     logger.warning(f"初始化Jupyter工作目录失败: {e}，容器将继续运行")
             
             # 初始化Superset环境：执行数据库初始化
-            if env_type.upper() == "TEMPO_BI":
+            if env_type.upper() == "HUIXUE_BI":
                 try:
                     self._initialize_superset(container, training_metadata=training_metadata)
                 except Exception as e:

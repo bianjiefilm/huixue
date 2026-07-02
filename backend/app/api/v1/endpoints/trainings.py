@@ -2441,7 +2441,7 @@ def launch_training_environment(
                 db.commit()
 
         # BI 实训：加载数据直接返回 (Graphic Walker 模式)
-        if training_type in ['DRAG_DROP', 'TEMPO_BI', 'bi', 'BI', 'DATA_ANALYSIS']:
+        if training_type in ['DRAG_DROP', 'HUIXUE_BI', 'bi', 'BI', 'DATA_ANALYSIS']:
             try:
                         from app.utils.bi_data_loader import BIDataLoader
                         data = BIDataLoader.load_data(training_id, db, limit=100)
@@ -2638,7 +2638,7 @@ def submit_training_assignment(
         # 针对不同实训类型的额外处理
         # BI/AI (DRAG_DROP) 实训：不需要文件，直接通过
         # CODING 实训：通常需要检查代码或文件（这里暂不做强制拦截，由前端控制）
-        if str(training.training_type) == "DRAG_DROP" or str(training.training_type) == "TEMPO_BI":
+        if str(training.training_type) == "DRAG_DROP" or str(training.training_type) == "HUIXUE_BI":
             logger.info(f"BI实训作业提交: training_id={training_id}, student_id={student_id}")
         
         # 如果有快照数据，保存到 submission_snapshot 字段

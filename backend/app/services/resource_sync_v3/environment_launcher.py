@@ -261,8 +261,8 @@ class EnvironmentLauncher:
                     sql_content = response.text
 
                 # 执行SQL脚本（针对不同环境类型）
-                env_type = init_config.get('env_type', 'TEMPO_BI')
-                if env_type == 'TEMPO_BI':
+                env_type = init_config.get('env_type', 'HUIXUE_BI')
+                if env_type == 'HUIXUE_BI':
                     await self._execute_superset_sql(host, port, sql_content)
                 elif env_type == 'JUPYTER':
                     await self._execute_jupyter_sql(host, port, sql_content)
@@ -312,8 +312,8 @@ class EnvironmentLauncher:
                 template_content = response.content
 
             # 导入仪表盘
-            env_type = init_config.get('env_type', 'TEMPO_BI')
-            if env_type == 'TEMPO_BI':
+            env_type = init_config.get('env_type', 'HUIXUE_BI')
+            if env_type == 'HUIXUE_BI':
                 await self._import_superset_dashboard(host, port, template_content)
 
             self.logger.info(f"仪表盘模板注入成功: {template_url}")
@@ -379,7 +379,7 @@ class EnvironmentLauncher:
         Returns:
             初始化脚本内容
         """
-        if env_type == 'TEMPO_BI':
+        if env_type == 'HUIXUE_BI':
             return self._generate_superset_init_script()
         elif env_type == 'JUPYTER':
             return self._generate_jupyter_init_script()

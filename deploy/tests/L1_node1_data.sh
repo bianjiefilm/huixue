@@ -1,6 +1,6 @@
 #!/bin/bash
 # === L1-NODE1: 数据节点 #1 (.42) 自检 ===
-# 执行: ssh huixueops@192.168.109.42 'bash -s' < L1_node1_data.sh
+# 执行: ssh <慧学运维账号>@<慧学内网IP-1> 'bash -s' < L1_node1_data.sh
 
 echo "========== L1: 数据节点 #1 自检 =========="
 PASS=0; FAIL=0
@@ -52,7 +52,7 @@ else
 fi
 
 echo -n "[1.7] NFS exports 包含网段授权... "
-if grep -q "192.168.109.0/24" /etc/exports; then
+if grep -q "<慧学内网网段>.0/24" /etc/exports; then
   echo "✅"; ((PASS++))
 else
   echo "❌ exports 缺少节点授权"; ((FAIL++))

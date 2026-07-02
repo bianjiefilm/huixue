@@ -9,10 +9,10 @@ BI 实训工作台 SPA 内路由切换回归测试
 
 用法:
     # Chrome（默认）
-    BASE_URL=http://100.74.141.3 python -m pytest tests/playwright_spa_switching_test.py -v
+    BASE_URL=http://<慧学服务器1-IP> python -m pytest tests/playwright_spa_switching_test.py -v
 
     # Firefox
-    BASE_URL=http://100.74.141.3 pytest tests/playwright_spa_switching_test.py -v --browser=firefox
+    BASE_URL=http://<慧学服务器1-IP> pytest tests/playwright_spa_switching_test.py -v --browser=firefox
 
     # 指定浏览器
     pytest tests/playwright_spa_switching_test.py -v --browser=chromium
@@ -33,7 +33,7 @@ except ImportError:
     sys.exit(1)
 
 
-BASE_URL: str = os.environ.get("BASE_URL", "http://100.74.141.3")
+BASE_URL: str = os.environ.get("BASE_URL", "http://<慧学服务器1-IP>")
 BROWSER: str = os.environ.get("BROWSER", "chromium")  # chromium or firefox
 
 STUDENT_CREDS = {"username": "student1", "password": "student123"}

@@ -103,7 +103,7 @@ export class SecureStorage {
 
     const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
-    // 学校环境使用 http://100.74.141.3:3000，不能只依赖 sessionStorage。
+    // 学校环境使用 http://<慧学服务器1-IP>:3000，不能只依赖 sessionStorage。
     // 使用同源 host-only cookie，避免 IP 地址设置 Domain 属性后被浏览器拒收。
     CookieUtil.set(config.tokenKey, token, {
       expires: 7, // 7天

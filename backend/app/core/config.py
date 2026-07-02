@@ -116,7 +116,7 @@ class Settings(BaseSettings):
     CONTAINER_TIMEOUT_HOURS: int = Field(default=2, env="CONTAINER_TIMEOUT_HOURS")
     
     # Jupyter Settings
-    JUPYTER_BASE_URL: str = Field(default="http://100.74.141.3", env="JUPYTER_BASE_URL")
+    JUPYTER_BASE_URL: str = Field(default="http://<慧学服务器1-IP>", env="JUPYTER_BASE_URL")
     JUPYTER_TOKEN: str = Field(default="dev_token", env="JUPYTER_TOKEN")
     
     # Container Storage Paths

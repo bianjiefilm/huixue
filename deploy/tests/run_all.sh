@@ -7,10 +7,10 @@
 
 set -e
 
-NODE1="huixueops@192.168.109.42"
-NODE2="huixueops@192.168.109.43"
-NODE3="huixueops@192.168.109.43"  # Relocated from .41 due to SSH hang
-JUMP="huixueops@100.91.185.49"  # Tailscale 跳板
+NODE1="<慧学运维账号>@<慧学内网IP-1>"
+NODE2="<慧学运维账号>@<慧学内网IP-2>"
+NODE3="<慧学运维账号>@<慧学内网IP-2>"  # Relocated from .41 due to SSH hang
+JUMP="<慧学运维账号>@<慧学服务器2-IP>"  # Tailscale 跳板
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -62,7 +62,7 @@ echo ""
 echo "╔══════════════════════════════════════════╗"
 echo "║   ✅ L1-L3 全部通过！                     ║"
 echo "║   请进入 L4 浏览器手动冒烟测试:           ║"
-echo "║   http://192.168.109.43:3000              ║"
+echo "║   http://<慧学内网IP-2>:3000              ║"
 echo "╚══════════════════════════════════════════╝"
 echo ""
 echo "L4 检查清单:"

@@ -1,7 +1,7 @@
 {
   "summary": {
     "timestamp": "2026-04-08T14:40:35.238086",
-    "base_url": "http://100.74.141.3:3000",
+    "base_url": "http://<慧学服务器1-IP>:3000",
     "total_pages": 133,
     "ok": 133,
     "warning": 0,
@@ -30,7 +30,7 @@
     {
       "role": "admin",
       "route": "#/admin/dashboard",
-      "full_url": "http://100.74.141.3:3000//admin/dashboard",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/dashboard",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -43,7 +43,7 @@
     {
       "role": "admin",
       "route": "#/admin/resource-import",
-      "full_url": "http://100.74.141.3:3000//admin/resource-import",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/resource-import",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -56,7 +56,7 @@
     {
       "role": "admin",
       "route": "#/admin/organization/school-info",
-      "full_url": "http://100.74.141.3:3000//admin/organization/school-info",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/organization/school-info",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -69,7 +69,7 @@
     {
       "role": "admin",
       "route": "#/admin/organization/department",
-      "full_url": "http://100.74.141.3:3000//admin/organization/department",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/organization/department",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -82,7 +82,7 @@
     {
       "role": "admin",
       "route": "#/admin/user/teacher",
-      "full_url": "http://100.74.141.3:3000//admin/user/teacher",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/user/teacher",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -95,7 +95,7 @@
     {
       "role": "admin",
       "route": "#/admin/user/student",
-      "full_url": "http://100.74.141.3:3000//admin/user/student",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/user/student",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -108,7 +108,7 @@
     {
       "role": "admin",
       "route": "#/admin/user/role",
-      "full_url": "http://100.74.141.3:3000//admin/user/role",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/user/role",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -121,7 +121,7 @@
     {
       "role": "admin",
       "route": "#/admin/user/teacher/add",
-      "full_url": "http://100.74.141.3:3000//admin/user/teacher/add",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/user/teacher/add",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -134,7 +134,7 @@
     {
       "role": "admin",
       "route": "#/admin/course/practice",
-      "full_url": "http://100.74.141.3:3000//admin/course/practice",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/course/practice",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -147,7 +147,7 @@
     {
       "role": "admin",
       "route": "#/admin/course/training",
-      "full_url": "http://100.74.141.3:3000//admin/course/training",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/course/training",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -160,7 +160,7 @@
     {
       "role": "admin",
       "route": "#/admin/course/practice-approval",
-      "full_url": "http://100.74.141.3:3000//admin/course/practice-approval",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/course/practice-approval",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -173,7 +173,7 @@
     {
       "role": "admin",
       "route": "#/admin/course/training-approval",
-      "full_url": "http://100.74.141.3:3000//admin/course/training-approval",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/course/training-approval",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -186,7 +186,7 @@
     {
       "role": "admin",
       "route": "#/admin/exam-management",
-      "full_url": "http://100.74.141.3:3000//admin/exam-management",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/exam-management",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -199,7 +199,7 @@
     {
       "role": "admin",
       "route": "#/admin/ai-generation",
-      "full_url": "http://100.74.141.3:3000//admin/ai-generation",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/ai-generation",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -212,7 +212,7 @@
     {
       "role": "admin",
       "route": "#/admin/ai-generation/practice",
-      "full_url": "http://100.74.141.3:3000//admin/ai-generation/practice",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/ai-generation/practice",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -225,7 +225,7 @@
     {
       "role": "admin",
       "route": "#/admin/ai-generation/exam",
-      "full_url": "http://100.74.141.3:3000//admin/ai-generation/exam",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/ai-generation/exam",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -238,7 +238,7 @@
     {
       "role": "admin",
       "route": "#/admin/ai-generation/training",
-      "full_url": "http://100.74.141.3:3000//admin/ai-generation/training",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/ai-generation/training",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -251,7 +251,7 @@
     {
       "role": "admin",
       "route": "#/admin/ai-generation/batch",
-      "full_url": "http://100.74.141.3:3000//admin/ai-generation/batch",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/ai-generation/batch",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -264,7 +264,7 @@
     {
       "role": "admin",
       "route": "#/admin/resource/environment",
-      "full_url": "http://100.74.141.3:3000//admin/resource/environment",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/resource/environment",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -277,7 +277,7 @@
     {
       "role": "admin",
       "route": "#/admin/resource/experiment",
-      "full_url": "http://100.74.141.3:3000//admin/resource/experiment",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/resource/experiment",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -290,7 +290,7 @@
     {
       "role": "admin",
       "route": "#/admin/ai-test",
-      "full_url": "http://100.74.141.3:3000//admin/ai-test",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/ai-test",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -303,7 +303,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/course",
-      "full_url": "http://100.74.141.3:3000//admin/logs/course",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/course",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -316,7 +316,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/practice",
-      "full_url": "http://100.74.141.3:3000//admin/logs/practice",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/practice",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -329,7 +329,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/training",
-      "full_url": "http://100.74.141.3:3000//admin/logs/training",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/training",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -342,7 +342,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/teacher",
-      "full_url": "http://100.74.141.3:3000//admin/logs/teacher",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/teacher",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -355,7 +355,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/student",
-      "full_url": "http://100.74.141.3:3000//admin/logs/student",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/student",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -368,7 +368,7 @@
     {
       "role": "admin",
       "route": "#/admin/user/teacher/edit/1",
-      "full_url": "http://100.74.141.3:3000//admin/user/teacher/edit/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/user/teacher/edit/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -381,7 +381,7 @@
     {
       "role": "admin",
       "route": "#/admin/user/student/edit/1",
-      "full_url": "http://100.74.141.3:3000//admin/user/student/edit/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/user/student/edit/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -394,7 +394,7 @@
     {
       "role": "admin",
       "route": "#/admin/course/detail/1",
-      "full_url": "http://100.74.141.3:3000//admin/course/detail/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/course/detail/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -407,7 +407,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/course/1",
-      "full_url": "http://100.74.141.3:3000//admin/logs/course/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/course/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -420,7 +420,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/practice/1",
-      "full_url": "http://100.74.141.3:3000//admin/logs/practice/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/practice/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -433,7 +433,7 @@
     {
       "role": "admin",
       "route": "#/admin/logs/training/1",
-      "full_url": "http://100.74.141.3:3000//admin/logs/training/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//admin/logs/training/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -446,7 +446,7 @@
     {
       "role": "teacher",
       "route": "#/home",
-      "full_url": "http://100.74.141.3:3000//home",
+      "full_url": "http://<慧学服务器1-IP>:3000//home",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -459,7 +459,7 @@
     {
       "role": "teacher",
       "route": "#/classroom",
-      "full_url": "http://100.74.141.3:3000//classroom",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -472,7 +472,7 @@
     {
       "role": "teacher",
       "route": "#/course",
-      "full_url": "http://100.74.141.3:3000//course",
+      "full_url": "http://<慧学服务器1-IP>:3000//course",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -485,7 +485,7 @@
     {
       "role": "teacher",
       "route": "#/course/training/library",
-      "full_url": "http://100.74.141.3:3000//course/training/library",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/training/library",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -498,7 +498,7 @@
     {
       "role": "teacher",
       "route": "#/course/training/create",
-      "full_url": "http://100.74.141.3:3000//course/training/create",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/training/create",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -511,7 +511,7 @@
     {
       "role": "teacher",
       "route": "#/course/training/1/edit",
-      "full_url": "http://100.74.141.3:3000//course/training/1/edit",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/training/1/edit",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -524,7 +524,7 @@
     {
       "role": "teacher",
       "route": "#/course/practice/my",
-      "full_url": "http://100.74.141.3:3000//course/practice/my",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/practice/my",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -537,7 +537,7 @@
     {
       "role": "teacher",
       "route": "#/course/practice/create",
-      "full_url": "http://100.74.141.3:3000//course/practice/create",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/practice/create",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -550,7 +550,7 @@
     {
       "role": "teacher",
       "route": "#/course/practice/1/edit",
-      "full_url": "http://100.74.141.3:3000//course/practice/1/edit",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/practice/1/edit",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -563,7 +563,7 @@
     {
       "role": "teacher",
       "route": "#/course/resource",
-      "full_url": "http://100.74.141.3:3000//course/resource",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/resource",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -576,7 +576,7 @@
     {
       "role": "teacher",
       "route": "#/course/micro",
-      "full_url": "http://100.74.141.3:3000//course/micro",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/micro",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -589,7 +589,7 @@
     {
       "role": "teacher",
       "route": "#/course/challenge/1/1",
-      "full_url": "http://100.74.141.3:3000//course/challenge/1/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/challenge/1/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -602,7 +602,7 @@
     {
       "role": "teacher",
       "route": "#/ml",
-      "full_url": "http://100.74.141.3:3000//ml",
+      "full_url": "http://<慧学服务器1-IP>:3000//ml",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -615,7 +615,7 @@
     {
       "role": "teacher",
       "route": "#/ml/manual",
-      "full_url": "http://100.74.141.3:3000//ml/manual",
+      "full_url": "http://<慧学服务器1-IP>:3000//ml/manual",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -628,7 +628,7 @@
     {
       "role": "teacher",
       "route": "#/exam",
-      "full_url": "http://100.74.141.3:3000//exam",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -641,7 +641,7 @@
     {
       "role": "teacher",
       "route": "#/exam/paper-bank",
-      "full_url": "http://100.74.141.3:3000//exam/paper-bank",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/paper-bank",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -654,7 +654,7 @@
     {
       "role": "teacher",
       "route": "#/exam/question-bank",
-      "full_url": "http://100.74.141.3:3000//exam/question-bank",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/question-bank",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -667,7 +667,7 @@
     {
       "role": "teacher",
       "route": "#/exam/create-question",
-      "full_url": "http://100.74.141.3:3000//exam/create-question",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/create-question",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -680,7 +680,7 @@
     {
       "role": "teacher",
       "route": "#/exam/edit-question",
-      "full_url": "http://100.74.141.3:3000//exam/edit-question",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/edit-question",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -693,7 +693,7 @@
     {
       "role": "teacher",
       "route": "#/exam/edit-paper",
-      "full_url": "http://100.74.141.3:3000//exam/edit-paper",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/edit-paper",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -706,7 +706,7 @@
     {
       "role": "teacher",
       "route": "#/exam/template-paper",
-      "full_url": "http://100.74.141.3:3000//exam/template-paper",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/template-paper",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -719,7 +719,7 @@
     {
       "role": "teacher",
       "route": "#/project",
-      "full_url": "http://100.74.141.3:3000//project",
+      "full_url": "http://<慧学服务器1-IP>:3000//project",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -732,7 +732,7 @@
     {
       "role": "teacher",
       "route": "#/project/jupyter",
-      "full_url": "http://100.74.141.3:3000//project/jupyter",
+      "full_url": "http://<慧学服务器1-IP>:3000//project/jupyter",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -745,7 +745,7 @@
     {
       "role": "teacher",
       "route": "#/project/1",
-      "full_url": "http://100.74.141.3:3000//project/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//project/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -758,7 +758,7 @@
     {
       "role": "teacher",
       "route": "#/project/jupyter/1",
-      "full_url": "http://100.74.141.3:3000//project/jupyter/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//project/jupyter/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -771,7 +771,7 @@
     {
       "role": "teacher",
       "route": "#/visual",
-      "full_url": "http://100.74.141.3:3000//visual",
+      "full_url": "http://<慧学服务器1-IP>:3000//visual",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -784,7 +784,7 @@
     {
       "role": "teacher",
       "route": "#/visual/preview",
-      "full_url": "http://100.74.141.3:3000//visual/preview",
+      "full_url": "http://<慧学服务器1-IP>:3000//visual/preview",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -797,7 +797,7 @@
     {
       "role": "teacher",
       "route": "#/profile",
-      "full_url": "http://100.74.141.3:3000//profile",
+      "full_url": "http://<慧学服务器1-IP>:3000//profile",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -810,7 +810,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -823,7 +823,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/status",
-      "full_url": "http://100.74.141.3:3000//classroom/1/status",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/status",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -836,7 +836,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/student-status",
-      "full_url": "http://100.74.141.3:3000//classroom/1/student-status",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/student-status",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -849,7 +849,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/student-grades",
-      "full_url": "http://100.74.141.3:3000//classroom/1/student-grades",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/student-grades",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -862,7 +862,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/edit",
-      "full_url": "http://100.74.141.3:3000//classroom/1/edit",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/edit",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -875,7 +875,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/learning-analytics",
-      "full_url": "http://100.74.141.3:3000//classroom/1/learning-analytics",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/learning-analytics",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -888,7 +888,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/exams",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exams",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exams",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -901,7 +901,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/exam/create",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exam/create",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exam/create",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -914,7 +914,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/training/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/training/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/training/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -927,7 +927,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/training/1/grades",
-      "full_url": "http://100.74.141.3:3000//classroom/1/training/1/grades",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/training/1/grades",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -940,7 +940,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/training/1/homework",
-      "full_url": "http://100.74.141.3:3000//classroom/1/training/1/homework",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/training/1/homework",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -953,7 +953,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/training/1/workspace",
-      "full_url": "http://100.74.141.3:3000//classroom/1/training/1/workspace",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/training/1/workspace",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -966,7 +966,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/bi-training/1/workspace",
-      "full_url": "http://100.74.141.3:3000//classroom/1/bi-training/1/workspace",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/bi-training/1/workspace",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -979,7 +979,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/bi-training/1/review/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/bi-training/1/review/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/bi-training/1/review/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -992,7 +992,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1005,7 +1005,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/exams",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exams",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exams",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1018,7 +1018,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/grades/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/grades/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/grades/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1031,7 +1031,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/homework/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/homework/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/homework/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1044,7 +1044,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/exam/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exam/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exam/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1057,7 +1057,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/exam/1/marking",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exam/1/marking",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exam/1/marking",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1070,7 +1070,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/exam/1/detail",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exam/1/detail",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exam/1/detail",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1083,7 +1083,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/exam/1/results",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exam/1/results",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exam/1/results",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1096,7 +1096,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/course/1/exam/1/paper/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exam/1/paper/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exam/1/paper/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1109,7 +1109,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/exam/1/marking",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exam/1/marking",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exam/1/marking",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1122,7 +1122,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/exam/1/paper/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exam/1/paper/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exam/1/paper/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1135,7 +1135,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/exam/1/results",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exam/1/results",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exam/1/results",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1148,7 +1148,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/1/exam/1/my-result",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exam/1/my-result",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exam/1/my-result",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1161,7 +1161,7 @@
     {
       "role": "teacher",
       "route": "#/course/micro/1",
-      "full_url": "http://100.74.141.3:3000//course/micro/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/micro/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1174,7 +1174,7 @@
     {
       "role": "teacher",
       "route": "#/course/resource/1",
-      "full_url": "http://100.74.141.3:3000//course/resource/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/resource/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1187,7 +1187,7 @@
     {
       "role": "teacher",
       "route": "#/classroom/submission/1",
-      "full_url": "http://100.74.141.3:3000//classroom/submission/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/submission/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1200,7 +1200,7 @@
     {
       "role": "teacher",
       "route": "#/practice/1/stage/1/test",
-      "full_url": "http://100.74.141.3:3000//practice/1/stage/1/test",
+      "full_url": "http://<慧学服务器1-IP>:3000//practice/1/stage/1/test",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1213,7 +1213,7 @@
     {
       "role": "teacher",
       "route": "#/designer/bi",
-      "full_url": "http://100.74.141.3:3000//designer/bi",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/bi",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1226,7 +1226,7 @@
     {
       "role": "teacher",
       "route": "#/designer/bi/1",
-      "full_url": "http://100.74.141.3:3000//designer/bi/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/bi/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1239,7 +1239,7 @@
     {
       "role": "teacher",
       "route": "#/designer/ml",
-      "full_url": "http://100.74.141.3:3000//designer/ml",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/ml",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1252,7 +1252,7 @@
     {
       "role": "teacher",
       "route": "#/designer/ml/1",
-      "full_url": "http://100.74.141.3:3000//designer/ml/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/ml/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1265,7 +1265,7 @@
     {
       "role": "student",
       "route": "#/home",
-      "full_url": "http://100.74.141.3:3000//home",
+      "full_url": "http://<慧学服务器1-IP>:3000//home",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1278,7 +1278,7 @@
     {
       "role": "student",
       "route": "#/classroom",
-      "full_url": "http://100.74.141.3:3000//classroom",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1291,7 +1291,7 @@
     {
       "role": "student",
       "route": "#/student-dashboard",
-      "full_url": "http://100.74.141.3:3000//student-dashboard",
+      "full_url": "http://<慧学服务器1-IP>:3000//student-dashboard",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1304,7 +1304,7 @@
     {
       "role": "student",
       "route": "#/course",
-      "full_url": "http://100.74.141.3:3000//course",
+      "full_url": "http://<慧学服务器1-IP>:3000//course",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1317,7 +1317,7 @@
     {
       "role": "student",
       "route": "#/course/practice/my",
-      "full_url": "http://100.74.141.3:3000//course/practice/my",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/practice/my",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1330,7 +1330,7 @@
     {
       "role": "student",
       "route": "#/course/training/my",
-      "full_url": "http://100.74.141.3:3000//course/training/my",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/training/my",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1343,7 +1343,7 @@
     {
       "role": "student",
       "route": "#/course/training/library",
-      "full_url": "http://100.74.141.3:3000//course/training/library",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/training/library",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1356,7 +1356,7 @@
     {
       "role": "student",
       "route": "#/course/resource",
-      "full_url": "http://100.74.141.3:3000//course/resource",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/resource",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1369,7 +1369,7 @@
     {
       "role": "student",
       "route": "#/course/micro",
-      "full_url": "http://100.74.141.3:3000//course/micro",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/micro",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1382,7 +1382,7 @@
     {
       "role": "student",
       "route": "#/course/micro/1",
-      "full_url": "http://100.74.141.3:3000//course/micro/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/micro/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1395,7 +1395,7 @@
     {
       "role": "student",
       "route": "#/course/challenge/1/1",
-      "full_url": "http://100.74.141.3:3000//course/challenge/1/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/challenge/1/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1408,7 +1408,7 @@
     {
       "role": "student",
       "route": "#/ml",
-      "full_url": "http://100.74.141.3:3000//ml",
+      "full_url": "http://<慧学服务器1-IP>:3000//ml",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1421,7 +1421,7 @@
     {
       "role": "student",
       "route": "#/exam",
-      "full_url": "http://100.74.141.3:3000//exam",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1434,7 +1434,7 @@
     {
       "role": "student",
       "route": "#/exam/my-exams",
-      "full_url": "http://100.74.141.3:3000//exam/my-exams",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/my-exams",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1447,7 +1447,7 @@
     {
       "role": "student",
       "route": "#/exam/paper-bank",
-      "full_url": "http://100.74.141.3:3000//exam/paper-bank",
+      "full_url": "http://<慧学服务器1-IP>:3000//exam/paper-bank",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1460,7 +1460,7 @@
     {
       "role": "student",
       "route": "#/project",
-      "full_url": "http://100.74.141.3:3000//project",
+      "full_url": "http://<慧学服务器1-IP>:3000//project",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1473,7 +1473,7 @@
     {
       "role": "student",
       "route": "#/project/jupyter",
-      "full_url": "http://100.74.141.3:3000//project/jupyter",
+      "full_url": "http://<慧学服务器1-IP>:3000//project/jupyter",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1486,7 +1486,7 @@
     {
       "role": "student",
       "route": "#/project/1",
-      "full_url": "http://100.74.141.3:3000//project/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//project/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1499,7 +1499,7 @@
     {
       "role": "student",
       "route": "#/project/jupyter/1",
-      "full_url": "http://100.74.141.3:3000//project/jupyter/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//project/jupyter/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1512,7 +1512,7 @@
     {
       "role": "student",
       "route": "#/profile",
-      "full_url": "http://100.74.141.3:3000//profile",
+      "full_url": "http://<慧学服务器1-IP>:3000//profile",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1525,7 +1525,7 @@
     {
       "role": "student",
       "route": "#/classroom/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1538,7 +1538,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/status",
-      "full_url": "http://100.74.141.3:3000//classroom/1/status",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/status",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1551,7 +1551,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/course/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1564,7 +1564,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/course/1/exam/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exam/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exam/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1577,7 +1577,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/course/1/exam/1/my-result",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exam/1/my-result",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exam/1/my-result",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1590,7 +1590,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/course/1/homework/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/homework/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/homework/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1603,7 +1603,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/course/1/grades/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/grades/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/grades/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1616,7 +1616,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/course/1/exams",
-      "full_url": "http://100.74.141.3:3000//classroom/1/course/1/exams",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/course/1/exams",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1629,7 +1629,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/training/1",
-      "full_url": "http://100.74.141.3:3000//classroom/1/training/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/training/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1642,7 +1642,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/training/1/workspace",
-      "full_url": "http://100.74.141.3:3000//classroom/1/training/1/workspace",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/training/1/workspace",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1655,7 +1655,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/bi-training/1/workspace",
-      "full_url": "http://100.74.141.3:3000//classroom/1/bi-training/1/workspace",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/bi-training/1/workspace",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1668,7 +1668,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/exam/1/take",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exam/1/take",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exam/1/take",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1681,7 +1681,7 @@
     {
       "role": "student",
       "route": "#/classroom/1/exam/1/my-result",
-      "full_url": "http://100.74.141.3:3000//classroom/1/exam/1/my-result",
+      "full_url": "http://<慧学服务器1-IP>:3000//classroom/1/exam/1/my-result",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1694,7 +1694,7 @@
     {
       "role": "student",
       "route": "#/course/resource/1",
-      "full_url": "http://100.74.141.3:3000//course/resource/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//course/resource/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1707,7 +1707,7 @@
     {
       "role": "student",
       "route": "#/designer/bi",
-      "full_url": "http://100.74.141.3:3000//designer/bi",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/bi",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1720,7 +1720,7 @@
     {
       "role": "student",
       "route": "#/designer/bi/1",
-      "full_url": "http://100.74.141.3:3000//designer/bi/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/bi/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1733,7 +1733,7 @@
     {
       "role": "student",
       "route": "#/designer/ml",
-      "full_url": "http://100.74.141.3:3000//designer/ml",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/ml",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],
@@ -1746,7 +1746,7 @@
     {
       "role": "student",
       "route": "#/designer/ml/1",
-      "full_url": "http://100.74.141.3:3000//designer/ml/1",
+      "full_url": "http://<慧学服务器1-IP>:3000//designer/ml/1",
       "status": "ok",
       "status_code": 200,
       "http_errors": [],

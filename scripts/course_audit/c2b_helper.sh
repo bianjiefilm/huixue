@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCHOOL_HOST="${SCHOOL_HOST:-huixueops@100.74.141.3}"
+SCHOOL_HOST="${SCHOOL_HOST:-<慧学运维账号>@<慧学服务器1-IP>}"
 SCHOOL_API_BASE="${SCHOOL_API_BASE:-http://localhost:3000/api}"
 STUDENT_USERNAME="${STUDENT_USERNAME:-student1}"
 STUDENT_PASSWORD="${STUDENT_PASSWORD:-student123}"
@@ -74,7 +74,7 @@ PY"
 audit_ui_via_browser_use() {
   cat <<'EOF'
 Browser Use UI check template:
-1. Navigate to http://100.74.141.3:3000/#/course/challenge/<practice_id>/<task_id>
+1. Navigate to http://<慧学服务器1-IP>:3000/#/course/challenge/<practice_id>/<task_id>
 2. Wait for the task title or challenge page DOM.
 3. Capture DOM snapshot.
 4. Look for score/result/history signals: "评测结果", "提交记录", "得分", "score", "passed_tests", or route-specific visible result text.

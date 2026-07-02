@@ -24,7 +24,7 @@ scripts/          工具脚本
 ## 工作汇报纪律 (慧学 项目硬约束)
 
 1. 声明"N 关完成"时必须附学校 DB 真实 SELECT 结果作证据:
-   `ssh huixueops@100.74.141.3 "sudo docker exec 743a1e751097_node1-data_db_1 psql -U huixue -d huixue -c 'SELECT COUNT(*) FROM tasks WHERE practice_id = X;'"` — 数字不对立即返工, 不允许后续补齐。
+   `ssh <慧学运维账号>@<慧学服务器1-IP> "sudo docker exec <慧学-DB容器名> psql -U huixue -d huixue -c 'SELECT COUNT(*) FROM tasks WHERE practice_id = X;'"` — 数字不对立即返工, 不允许后续补齐。
 
 2. 遇到环境阻塞 (SSH 断, DB 连不上, 网络超时等) 必须立即停下汇报阻塞现象, 不得自行 fallback 到本地环境继续任务。fallback 本地继续 = 伪造完成汇报。
 
@@ -101,10 +101,10 @@ fc 协议下学生函数返回 `Dict[tuple, V]` 不可表达。
 
 ### Codex 课程产品验收命令
 
-当用户要求验收课程/实训,或调用 `/tempo-course-auditor <课程或实训名称>` 时,必须使用项目内规则文件:
+当用户要求验收课程/实训,或调用 `/huixue-course-auditor <课程或实训名称>` 时,必须使用项目内规则文件:
 
-- Codex 镜像: `.codex/commands/tempo-course-auditor.md`
-- Claude Code 原命令: `.claude/commands/tempo-course-auditor.md`
+- Codex 镜像: `.codex/commands/huixue-course-auditor.md`
+- Claude Code 原命令: `.claude/commands/huixue-course-auditor.md`
 
 该命令的硬约束高于普通本地测试习惯:学校真实环境是唯一验收证据来源,覆盖率必须诚实声明,三路由 canary 与 Z1 三剑客必须执行。若 SSH、学校 API、Codex Browser Use/Tailscale 任一阻塞,立即停下汇报阻塞现象,不得 fallback 到本机环境继续验收。
 
@@ -112,9 +112,9 @@ fc 协议下学生函数返回 `Dict[tuple, V]` 不可表达。
 
 慧学 产品测试**必须在学校真实环境执行**,通过 Tailscale 隧道访问:
 
-- Web UAT: Codex Browser Use 访问 `http://100.74.141.3:3000`(学校 frontend 真实地址)
-- API 测试: 真打学校 backend `100.74.141.3:8000`(或 nginx proxy)
-- DB 验证: SSH `huixueops@100.74.141.3` → `docker exec huixue-db psql ...`
+- Web UAT: Codex Browser Use 访问 `http://<慧学服务器1-IP>:3000`(学校 frontend 真实地址)
+- API 测试: 真打学校 backend `<慧学服务器1-IP>:8000`(或 nginx proxy)
+- DB 验证: SSH `<慧学运维账号>@<慧学服务器1-IP>` → `docker exec huixue-db psql ...`
 - 评测器验证: 学校真实 docker container 跑 v2 fc / pytest_module / io_based 三路由
 - 学生/教师视角: student1 / teacher1 / admin 真账号在学校 frontend 登录
 
@@ -138,14 +138,14 @@ fc 协议下学生函数返回 `Dict[tuple, V]` 不可表达。
 **Step 2 — 同步学校**
 - 所有更新统一使用阿里云 OSS 中转,禁止再用 `scp` / `rsync` / SSH stdin 直传大文件到学校服务器。
 - 本地先将部署包上传到 OSS,学校服务器再通过 `curl`/`ossutil` 从 OSS 下载到 `/tmp`,并用 sha256 校验后部署。
-- OSS bucket: `huixuekeijxueyuan`
+- OSS bucket: `<慧学OSS-Bucket>`
 - OSS endpoint: `oss-cn-chengdu.aliyuncs.com`
-- OSS bucket domain: `huixuekeijxueyuan.oss-cn-chengdu.aliyuncs.com`
-- CNAME domain: `huixuekeijxueyuan.cn-chengdu.taihangztn.cn`
+- OSS bucket domain: `<慧学OSS-Bucket域名>`
+- CNAME domain: `<慧学OSS-CNAME域名>`
 - OSS 凭据只从本机私有配置或环境变量读取,不得写入 git 文档/commit/日志。建议变量名:
   `ALIYUN_OSS_ACCESS_KEY_ID`, `ALIYUN_OSS_ACCESS_KEY_SECRET`, `ALIYUN_OSS_ENDPOINT`, `ALIYUN_OSS_BUCKET`。
 - backend/frontend/SQL 部署包建议命名为:
-  `oss://huixuekeijxueyuan/deploy/huixue/<timestamp>-<commit>-<artifact>.tgz`。
+  `oss://<慧学OSS-Bucket>/deploy/huixue/<timestamp>-<commit>-<artifact>.tgz`。
 
 **Step 3 — 学校部署 + 实证**
 - backend: `docker restart huixue-backend` + `curl /health` + canary 真跑(任意 v2 fc 关 stub 0/total)
@@ -166,7 +166,7 @@ fc 协议下学生函数返回 `Dict[tuple, V]` 不可表达。
 Codex 报"已修复 / 已验证"时必须满足:
 
 - ✅ commit hash 来自本地 git
-- ✅ 部署命令明示是学校真容器(`huixueops@100.74.141.3` 或 `docker exec huixue-backend`)
+- ✅ 部署命令明示是学校真容器(`<慧学运维账号>@<慧学服务器1-IP>` 或 `docker exec huixue-backend`)
 - ✅ 实证证据来自学校真实环境(SSH 输出 / Codex Browser Use 截图或 DOM 证据 / 学校 API curl 返回 / 学校 DB SELECT)
 
 任意一项缺失,Jim 直接拒收,要求 Codex 走完整三步重测重报。

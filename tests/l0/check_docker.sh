@@ -4,7 +4,7 @@
 
 set -e
 
-API_HOST="${API_HOST:-100.74.141.3}"
+API_HOST="${API_HOST:-<慧学服务器1-IP>}"
 API_PORT="${API_PORT:-8000}"
 TIMEOUT="${TIMEOUT:-10}"
 

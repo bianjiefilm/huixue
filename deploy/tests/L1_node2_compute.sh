@@ -1,6 +1,6 @@
 #!/bin/bash
 # === L1-NODE2: 计算节点 #2 (.43) 自检 ===
-# 执行: ssh huixueops@192.168.109.43 'bash -s' < L1_node2_compute.sh
+# 执行: ssh <慧学运维账号>@<慧学内网IP-2> 'bash -s' < L1_node2_compute.sh
 
 echo "========== L1: 计算节点 #2 自检 =========="
 PASS=0; FAIL=0
@@ -20,7 +20,7 @@ else
 fi
 
 echo -n "[2.3] NFS 挂载 #1 的资源目录... "
-if mount | grep -q "192.168.109.42"; then
+if mount | grep -q "<慧学内网IP-1>"; then
   echo "✅"; ((PASS++))
 else
   echo "❌ NFS 未挂载"; ((FAIL++))

@@ -9,7 +9,7 @@ migrate_content_fields.py
     python migrate_content_fields.py
 
 或本地运行（连接远程 PostgreSQL）：
-    DATABASE_URL=postgresql://huixue:huixue123@192.168.109.42:5432/huixue \
+    DATABASE_URL=postgresql://huixue:huixue123@<慧学内网IP-1>:5432/huixue \
     python migrate_content_fields.py
 """
 import os

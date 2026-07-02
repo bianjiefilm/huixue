@@ -77,7 +77,7 @@ def _make_metadata(**overrides):
         difficulty=Difficulty.BEGINNER,
         course_hours=4,
         handbook_content_path="handbook.md",
-        environment_config={"env_type": "TEMPO_BI", "docker_image_name": "tempo-bi:latest"},
+        environment_config={"env_type": "HUIXUE_BI", "docker_image_name": "huixue-bi:latest"},
     )
     defaults.update(overrides)
     return ResourceMetadata(**defaults)

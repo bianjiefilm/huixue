@@ -5,7 +5,7 @@
 #         ./tests/run_tests.sh l0             # run only L0
 #         ./tests/run_tests.sh l1 l2 e2e      # run L1, L2, E2E
 #         ./tests/run_tests.sh all            # run all 4 layers
-# 说明: E2E 需目标环境可达 (默认 100.74.141.3)。
+# 说明: E2E 需目标环境可达 (默认 <慧学服务器1-IP>)。
 # ─────────────────────────────────────────────────────────────
 
 set -euo pipefail
@@ -53,7 +53,7 @@ for layer in $LAYERS; do
             ;;
         e2e)
             echo ""
-            echo "=== E2E: Full-Stack Tests (需 100.74.141.3 可达) ==="
+            echo "=== E2E: Full-Stack Tests (需 <慧学服务器1-IP> 可达) ==="
             if [ ! -d "$E2E_DIR" ]; then
                 echo "skip: $E2E_DIR 不存在"
             else

@@ -4,7 +4,7 @@
 
 set -e
 
-NFS_HOST="${NFS_HOST:-100.74.141.3}"
+NFS_HOST="${NFS_HOST:-<慧学服务器1-IP>}"
 NFS_EXPORT="${NFS_EXPORT:-/data}"
 MOUNT_POINT="${MOUNT_POINT:-/mnt/nfs}"
 TIMEOUT="${TIMEOUT:-10}"

@@ -23,10 +23,10 @@ description: 慧学 课程产品验收员 v2 - 学校真实环境双角色 + 双
 
 | 资源 | 访问方式 |
 |---|---|
-| Frontend | Codex Browser Use → `http://100.74.141.3:3000` |
-| Backend API(nginx) | `http://100.74.141.3:3000/api/v1/...` |
+| Frontend | Codex Browser Use → `http://<慧学服务器1-IP>:3000` |
+| Backend API(nginx) | `http://<慧学服务器1-IP>:3000/api/v1/...` |
 | Backend API(容器内) | nginx `/api` → Docker service `http://huixue-backend:8000` |
-| DB | `ssh huixueops@100.74.141.3` → `sudo docker exec 743a1e751097_node1-data_db_1 psql -U huixue -d huixue` |
+| DB | `ssh <慧学运维账号>@<慧学服务器1-IP>` → `sudo docker exec <慧学-DB容器名> psql -U huixue -d huixue` |
 | Backend 容器 | `sudo docker exec huixue-backend sh -c "..."`(musl,**无 bash**,只能 `sh`) |
 
 | 角色 | 账号 | 密码 |
@@ -96,7 +96,7 @@ description: 慧学 课程产品验收员 v2 - 学校真实环境双角色 + 双
 
 ### 0.5 下次 session 启动条件
 
-1. 学校 frontend / nginx API 可达:`curl -X OPTIONS http://100.74.141.3:3000/api/v1/auth/login` 返回非 `000`。
+1. 学校 frontend / nginx API 可达:`curl -X OPTIONS http://<慧学服务器1-IP>:3000/api/v1/auth/login` 返回非 `000`。
 2. Phase 3.2 SQL row count 仍为 published 口径 `20 / 10 / 0`(`practices` 总行数 21 含 XQ01 DRAFT,不计入)。
 3. 业务快照仍为 `18 门 + 49 R5 关`。
 4. `KNOWN_ISSUES.md` 无 P0/P1/P2 阻塞项;若 UAT 发现回归,先写入后修复。
@@ -127,7 +127,7 @@ description: 慧学 课程产品验收员 v2 - 学校真实环境双角色 + 双
 
 > 行号会因 commits 漂移。出现验收异常先重 grep:
 > ```bash
-> ssh huixueops@100.74.141.3 'sudo docker exec huixue-backend sh -c "grep -nE \"def get_submissions|def submit_grade|def get_course_grades|def get_course_grades_with_stats\" /app/app/api/v1/endpoints/grading.py /app/app/api/v1/endpoints/grades.py /app/app/api/v1/endpoints/classrooms.py /app/app/crud/crud.py"'
+> ssh <慧学运维账号>@<慧学服务器1-IP> 'sudo docker exec huixue-backend sh -c "grep -nE \"def get_submissions|def submit_grade|def get_course_grades|def get_course_grades_with_stats\" /app/app/api/v1/endpoints/grading.py /app/app/api/v1/endpoints/grades.py /app/app/api/v1/endpoints/classrooms.py /app/app/crud/crud.py"'
 > ```
 
 ### 8 status filter alias(`crud.py:9512` `get_course_grades_with_stats` 的 `status` 参数)
@@ -150,14 +150,14 @@ description: 慧学 课程产品验收员 v2 - 学校真实环境双角色 + 双
 ### 3.1 Tailscale + 浏览器
 ```bash
 # 验证学校 nginx /api 可达;404/405 也可接受,只要不是 000
-curl -s -o /dev/null -w "%{http_code}" -X OPTIONS http://100.74.141.3:3000/api/v1/auth/login
+curl -s -o /dev/null -w "%{http_code}" -X OPTIONS http://<慧学服务器1-IP>:3000/api/v1/auth/login
 # 期望: 非 000
 ```
-然后用 Codex Browser Use `iab` backend 取当前 in-app browser tab,导航到 `http://100.74.141.3:3000`。
+然后用 Codex Browser Use `iab` backend 取当前 in-app browser tab,导航到 `http://<慧学服务器1-IP>:3000`。
 
 ### 3.2 实查待审课程 row count(诊断用,不代表业务课程数)
 ```bash
-ssh huixueops@100.74.141.3 'sudo docker exec 743a1e751097_node1-data_db_1 psql -U huixue -d huixue -c "
+ssh <慧学运维账号>@<慧学服务器1-IP> 'sudo docker exec <慧学-DB容器名> psql -U huixue -d huixue -c "
 SELECT
   (SELECT COUNT(*) FROM practices
    WHERE direction != ''项目实训''
@@ -180,12 +180,12 @@ SELECT
 ### 3.3 取本次待审对象的 ID
 ```bash
 # 实践课程
-ssh huixueops@100.74.141.3 'sudo docker exec 743a1e751097_node1-data_db_1 psql -U huixue -d huixue -c "
+ssh <慧学运维账号>@<慧学服务器1-IP> 'sudo docker exec <慧学-DB容器名> psql -U huixue -d huixue -c "
 SELECT id, title, direction, publish_status FROM practices WHERE title LIKE ''%<课程名>%'';
 "'
 
 # 实训
-ssh huixueops@100.74.141.3 'sudo docker exec 743a1e751097_node1-data_db_1 psql -U huixue -d huixue -c "
+ssh <慧学运维账号>@<慧学服务器1-IP> 'sudo docker exec <慧学-DB容器名> psql -U huixue -d huixue -c "
 SELECT id, title, visibility, is_published FROM trainings WHERE title LIKE ''%<实训名>%'';
 "'
 ```
@@ -217,7 +217,7 @@ SELECT id, title, visibility, is_published FROM trainings WHERE title LIKE ''%<�
 ## 4. Phase 1 — 教师角色验收(Codex Browser Use)
 
 ### 4.1 登录
-导航到 `http://100.74.141.3:3000/login` → fill `teacher1` / `teacher123` → click 登录 → wait_for 工作台 → take_screenshot。
+导航到 `http://<慧学服务器1-IP>:3000/login` → fill `teacher1` / `teacher123` → click 登录 → wait_for 工作台 → take_screenshot。
 
 ### 4.2 通用故事(精简,沿用 v0 风格)
 
@@ -330,10 +330,10 @@ SELECT id, title, visibility, is_published FROM trainings WHERE title LIKE ''%<�
 ### 6.0 Z1 helper(进 Phase 6 前先跑一次,缓存 token)
 ```bash
 ANON_TOKEN=""
-STUDENT_TOKEN=$(curl -s -X POST http://100.74.141.3:3000/api/v1/auth/login \
+STUDENT_TOKEN=$(curl -s -X POST http://<慧学服务器1-IP>:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"student1","password":"student123"}' | jq -r .access_token)
-TEACHER1_TOKEN=$(curl -s -X POST http://100.74.141.3:3000/api/v1/auth/login \
+TEACHER1_TOKEN=$(curl -s -X POST http://<慧学服务器1-IP>:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"teacher1","password":"teacher123"}' | jq -r .access_token)
 ```
@@ -341,7 +341,7 @@ TEACHER1_TOKEN=$(curl -s -X POST http://100.74.141.3:3000/api/v1/auth/login \
 ### 6.1 匿名 401
 ```bash
 curl -s -o /dev/null -w "%{http_code}" \
-  http://100.74.141.3:3000/api/v1/classrooms/<cid>/courses/<cc_id>/grades
+  http://<慧学服务器1-IP>:3000/api/v1/classrooms/<cid>/courses/<cc_id>/grades
 # 期望: 401
 ```
 
@@ -349,7 +349,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 ```bash
 curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer $STUDENT_TOKEN" \
-  http://100.74.141.3:3000/api/v1/teachers/<tid>/practices/<pid>/tasks/<task_id>/submissions
+  http://<慧学服务器1-IP>:3000/api/v1/teachers/<tid>/practices/<pid>/tasks/<task_id>/submissions
 # 期望: 403
 ```
 
@@ -358,7 +358,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 # teacher1 真 id=4,用 teacher_id=999 假冒;不创建/删除任何测试账号
 curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer $TEACHER1_TOKEN" \
-  "http://100.74.141.3:3000/api/v1/teachers/999/practices/<pid>/tasks/<task_id>/submissions"
+  "http://<慧学服务器1-IP>:3000/api/v1/teachers/999/practices/<pid>/tasks/<task_id>/submissions"
 # 期望: 403
 ```
 
@@ -398,8 +398,8 @@ curl -s -o /dev/null -w "%{http_code}" \
 至少包含一项,**全部来自学校真实环境**:
 - ✅ SSH 命令 + 学校 DB 输出原文
 - ✅ Codex Browser Use 截图(教师/学生关键页面)
-- ✅ `curl http://100.74.141.3:.../api/...` 真打学校 API 输出
-- ✅ `docker exec 743a1e751097_node1-data_db_1 psql ...` SELECT 输出
+- ✅ `curl http://<慧学服务器1-IP>:.../api/...` 真打学校 API 输出
+- ✅ `docker exec <慧学-DB容器名> psql ...` SELECT 输出
 
 不允许:"本地测试通过"/"代码 review 通过"/"本机单测 100%"作为产品 UAT 结论。
 
@@ -422,16 +422,16 @@ Phase 5: 飞书归档 + .verify-checklist.md 终稿
 
 ```
 # 实践课程(默认抽样模式)
-/tempo-course-auditor 神经网络与深度学习
+/huixue-course-auditor 神经网络与深度学习
 
 # 项目实训
-/tempo-course-auditor 某零售企业经营分析
+/huixue-course-auditor 某零售企业经营分析
 
 # 仅教师端
-/tempo-course-auditor 数据清洗 --role=teacher
+/huixue-course-auditor 数据清洗 --role=teacher
 
 # 全量(non-sample)
-/tempo-course-auditor 数据挖掘分析 --mode=deep
+/huixue-course-auditor 数据挖掘分析 --mode=deep
 ```
 
 ---
@@ -439,7 +439,7 @@ Phase 5: 飞书归档 + .verify-checklist.md 终稿
 ## 11. 故障排除
 
 ### Codex Browser Use 连不上
-1. 确认 Codex in-app browser 当前 tab 可打开 `http://100.74.141.3:3000`(Tailscale up)
+1. 确认 Codex in-app browser 当前 tab 可打开 `http://<慧学服务器1-IP>:3000`(Tailscale up)
 2. 使用 Browser Use `iab` backend 读取当前 tab / DOM snapshot / screenshot
 3. 若页面无法连接或超时,立即停下汇报阻塞,不得切到本机环境继续验收
 
@@ -473,7 +473,7 @@ scripts/course_audit/c2b_helper.sh ui-template <practice_id> <task_id>
 等价核心逻辑:
 
 ```bash
-ssh huixueops@100.74.141.3 '
+ssh <慧学运维账号>@<慧学服务器1-IP> '
   TOKEN=$(curl -sS -X POST http://localhost:3000/api/login \
     -H "Content-Type: application/json" \
     -d "{\"username\":\"student1\",\"password\":\"student123\"}" |
@@ -495,7 +495,7 @@ ssh huixueops@100.74.141.3 '
 3. 准备 stub 代码文件与 ref 代码文件。
 4. 跑 stub:`scripts/course_audit/c2b_helper.sh eval <task_id> <stub.py> | tee /tmp/<course>_stub.json`。
 5. 记录学校 API JSON:`status=fail`,通过数/总数,score。
-6. Browser Use 打开 `http://100.74.141.3:3000/#/course/challenge/<practice_id>/<task_id>`,截图确认 task title 与学生身份。
+6. Browser Use 打开 `http://<慧学服务器1-IP>:3000/#/course/challenge/<practice_id>/<task_id>`,截图确认 task title 与学生身份。
 7. 跑 ref:`scripts/course_audit/c2b_helper.sh eval <task_id> <ref.py> | tee /tmp/<course>_ref.json`。
 8. Browser Use 刷新同一 task 页面,截图确认 task title、学生身份、完成状态或可见评测结果。
 9. 汇报"学校 API 输出 × Browser Use 前端显示"对照表。若前端没有提交历史/最新评测面板,必须明示限制:API JSON 是评测结果证据,Browser Use 只证明真实前端页面可访问并显示该 task/完成状态;不得声称前端显示了 stub 0 分。

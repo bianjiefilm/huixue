@@ -6,7 +6,7 @@ L1 测试共享认证辅助
 import time
 import requests
 
-BASE_URL = "http://100.74.141.3:8000"
+BASE_URL = "http://<慧学服务器1-IP>:8000"
 TIMEOUT = 15
 
 _token_cache = {}

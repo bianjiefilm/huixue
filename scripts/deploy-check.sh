@@ -52,7 +52,7 @@ fi
 # 3. 检查 Registry 连接
 echo ""
 echo "【3】Registry 连接检查"
-REGISTRY_URL="${REGISTRY_URL:-172.16.100.41:5000}"
+REGISTRY_URL="${REGISTRY_URL:-<慧学内网物理IP-1>:5000}"
 if docker pull "$REGISTRY_URL/huixue-backend:v8" &>/dev/null; then
     check_pass "Registry 连接正常"
 else

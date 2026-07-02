@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-课程环境自检脚本 - 配合 tempo-course-auditor Skill 使用
+课程环境自检脚本 - 配合 huixue-course-auditor Skill 使用
 用法: python check_course_env.py <course_type> [data_dir]
 
 课程类型:

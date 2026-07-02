@@ -1322,7 +1322,7 @@ const handleSubmitAssignment = async () => {
       `/api/v1/trainings/${route.params.trainingId}/submit`,
       {
         snapshot_json: sceneData,
-        notes: 'Submitted from Tempo BI designer'
+        notes: 'Submitted from 慧学 BI designer'
       },
       {
         params: {

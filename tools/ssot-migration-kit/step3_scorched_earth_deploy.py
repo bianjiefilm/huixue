@@ -11,7 +11,7 @@ step3_scorched_earth_deploy.py — 焦土重置 & 黄金载荷上线
 前置条件:
     - ziyuan_normalized/A_Interactive_Courses/ 已清理至 0 BLOCKER
     - sshpass 已安装 (brew install hudochenkov/sshpass/sshpass)
-    - 服务器 100.74.141.3 可达 (Tailscale)
+    - 服务器 <慧学服务器1-IP> 可达 (Tailscale)
 
 安全机制:
     - 默认 dry-run，打印执行计划
@@ -39,7 +39,7 @@ else:
 # ============================================================
 # SERVER CONFIG
 # ============================================================
-SERVER_IP   = "100.74.141.3"
+SERVER_IP   = "<慧学服务器1-IP>"
 SERVER_USER = "huixuedashuju"
 SERVER_PASS = "kejixueyuan@dashuju"
 SSH_BASE    = f"sshpass -p '{SERVER_PASS}' ssh -o StrictHostKeyChecking=no {SERVER_USER}@{SERVER_IP}"
@@ -51,7 +51,7 @@ REMOTE_ZIYUAN_DIR  = "/data/huixue_storage/static/ziyuan_data_full"
 REMOTE_TMP         = "/tmp/clean_payload.tar.gz"
 
 # Database config (huixue-db-test via Docker internal network)
-DB_HOST = "172.16.100.41"
+DB_HOST = "<慧学内网物理IP-1>"
 DB_PORT = "5432"
 DB_NAME = "huixue"
 DB_USER = "huixue"

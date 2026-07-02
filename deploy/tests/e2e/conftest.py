@@ -10,8 +10,8 @@ from urllib3.util.retry import Retry
 import pytest
 from playwright.sync_api import sync_playwright
 
-BASE_URL = os.environ.get("E2E_BASE_URL", "http://100.74.141.3:3000")
-API_URL = os.environ.get("E2E_API_URL", "http://100.74.141.3:8000")
+BASE_URL = os.environ.get("E2E_BASE_URL", "http://<慧学服务器1-IP>:3000")
+API_URL = os.environ.get("E2E_API_URL", "http://<慧学服务器1-IP>:8000")
 
 
 def resilient_session(retries=3, backoff=1.0, timeout=15):

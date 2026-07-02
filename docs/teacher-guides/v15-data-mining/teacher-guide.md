@@ -5,7 +5,7 @@
 课堂课程：classroom_course 25  
 教师账号：school_admin  
 学生演示账号：student_demo_coding  
-平台地址：学校内网 `http://192.168.109.42:3000`
+平台地址：学校内网 `http://<慧学内网IP-1>:3000`
 学校前端版本：以学校 `/assets/` 目录下当前 `index-xxxx.js` 为准
 
 通用登录、账号、运维和排错流程见 [../00-common.md](../00-common.md)。本文只保留“数据挖掘（机器学习）”课程特异内容。

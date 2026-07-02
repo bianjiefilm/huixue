@@ -7,7 +7,7 @@ import requests
 import uuid
 
 
-BASE_URL = "http://100.74.141.3:8000"
+BASE_URL = "http://<慧学服务器1-IP>:8000"
 TIMEOUT = 15
 
 pytestmark = pytest.mark.l1

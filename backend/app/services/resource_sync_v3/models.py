@@ -38,7 +38,7 @@ class Difficulty(str):
 class EnvironmentType(str):
     """环境类型枚举"""
     JUPYTER = "JUPYTER"        # Jupyter环境
-    TEMPO_BI = "TEMPO_BI"      # BI分析环境
+    HUIXUE_BI = "HUIXUE_BI"      # BI分析环境
     TEMPO_AI = "TEMPO_AI"      # AI设计器环境
     VDI = "VDI"                # 虚拟桌面
     CLI = "CLI"                # 命令行环境

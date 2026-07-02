@@ -1,6 +1,6 @@
 #!/bin/bash
 # === L1-NODE3: Web 节点 #3 (.41) 自检 ===
-# 执行: ssh huixueops@192.168.109.41 'bash -s' < L1_node3_web.sh
+# 执行: ssh <慧学运维账号>@<慧学内网IP-3> 'bash -s' < L1_node3_web.sh
 
 echo "========== L1: Web 节点 #3 自检 =========="
 PASS=0; FAIL=0
@@ -41,7 +41,7 @@ else
 fi
 
 echo -n "[3.6] NFS 挂载 #1 的资源目录... "
-if mount | grep -q "192.168.109.42"; then
+if mount | grep -q "<慧学内网IP-1>"; then
   echo "✅"; ((PASS++))
 else
   echo "❌"; ((FAIL++))

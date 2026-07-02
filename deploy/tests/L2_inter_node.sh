@@ -1,7 +1,7 @@
 #!/bin/bash
 # === L2: 节点间通信验证 ===
 # 执行位置: Web节点上执行 (.43)
-# ssh huixueops@192.168.109.43 'bash -s' < L2_inter_node.sh
+# ssh <慧学运维账号>@<慧学内网IP-2> 'bash -s' < L2_inter_node.sh
 
 echo "========== L2: 节点间通信验证 =========="
 PASS=0; FAIL=0
@@ -9,14 +9,14 @@ PASS=0; FAIL=0
 # --- #3 → #1 通信 ---
 
 echo -n "[L2.1] #3 → #1 PostgreSQL (5432)... "
-if timeout 3 bash -c "echo > /dev/tcp/192.168.109.42/5432" 2>/dev/null; then
+if timeout 3 bash -c "echo > /dev/tcp/<慧学内网IP-1>/5432" 2>/dev/null; then
   echo "✅"; ((PASS++))
 else
   echo "❌ 连接超时"; ((FAIL++))
 fi
 
 echo -n "[L2.2] #3 → #1 Redis (6379)... "
-if timeout 3 bash -c "echo > /dev/tcp/192.168.109.42/6379" 2>/dev/null; then
+if timeout 3 bash -c "echo > /dev/tcp/<慧学内网IP-1>/6379" 2>/dev/null; then
   echo "✅"; ((PASS++))
 else
   echo "❌ 连接超时"; ((FAIL++))
@@ -40,7 +40,7 @@ fi
 # --- #3 → #2 通信 ---
 
 echo -n "[L2.5] #3 → #2 SSH 连通性... "
-if timeout 3 bash -c "echo > /dev/tcp/192.168.109.43/22" 2>/dev/null; then
+if timeout 3 bash -c "echo > /dev/tcp/<慧学内网IP-2>/22" 2>/dev/null; then
   echo "✅"; ((PASS++))
 else
   echo "❌"; ((FAIL++))
@@ -65,8 +65,8 @@ else
 fi
 
 echo -n "[L2.8] 三节点互 ping... "
-P1=$(ping -c 1 -W 1 192.168.109.42 2>/dev/null | grep -c "1 received")
-P2=$(ping -c 1 -W 1 192.168.109.43 2>/dev/null | grep -c "1 received")
+P1=$(ping -c 1 -W 1 <慧学内网IP-1> 2>/dev/null | grep -c "1 received")
+P2=$(ping -c 1 -W 1 <慧学内网IP-2> 2>/dev/null | grep -c "1 received")
 if [ "$P1" = "1" ] && [ "$P2" = "1" ]; then
   echo "✅"; ((PASS++))
 else

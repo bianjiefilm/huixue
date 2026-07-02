@@ -18,9 +18,9 @@ from typing import Generator, Optional, Dict, Any
 # 环境配置（支持环境变量覆盖默认值）
 # ─────────────────────────────────────────────────────────────
 
-TEST_BASE_URL: str = os.environ.get("TEST_BASE_URL", "http://100.74.141.3:3000")
-TEST_API_URL: str = os.environ.get("TEST_API_URL", "http://100.74.141.3:8000")
-TEST_JUPYTER_URL: str = os.environ.get("TEST_JUPYTER_URL", "http://100.74.141.3:8888")
+TEST_BASE_URL: str = os.environ.get("TEST_BASE_URL", "http://<慧学服务器1-IP>:3000")
+TEST_API_URL: str = os.environ.get("TEST_API_URL", "http://<慧学服务器1-IP>:8000")
+TEST_JUPYTER_URL: str = os.environ.get("TEST_JUPYTER_URL", "http://<慧学服务器1-IP>:8888")
 
 # 超时配置（适配 Tailscale VPN 网络）
 TIMEOUT_SHORT = 15    # 简单 GET 请求

@@ -49,16 +49,16 @@ git commit:
 ```bash
 # 首次试错: case_id NOT NULL 未填, INSERT 全部失败
 # Task 118 数据被 DELETE, 紧急恢复
-ssh huixueops@100.74.141.3 "sudo docker exec 743a1e751097_node1-data_db_1 \
+ssh <慧学运维账号>@<慧学服务器1-IP> "sudo docker exec <慧学-DB容器名> \
   psql -U huixue -d huixue" -c "DELETE FROM task_tests WHERE task_id = 118;"
 
 # 紧急恢复 33 个原 case_id 测试 (使用旧 wx_tests.txt 数据)
-cat /tmp/p3_redesign/restore_118.sql | ssh huixueops@100.74.141.3 \
-  "sudo docker exec -i 743a1e751097_node1-data_db_1 psql -U huixue -d huixue"
+cat /tmp/p3_redesign/restore_118.sql | ssh <慧学运维账号>@<慧学服务器1-IP> \
+  "sudo docker exec -i <慧学-DB容器名> psql -U huixue -d huixue"
 
 # 修复 gen_sql.py 加入 case_id 后, 全量重试
-cat /tmp/p3_redesign/apply_tests.sql | ssh huixueops@100.74.141.3 \
-  "sudo docker exec -i 743a1e751097_node1-data_db_1 psql -U huixue -d huixue"
+cat /tmp/p3_redesign/apply_tests.sql | ssh <慧学运维账号>@<慧学服务器1-IP> \
+  "sudo docker exec -i <慧学-DB容器名> psql -U huixue -d huixue"
 ```
 
 ### 步骤 3 - 学校实证 (DB SELECT)

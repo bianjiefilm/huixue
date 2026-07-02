@@ -34,7 +34,7 @@
 ## P3: 学校 DB 容器历史漂移
 
 - **Status**: 运维清理项,不影响产品运行。
-- **Observed**: `huixue-db` stopped 容器与当前运行中 `743a1e751097_node1-data_db_1` 同存。
+- **Observed**: `huixue-db` stopped 容器与当前运行中 `<慧学-DB容器名>` 同存。
 - **Policy**: 文档与验收命令以 `docker ps` 实查为准；不擅自删除 stopped 容器。
 - **Next**: 由运维窗口统一清点历史容器。
 
@@ -49,7 +49,7 @@
 - **Status**: 文档/验收脚本维护项,不影响产品功能。
 - **Observed**: Stage B UAT 中旧示例 `/api/v1/teachers/{teacher_id}/practices/{practice_id}/tasks/{task_id}/submissions` 返回 404；学校真实 route 为 `/api/v1/teachers/{teacher_id}/classrooms/{classroom_id}/courses/{course_id}/submissions`。
 - **Evidence**: 真实 route 已验证匿名 401、student 403、teacher fake id 403。
-- **Next**: 下次文档维护时同步 `.codex/commands/tempo-course-auditor.md` 与 `.claude/commands/tempo-course-auditor.md` 的 Z1 示例。
+- **Next**: 下次文档维护时同步 `.codex/commands/huixue-course-auditor.md` 与 `.claude/commands/huixue-course-auditor.md` 的 Z1 示例。
 
 ## P3: add-to-classroom malformed body 先触发 422
 

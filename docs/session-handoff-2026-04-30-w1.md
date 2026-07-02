@@ -9,7 +9,7 @@
 3. Python 待修: route ID 合同错位调研定位完成,推下次。
 4. Spark 文档对齐: pytest_module 5 综合关移除 Spark12,`KNOWN_ISSUES.md` 已记录。
 5. CV 补打分: API 写入 SCP 落库,frontend 显示验证。
-6. Tempo Course Auditor v2 文档: 全部 P0/P1 修复 + Phase 3.2 SQL schema 对齐。
+6. 慧学 Course Auditor v2 文档: 全部 P0/P1 修复 + Phase 3.2 SQL schema 对齐。
 7. 飞书归档表已创建: app token `O8NGb2Yaaau7RnsGhZ3cwzgOnPd`,table id `tblXiR5JUTAWwZRY`。
 
 ## 下次 session 启动条件

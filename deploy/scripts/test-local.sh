@@ -25,9 +25,9 @@ echo_fail() { echo -e "${RED}[FAIL]${NC} $1"; }
 
 # 配置
 NODES=(
-    "172.16.100.41:bigdata-platform"
-    "172.16.100.146:dashujuyingyong"
-    "172.16.100.176:huixuedashuju"
+    "<慧学内网物理IP-1>:bigdata-platform"
+    "<慧学内网物理IP-2备>:dashujuyingyong"
+    "<慧学内网物理IP-3备>:huixuedashuju"
 )
 
 SSH_USER="root"

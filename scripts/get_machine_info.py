@@ -101,7 +101,7 @@ class MachineIdentifier:
             import socket
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             # 不需要实际连接
-            s.connect(("172.16.100.41", 80))
+            s.connect(("<慧学内网物理IP-1>", 80))
             ip = s.getsockname()[0]
             s.close()
             return ip

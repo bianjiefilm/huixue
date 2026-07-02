@@ -1,7 +1,7 @@
 #!/bin/bash
 # === L3: 服务集成验证 ===
 # 执行位置: #3(.41) 或任何可访问平台的机器
-# ssh huixueops@192.168.109.41 'bash -s' < L3_service_integration.sh
+# ssh <慧学运维账号>@<慧学内网IP-3> 'bash -s' < L3_service_integration.sh
 
 echo "========== L3: 服务集成验证 =========="
 PASS=0; FAIL=0

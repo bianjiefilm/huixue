@@ -8,7 +8,7 @@ tests/playwright_full_audit.py
     BASE_URL=http://localhost:3000 python -m pytest tests/playwright_full_audit.py -v
 
     # 远程服务器
-    BASE_URL=http://100.74.141.3:3000 python -m pytest tests/playwright_full_audit.py -v
+    BASE_URL=http://<慧学服务器1-IP>:3000 python -m pytest tests/playwright_full_audit.py -v
 
     # 仅运行 admin 角色
     python -m pytest tests/playwright_full_audit.py -v -k "admin"

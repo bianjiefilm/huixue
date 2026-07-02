@@ -10,7 +10,7 @@
 #   #3 (.41) Web 节点:  后端(FastAPI) + 前端(Nginx)
 #
 # 前提:
-#   - Mac 已配置 SSH 免密到三台服务器 (huixueops)
+#   - Mac 已配置 SSH 免密到三台服务器 (<慧学运维账号>)
 #   - 三台服务器已安装 Docker + Docker Compose
 # =============================================================================
 
@@ -18,9 +18,9 @@ set -euo pipefail
 
 # === 配置 ===
 # Tailscale IPs (校园内网不通时使用)
-NODE1="huixueops@100.74.141.3"    # 数据节点 (#1 bigdata-platform)
-NODE2="huixueops@100.91.185.49"   # 计算节点 (#2 dashujuyingyong)
-NODE3="huixueops@100.84.15.6"     # Web 节点  (#3 huixuedashuju)
+NODE1="<慧学运维账号>@<慧学服务器1-IP>"    # 数据节点 (#1 bigdata-platform)
+NODE2="<慧学运维账号>@<慧学服务器2-IP>"   # 计算节点 (#2 dashujuyingyong)
+NODE3="<慧学运维账号>@<慧学服务器3-IP>"     # Web 节点  (#3 huixuedashuju)
 
 REMOTE_DIR="/opt/huixue-yuanban"
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -104,21 +104,21 @@ cmd_start() {
 echo "▶ 阶段 1: 同步代码"
 
 echo -n "  [1/3] 同步到 #1 数据节点 (.42)... "
-ssh $NODE1 "sudo mkdir -p $REMOTE_DIR && sudo chown huixueops:huixueops $REMOTE_DIR"
+ssh $NODE1 "sudo mkdir -p $REMOTE_DIR && sudo chown <慧学运维账号>:<慧学运维账号> $REMOTE_DIR"
 rsync -az --delete "${EXCLUDES[@]}" \
   --exclude='ziyuan_data/' \
   "$PROJECT_ROOT/" "$NODE1:$REMOTE_DIR/" 2>/dev/null
 echo "✅"
 
 echo -n "  [2/3] 同步到 #2 计算节点 (.43)... "
-ssh $NODE2 "sudo mkdir -p $REMOTE_DIR && sudo chown huixueops:huixueops $REMOTE_DIR"
+ssh $NODE2 "sudo mkdir -p $REMOTE_DIR && sudo chown <慧学运维账号>:<慧学运维账号> $REMOTE_DIR"
 rsync -az --delete "${EXCLUDES[@]}" \
   --exclude='ziyuan_data/' \
   "$PROJECT_ROOT/" "$NODE2:$REMOTE_DIR/" 2>/dev/null
 echo "✅ (不含资源文件，用 NFS)"
 
 echo -n "  [3/3] 同步到 #3 Web 节点 (.41)... "
-ssh $NODE3 "sudo mkdir -p $REMOTE_DIR && sudo chown huixueops:huixueops $REMOTE_DIR"
+ssh $NODE3 "sudo mkdir -p $REMOTE_DIR && sudo chown <慧学运维账号>:<慧学运维账号> $REMOTE_DIR"
 rsync -az --delete "${EXCLUDES[@]}" \
   --exclude='ziyuan_data/' \
   "$PROJECT_ROOT/" "$NODE3:$REMOTE_DIR/" 2>/dev/null
@@ -201,11 +201,11 @@ set -e
 
 # 挂载 NFS
 sudo mkdir -p /mnt/huixue_data
-if ! mount | grep -q "192.168.109.42"; then
-  sudo mount -t nfs 192.168.109.42:/data/huixue_storage/ziyuan_data /mnt/huixue_data
+if ! mount | grep -q "<慧学内网IP-1>"; then
+  sudo mount -t nfs <慧学内网IP-1>:/data/huixue_storage/ziyuan_data /mnt/huixue_data
   # 写入 fstab 持久化
-  grep -q "192.168.109.42" /etc/fstab || \
-    echo "192.168.109.42:/data/huixue_storage/ziyuan_data /mnt/huixue_data nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+  grep -q "<慧学内网IP-1>" /etc/fstab || \
+    echo "<慧学内网IP-1>:/data/huixue_storage/ziyuan_data /mnt/huixue_data nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 fi
 
 # 构建/拉取 Jupyter 镜像
@@ -237,10 +237,10 @@ cd /opt/huixue-yuanban
 
 # NFS 挂载资源目录
 sudo mkdir -p /mnt/huixue_data
-if ! mount | grep -q "192.168.109.42"; then
-  sudo mount -t nfs 192.168.109.42:/data/huixue_storage/ziyuan_data /mnt/huixue_data
-  grep -q "192.168.109.42" /etc/fstab || \
-    echo "192.168.109.42:/data/huixue_storage/ziyuan_data /mnt/huixue_data nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+if ! mount | grep -q "<慧学内网IP-1>"; then
+  sudo mount -t nfs <慧学内网IP-1>:/data/huixue_storage/ziyuan_data /mnt/huixue_data
+  grep -q "<慧学内网IP-1>" /etc/fstab || \
+    echo "<慧学内网IP-1>:/data/huixue_storage/ziyuan_data /mnt/huixue_data nfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 fi
 
 # 创建 .env 指向 #1 的数据库
@@ -249,25 +249,25 @@ cat > .env << 'ENVEOF'
 POSTGRES_DB=huixue
 POSTGRES_USER=huixue
 POSTGRES_PASSWORD=huixue123
-DATABASE_URL=postgresql://huixue:huixue123@192.168.109.42:5432/huixue
+DATABASE_URL=postgresql://huixue:huixue123@<慧学内网IP-1>:5432/huixue
 
 # Redis (#1 数据节点)
-REDIS_HOST=192.168.109.42
+REDIS_HOST=<慧学内网IP-1>
 REDIS_PORT=6379
 
 # 资源目录 (NFS 挂载)
 HUIXUE_RESOURCE_DIR=/mnt/huixue_data
 
 # Docker (#2 计算节点)
-DOCKER_HOST=ssh://huixueops@192.168.109.43
+DOCKER_HOST=ssh://<慧学运维账号>@<慧学内网IP-2>
 
 # JWT
 SECRET_KEY=huixue_production_secret_key_2026
 
 # 其他
 BI_PROXY_ENABLED=true
-BI_PARENT_ORIGIN=http://192.168.109.41:3000
-JUPYTER_BASE_URL=http://192.168.109.43
+BI_PARENT_ORIGIN=http://<慧学内网IP-3>:3000
+JUPYTER_BASE_URL=http://<慧学内网IP-2>
 ENVEOF
 
 # 构建后端镜像
@@ -309,8 +309,8 @@ echo ""
 echo "╔══════════════════════════════════════════╗"
 echo "║   ✅ 部署完成！L1-L3 全部通过            ║"
 echo "║                                          ║"
-echo "║   平台地址: http://192.168.109.41:3000    ║"
-echo "║   后端 API: http://192.168.109.41:8000    ║"
+echo "║   平台地址: http://<慧学内网IP-3>:3000    ║"
+echo "║   后端 API: http://<慧学内网IP-3>:8000    ║"
 echo "║                                          ║"
 echo "║   请进入 L4 浏览器冒烟测试               ║"
 echo "╚══════════════════════════════════════════╝"
