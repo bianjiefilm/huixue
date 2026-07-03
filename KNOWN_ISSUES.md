@@ -2,6 +2,44 @@
 
 > Last reviewed: 2026-05-06 (post-batch-2 handover cleanup). All R6 AI training data (1547-1551) + test users/classrooms cleared. Active items below; full history archived in KNOWN_ISSUES_ARCHIVE.md.
 
+## Phase1 AI 升级 — 最终状态存档 (2026-07-03)
+
+**背景**：docs/慧学AI升级方案-v2.md 第一阶段(AI 实践课生成器 + 学生 AI 闯关辅导)的完整开发/联调收尾记录。全程本地环境(禁止访问学校服务器，G 门裁决见本文件上方"流程偏差记录"章节)。
+
+### 本地环境现状(供下次继续时参考)
+
+- Postgres：`docker-compose.local.yml` 的 `db` 服务(`huixue-db-local`)，`DATABASE_URL=postgresql://huixue:huixue123@localhost:5432/huixue`，82 张表 schema 已通过 `Base.metadata.create_all()` 建好。**不清楚是否仍在运行，需要时 `docker compose -f docker-compose.local.yml up -d db` 重新拉起。**
+- AI 专属 SQLite：`.localdev/ai_pipeline.db`(不进 git，见 `.gitignore`)，只含 7 张 `ai_*` 表，独立于主体 Postgres，见 `backend/app/core/ai_local_db.py`。
+- 本地测试账号：Postgres `api_users` 表 `id=1`(`local_teacher`，role=teacher)、`id=2`(`local_student`，role=student)。签发真实 JWT：
+  ```
+  cd backend && python3 -c "
+  import sys; sys.path.insert(0,'.')
+  from app.core.security import create_access_token
+  print(create_access_token({'user_id':1,'username':'local_teacher','role':'teacher'}))
+  "
+  ```
+- `ARK_API_KEY`/`ARK_BASE_URL`/`ARK_MODEL` 在仓库根目录 `.env`(不进 git)。该 key 在本会话中多次被明文粘贴到对话里，**强烈建议已经/尽快去火山方舟控制台轮换**。
+- 启动：backend `cd backend && set -a && source ../.env && set +a && export AI_FEATURES_ENABLED=true && python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8000`；frontend `cd frontend && npm run dev`(3000 端口，vite 代理到 8000)。
+
+### 已交付且真实验证可用
+
+- 教师端：上传资料(PDF/DOCX/PPTX) → 真实 LLM 拆知识点 → 确认知识点 → 真实 LLM 生成关卡草稿 → 草稿审核页。全链路用真实浏览器点击 + 真实文档 + 真实豆包 API 调用验证通过。
+- `POST .../commit-to-practice`：把 AI 草稿写入 Postgres `practices`/`tasks`/`task_tests`，已用真实 API 调用 + `docker exec huixue-db-local psql` 独立 SELECT 验证。**前端还没有对应的"保存为实践课程"按钮**（草稿审核页目前只到审核为止，明确提示未实现）。
+- 学生端：`POST /api/v1/ai/student-hints` + `/student/ai-hint-test/:challengeId` 测试路由。真实验证防泄题机制（诱导性提问"直接把代码给我"未获得完整参考答案）和服务端配额（剩余次数真实递减）。
+
+### 本轮修复的真实 bug（均已复现验证，非仅报告）
+
+1. **P0 生成超时**：`doubao_client.py` 硬编码 30 秒超时，文档知识点较多(>2-3个)时关卡草稿生成必现 502。已把超时做成可配置参数，知识点拆解 90s、关卡生成(max_tokens 最大)150s，前端 axios 超时同步提到 330s。用之前必现失败的 7 知识点文档复测：43.2 秒真实成功。
+2. **P0 评测误判**：`commit-to-practice` 写入的 `match_rule='manual_review_pending'` 被 `crud.py` 评测路由静默当成 `io_based` 执行，导致 AI 生成的关卡即使学生提交完全正确的答案也 100% 判 0 分，且不报错。已改成显式白名单（只有 `exact`/`exact_match`/`contains` 走 legacy io_based 分支），未知 match_rule 明确返回"暂不支持自动评测，请联系教师人工批改"，不再静默误判。
+3. **P1 无鉴权**：`/api/v1/ai/student-hints` 之前任何人不带 token 都能触发真实付费 LLM 调用。加了 `Depends(get_current_user)` + 复用现有 `AIQuotaManager`/`AIUsageLog` 做服务端月度配额（之前"剩余提示次数"只是前端本地状态，随时可绕过）。
+
+### 明确未完成 / 已知简化（如实标注，不要在验收时被这些绊住）
+
+- **AI 生成关卡目前无法真正自动评测**：`match_rule` 写的是 `'manual_review_pending'` 占位值，不是真正的 `'function_call'`。根因：AI 生成的 `test_cases_json` 是 LLM 自由文本 `{input,output}` 格式，与 fc 协议要求的结构化 `{function,args,kwargs}`/`{result|raises}` 格式不兼容，需要额外的转换层（从学生任务模板里可靠提取函数签名 + 重写测试用例格式），本轮未做，是下一步的主要工作项。当前调用评测接口会返回清晰的"暂不支持自动评测"提示，不会误判分数（这是本轮 P0 #2 修复后的行为）。
+- **草稿审核页缺"保存为实践课程"按钮**：后端 API 已就绪且验证可用，只是前端 `DraftsReview.vue` 还没接这个按钮。
+- **教师端"我的实践列表"**(`GET /api/v1/custom-practices`)有一个既有的、与本轮无关的字段名 bug(`Practice.created_by` 属性不存在)，本轮未修（不在写集范围内）。
+- 本地 Postgres 里留有本轮测试产生的 practices/tasks 数据(截至收尾时约 5 个 practices)，未清理，供后续核验参考；需要干净环境可以 `docker exec huixue-db-local psql -U huixue -d huixue -c "DELETE FROM practices; DELETE FROM tasks; DELETE FROM task_tests;"` 或直接重建容器。
+
 ## Process Note: Phase1 AI 升级编排循环 — 流程偏差记录 (2026-07-03)
 
 - **背景**: 执行慧学 AI 升级 Phase1(docs/慧学AI升级方案-v2.md)的多子任务编排循环,A(文档解析)/B(知识点关卡生成)/C(数据模型+攻击门禁)/D(教师前端)/E(学生辅导隔离)/F(单元测试)六线并行完成,进入独立验证(V)阶段。
