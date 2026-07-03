@@ -20,8 +20,10 @@ class DoubaoClient:
     def __init__(self):
         # 密钥只从环境变量读取；本模块顶层有全局实例,缺失时推迟到调用时报错
         self.api_key = os.getenv("ARK_API_KEY", "")
-        self.base_url = "https://ark.cn-beijing.volces.com/api/v3"
-        self.model = "doubao-seed-1-6-flash-250828"
+        # base_url/model 可通过环境变量覆盖，用于适配不同套餐(如 Agent Plan 走 /api/plan/v3
+        # 且模型名为 doubao-seed-2.0-* 系列，与标准按量付费 /api/v3 + doubao-seed-1-6-* 不同)
+        self.base_url = os.getenv("ARK_BASE_URL", "https://ark.cn-beijing.volces.com/api/v3")
+        self.model = os.getenv("ARK_MODEL", "doubao-seed-1-6-flash-250828")
         self.cache = get_cache()
 
     def _generate_query_hash(self, messages: List[Dict], **kwargs) -> str:

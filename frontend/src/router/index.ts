@@ -220,6 +220,26 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: '/teacher/ai-practice-generator',
+        name: 'TeacherAiPracticeGenerator',
+        component: () => import('../views/teacher-ai/GeneratorForm.vue'),
+        meta: {
+          title: 'AI 生成实践闯关任务',
+          requiresAuth: true,
+          requiresTeacher: true
+        }
+      },
+      {
+        path: '/teacher/ai-practice-generator/:jobId/knowledge',
+        name: 'TeacherAiPracticeGeneratorKnowledge',
+        component: () => import('../views/teacher-ai/KnowledgeConfirm.vue'),
+        meta: {
+          title: '知识点确认',
+          requiresAuth: true,
+          requiresTeacher: true
+        }
+      },
+      {
         path: 'classroom/:id/learning-analytics',
         name: 'LearningAnalytics',
         component: () => import('../views/classroom/LearningAnalytics.vue'),

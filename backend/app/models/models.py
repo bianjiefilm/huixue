@@ -1944,4 +1944,149 @@ class NodeExecution(Base):
     # 关系
     run = relationship("PipelineRun", backref="node_executions")
 
+# ==================== AI 教学能力层：关卡自动生成 (慧学AI升级方案-v2 第十五章) ====================
+
+# AI 生成任务表
+class AIGenerationJob(Base):
+    __tablename__ = "ai_generation_jobs"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    school_id = Column(Integer, nullable=True)  # 学校ID
+    teacher_id = Column(Integer, ForeignKey("api_users.id"), nullable=False)
+    classroom_id = Column(Integer, ForeignKey("classrooms.id"), nullable=True)
+    practice_id = Column(Integer, nullable=True)  # 目标实践课程ID（提交后回填）
+    objective = Column(Text, nullable=True)  # 生成目标，如"让学生掌握数据导入、清洗和基础可视化"
+    student_level = Column(String(50), nullable=True)  # 学生水平：learned_but_cannot_apply 等
+    source_document_ids = Column(JSON, default=list)  # 关联的来源资料ID列表
+    suggested_challenge_count = Column(Integer, nullable=True)  # AI建议关卡数
+    selected_challenge_count = Column(Integer, nullable=True)  # 老师确认的关卡数
+    status = Column(String(30), default="uploaded")  # uploaded/parsed/knowledge_extracted/knowledge_confirmed/draft_generated/validated/committed/failed
+    model_name = Column(String(100), nullable=True)  # 生成所用模型名称
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # 关系
+    teacher = relationship("User", foreign_keys=[teacher_id])
+
+# AI 来源资料表
+class AISourceDocument(Base):
+    __tablename__ = "ai_source_documents"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    school_id = Column(Integer, nullable=True)
+    teacher_id = Column(Integer, ForeignKey("api_users.id"), nullable=False)
+    resource_id = Column(Integer, nullable=True)  # 关联现有资源库ID（可选）
+    file_name = Column(String(255), nullable=False)
+    file_type = Column(String(50), nullable=True)  # pdf/docx/pptx 等
+    file_size = Column(Integer, nullable=True)  # 字节数
+    checksum = Column(String(128), nullable=True)  # 文件校验和
+    parse_status = Column(String(30), default="pending")  # pending/parsing/parsed/failed
+    extracted_text_uri = Column(Text, nullable=True)  # 解析后文本存储位置
+    page_count = Column(Integer, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # 关系
+    teacher = relationship("User", foreign_keys=[teacher_id])
+
+# AI 文档分块表
+class AIDocumentChunk(Base):
+    __tablename__ = "ai_document_chunks"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    document_id = Column(String(36), ForeignKey("ai_source_documents.id"), nullable=False)
+    page_no = Column(Integer, nullable=True)
+    section_title = Column(String(255), nullable=True)
+    chunk_text = Column(Text, nullable=False)
+    chunk_order = Column(Integer, nullable=False, default=0)
+    embedding_id = Column(String(128), nullable=True)  # 向量索引ID（可选）
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # 关系
+    document = relationship("AISourceDocument", backref="chunks")
+
+# AI 知识点表
+class AIKnowledgePoint(Base):
+    __tablename__ = "ai_knowledge_points"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    job_id = Column(String(36), ForeignKey("ai_generation_jobs.id"), nullable=False)
+    title = Column(String(255), nullable=False)
+    summary = Column(Text, nullable=True)
+    source_refs_json = Column(JSON, default=list)  # [{document_id, page, chunk_id}]
+    suggested_difficulty = Column(String(20), nullable=True)  # beginner/intermediate/advanced
+    suggested_challenge_type = Column(String(20), nullable=True)  # auto/manual
+    selected = Column(Boolean, default=True)  # 老师是否确认保留
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # 关系
+    job = relationship("AIGenerationJob", backref="knowledge_points")
+
+# AI 关卡草稿表
+class AIChallengeDraft(Base):
+    __tablename__ = "ai_challenge_drafts"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    job_id = Column(String(36), ForeignKey("ai_generation_jobs.id"), nullable=False)
+    knowledge_point_ids_json = Column(JSON, default=list)  # 关联知识点ID列表
+    title = Column(String(255), nullable=False)
+    difficulty = Column(String(20), nullable=True)
+    skill_tags_json = Column(JSON, default=list)
+    task_markdown = Column(Text, nullable=True)  # 任务说明（Markdown）
+    evaluation_mode = Column(String(10), default="auto")  # auto/manual
+    student_files_json = Column(JSON, default=dict)  # 学生任务文件模板
+    evaluator_files_json = Column(JSON, default=dict)  # 评测脚本文件
+    test_cases_json = Column(JSON, default=list)  # 可见测试集
+    hidden_test_cases_json = Column(JSON, default=list)  # 隐藏测试集
+    reference_answer = Column(Text, nullable=True)  # 参考答案（仅教师端可见）
+    rubric_json = Column(JSON, default=dict)  # 人工验收评分Rubric
+    validation_status = Column(String(20), default="pending")  # pending/passed/warning/failed
+    status = Column(String(20), default="draft")  # draft/edited/committed
+    version = Column(Integer, default=1)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # 关系
+    job = relationship("AIGenerationJob", backref="challenge_drafts")
+
+# AI 草稿版本表
+class AIChallengeDraftVersion(Base):
+    __tablename__ = "ai_challenge_draft_versions"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    draft_id = Column(String(36), ForeignKey("ai_challenge_drafts.id"), nullable=False)
+    version = Column(Integer, nullable=False)
+    content_snapshot_json = Column(JSON, default=dict)  # 该版本完整快照
+    regenerate_instruction = Column(Text, nullable=True)  # 老师填写的修改意见
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # 关系
+    draft = relationship("AIChallengeDraft", backref="versions")
+
+# AI 校验结果表（含对抗攻击矩阵，第九章）
+class AIValidationResult(Base):
+    __tablename__ = "ai_validation_results"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    draft_id = Column(String(36), ForeignKey("ai_challenge_drafts.id"), nullable=False)
+
+    # 第一道门禁：结构与安全校验
+    schema_valid = Column(Boolean, default=False)
+    command_valid = Column(Boolean, default=False)
+    reference_passed = Column(Boolean, default=False)
+    security_passed = Column(Boolean, default=False)
+
+    # 第二道门禁：对抗攻击验证（4类攻击 fail 率）
+    attack_stub_fail_rate = Column(Float, nullable=True)       # A类，要求 == 1.0
+    attack_hardcode_fail_rate = Column(Float, nullable=True)   # B类，要求 >= 0.8
+    attack_shape_fail_rate = Column(Float, nullable=True)      # C类，要求 >= 0.8
+    attack_identity_fail_rate = Column(Float, nullable=True)   # D类，要求 >= 0.8
+
+    redline_results_json = Column(JSON, default=dict)  # 5条红线 x 每个测试函数的 ✓/✗ 矩阵
+    warnings_json = Column(JSON, default=list)
+    errors_json = Column(JSON, default=list)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # 关系
+    draft = relationship("AIChallengeDraft", backref="validation_results")
+
 # ==================== 资源同步服务枚举 ====================
