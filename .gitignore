@@ -8,3 +8,4 @@ backend/static/
 ziyuan_normalized/
 ziyuan_data/
 .DS_Store
+.localdev/

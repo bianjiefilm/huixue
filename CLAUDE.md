@@ -23,10 +23,10 @@ scripts/          工具脚本
 
 ## 工作汇报纪律 (慧学项目硬约束)
 
-1. 声明"N 关完成"时必须附学校 DB 真实 SELECT 结果作证据:
-   `ssh <慧学运维账号>@<慧学服务器1-IP> "sudo docker exec <慧学-DB容器名> psql -U huixue -d huixue -c 'SELECT COUNT(*) FROM tasks WHERE practice_id = X;'"` — 数字不对立即返工, 不允许后续补齐。
+1. 声明"N 关完成"时必须附本地 DB 真实 SELECT 结果作证据(本地 Docker Compose 起的 DB 容器):
+   `docker exec <本地-DB容器名> psql -U huixue -d huixue -c 'SELECT COUNT(*) FROM tasks WHERE practice_id = X;'` — 数字不对立即返工, 不允许后续补齐。
 
-2. 遇到环境阻塞 (SSH 断, DB 连不上, 网络超时等) 必须立即停下汇报阻塞现象, 不得自行 fallback 到本地环境继续任务。fallback 本地继续 = 伪造完成汇报。
+2. 遇到环境阻塞 (DB 连不上, 依赖装不上等) 必须立即停下汇报阻塞现象, 不得静默跳过继续任务、不得凭假设编造结果。
 
 3. 汇报中不得使用措辞宽泛的状态描述 (如"DB 容器被重置"、"从零重装") 而没有具体证据。必须贴具体命令输出。
 
@@ -99,65 +99,38 @@ fc 协议下学生函数返回 `Dict[tuple, V]` 不可表达。
 
 ## 测试与部署铁律(不可商讨)
 
-### 1. 测试边界:学校服务器是唯一证据来源
+### 1. 测试边界:本地环境是唯一证据来源
 
-慧学产品测试**必须在真实部署环境执行**,通过 Tailscale 隧道访问:
+慧学项目当前**禁止访问学校服务器**,产品测试只在本地环境执行(本地 Docker Compose 起 frontend/backend/DB):
 
-- Web UAT: Chrome MCP 访问 `http://<慧学服务器1-IP>:3000`(学校 frontend 真实地址)
-- API 测试: 真打学校 backend `<慧学服务器1-IP>:8000`(或 nginx proxy)
-- DB 验证: SSH `<慧学运维账号>@<慧学服务器1-IP>` → `docker exec huixue-db psql ...`
-- 评测器验证: 学校真实 docker container 跑 v2 fc / pytest_module / io_based 三路由
-- 学生/教师视角: student1 / teacher1 / admin 真账号在学校 frontend 登录
+- Web UAT: Chrome MCP 或浏览器访问本地 frontend(如 `http://localhost:3000`)
+- API 测试: 打本地 backend(如 `http://localhost:8000`)
+- DB 验证: 本地 `docker exec <本地-DB容器名> psql ...`
+- 评测器验证: 本地 docker container 跑 v2 fc / pytest_module / io_based 三路由
+- 学生/教师视角: 本地测试账号登录
 
 **禁止行为**:
-- 本机起 backend / 本机 sqlite / 本机 docker 跑测试,然后报"功能验证通过"
-- 用 mock 数据 / fixture 数据替代学校真实 DB 查询结果
 - "代码 review 通过"作为测试证据
-- "本地单元测试 100% 通过"作为产品 UAT 结论
+- 声称功能通过却没有实际运行结果(命令输出/截图/DB SELECT)佐证
 
-**理由**:学校真实环境含 musl 容器 / 真实 DB schema / 真实 classroom_courses 数据 / 真实 frontend nginx 路由 / 真实 Tailscale 网络。任何本地环境差异(镜像不同 / 包版本不同 / DB 数据不同 / 路由配置不同)都会让本地测试结论与生产结论脱钩。本 session 多次"backend 修了 frontend 不调"问题就是脱钩典型,只有学校真实环境验证才能发现。
+### 2. 开发路径:本地开发 → 本地验证 → git commit
 
-### 2. 修复路径:本地开发 → 同步学校 → 学校部署
+所有产品改动遵守:
 
-所有产品改动严格遵守三步:
-
-**Step 1 — 本地开发**
 - 在本地 git 仓库写代码 / 改 SQL
-- 本地通过 lint / py_compile / 单元测试基本检查
+- 本地通过 lint / py_compile / 单元测试 / 本地环境集成测试
 - git commit(commit message 包含 scope + 修复链路 + 影响面)
-
-**Step 2 — 同步学校**
-- 所有更新统一使用阿里云 OSS 中转,禁止再用 `scp` / `rsync` / SSH stdin 直传大文件到学校服务器。
-- 本地先将部署包上传到 OSS,学校服务器再通过 `curl`/`ossutil` 从 OSS 下载到 `/tmp`,并用 sha256 校验后部署。
-- OSS bucket: `<慧学OSS-Bucket>`
-- OSS endpoint: `oss-cn-chengdu.aliyuncs.com`
-- OSS bucket domain: `<慧学OSS-Bucket域名>`
-- CNAME domain: `<慧学OSS-CNAME域名>`
-- OSS 凭据只从本机私有配置或环境变量读取,不得写入 git 文档/commit/日志。建议变量名:
-  `ALIYUN_OSS_ACCESS_KEY_ID`, `ALIYUN_OSS_ACCESS_KEY_SECRET`, `ALIYUN_OSS_ENDPOINT`, `ALIYUN_OSS_BUCKET`。
-- backend/frontend/SQL 部署包建议命名为:
-  `oss://<慧学OSS-Bucket>/deploy/huixue/<timestamp>-<commit>-<artifact>.tgz`。
-
-**Step 3 — 学校部署 + 实证**
-- backend: `docker restart huixue-backend` + `curl /health` + canary 真跑(任意 v2 fc 关 stub 0/total)
-- frontend: nginx assets 替换 + 验证 Chrome MCP 看到新 hash 文件
-- SQL: 学校 docker exec psql 跑 + SELECT 验证结果
-- 写入飞书 / KNOWN_ISSUES.md 部署日志:commit hash + 部署时间 + 实证证据
+- 不需要同步/部署到任何远程服务器
 
 **禁止行为**:
-- SSH 进学校容器直接 vim 改文件(无 git 追溯,下次部署被覆盖)
-- 本地改 + 本地起服务测试 + 报"修复完成"(没经过学校部署)
-- 部署后跳过 canary 直接报"已部署"
-- 部署日志只记 commit hash,缺学校实证
-
-**理由**:本 session 经历过容器版本与本地 git HEAD drift 36+ 行的 ImportError 部署事故。本地 git 必须是真相唯一源,学校部署必须可重现可回滚,部署后必须真实证据(SSH 输出 / Chrome MCP 截图 / API 200 + 数据正确)。
+- 报"已修复/已验证"却没有本地真实运行证据
+- 部署日志只记 commit hash,缺本地实证
 
 ### 3. 报告纪律
 
 Claude Code 报"已修复 / 已验证"时必须满足:
 
 - ✅ commit hash 来自本地 git
-- ✅ 部署命令明示是学校真容器(`<慧学运维账号>@<慧学服务器1-IP>` 或 `docker exec huixue-backend`)
-- ✅ 实证证据来自学校真实环境(SSH 输出 / Chrome MCP 截图 / 学校 API curl 返回 / 学校 DB SELECT)
+- ✅ 实证证据来自本地真实运行(命令行输出 / Chrome MCP 截图 / 本地 API curl 返回 / 本地 DB SELECT)
 
-任意一项缺失,Jim 直接拒收,要求 Claude Code 走完整三步重测重报。
+任意一项缺失,Jim 直接拒收,要求 Claude Code 补齐证据重报。
