@@ -9,31 +9,23 @@
     <div class="form-content">
       <a-card title="① 资料选择" class="section-card">
         <a-tabs v-model:activeKey="resourceMode">
-          <a-tab-pane key="existing" tab="从已有教学资源选择">
-            <a-alert
-              v-if="loadResourceError"
-              type="error"
-              :message="loadResourceError"
-              show-icon
-              style="margin-bottom: 16px"
-            />
-            <a-input-search
-              v-model:value="resourceKeyword"
-              placeholder="按标题搜索教学资源"
-              style="margin-bottom: 16px; max-width: 320px"
-              @search="handleSearchResources"
-            />
-            <a-table
-              :columns="resourceColumns"
-              :data-source="resourceList"
-              :loading="loadingResources"
-              :row-selection="{ selectedRowKeys: selectedDocumentIds, onChange: onSelectResources }"
-              row-key="document_id"
-              :pagination="{ pageSize: 5 }"
-            />
+          <a-tab-pane key="upload" tab="上传新资料">
+            <a-upload-dragger
+              :file-list="fileList"
+              :before-upload="handleBeforeUpload"
+              :max-count="1"
+              accept=".pdf,.docx,.pptx"
+              @remove="handleRemoveFile"
+            >
+              <p class="ant-upload-drag-icon">
+                <inbox-outlined />
+              </p>
+              <p class="ant-upload-text">点击或拖拽文件到此处上传</p>
+              <p class="ant-upload-hint">支持 PDF / DOCX / PPTX，暂不支持视频与扫描版 PDF</p>
+            </a-upload-dragger>
           </a-tab-pane>
-          <a-tab-pane key="upload" tab="上传新资料" disabled>
-            <a-empty description="上传新资料模式将在后续版本开放，请先使用「从已有教学资源选择」" />
+          <a-tab-pane key="existing" tab="从已有教学资源选择" disabled>
+            <a-empty description="后端资料库选择接口暂未实现，请先使用「上传新资料」" />
           </a-tab-pane>
           <a-tab-pane key="combine" tab="多文件组合生成" disabled>
             <a-empty description="多文件组合生成将在后续版本开放" />
@@ -85,56 +77,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { message } from 'ant-design-vue'
+import { InboxOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 import {
   createGenerationJob,
-  listTeachingResources,
   STUDENT_LEVEL_OPTIONS,
-  type StudentLevel,
-  type TeachingResourceItem
+  type StudentLevel
 } from '@/api/teacher-ai'
 
 const router = useRouter()
 
-// 资料选择
-const resourceMode = ref<'existing' | 'upload' | 'combine'>('existing')
-const resourceKeyword = ref('')
-const resourceList = ref<TeachingResourceItem[]>([])
-const selectedDocumentIds = ref<string[]>([])
-const loadingResources = ref(false)
-const loadResourceError = ref('')
+// 资料选择：真实文件上传（后端目前只支持直接上传，没有资源库选择接口）
+const resourceMode = ref<'existing' | 'upload' | 'combine'>('upload')
+const fileList = ref<any[]>([])
+const selectedFile = ref<File | null>(null)
 
-const resourceColumns = [
-  { title: '标题', dataIndex: 'title' },
-  { title: '类型', dataIndex: 'file_type', width: 100 },
-  { title: '页数', dataIndex: 'pages', width: 100 },
-  { title: '上传时间', dataIndex: 'uploaded_at', width: 180 }
-]
-
-const onSelectResources = (keys: string[]) => {
-  selectedDocumentIds.value = keys
+const handleBeforeUpload = (file: File) => {
+  selectedFile.value = file
+  fileList.value = [file]
+  return false // 阻止 antd 自动上传，由「开始生成」按钮统一提交
 }
 
-const handleSearchResources = async () => {
-  loadingResources.value = true
-  loadResourceError.value = ''
-  try {
-    const result: any = await listTeachingResources(resourceKeyword.value)
-    resourceList.value = result?.data?.items ?? result?.items ?? []
-  } catch (error) {
-    // 后端接口尚未联调，第一版允许失败但不阻断表单填写
-    loadResourceError.value = '教学资源列表暂未接入（后端接口开发中），资料选择功能待联调后可用'
-    console.error(error)
-  } finally {
-    loadingResources.value = false
-  }
+const handleRemoveFile = () => {
+  selectedFile.value = null
+  fileList.value = []
 }
-
-onMounted(() => {
-  handleSearchResources()
-})
 
 // 教学目标
 const objective = ref('')
@@ -146,31 +115,30 @@ const studentLevel = ref<StudentLevel>('learned_but_cannot_apply')
 const submitting = ref(false)
 
 const canSubmit = computed(() => {
-  return selectedDocumentIds.value.length > 0 && objective.value.trim().length > 0
+  return selectedFile.value !== null && objective.value.trim().length > 0
 })
 
 const handleStartGenerate = async () => {
-  if (!canSubmit.value) {
-    message.warning('请先选择资料并填写教学目标')
+  if (!canSubmit.value || !selectedFile.value) {
+    message.warning('请先上传资料并填写教学目标')
     return
   }
 
   submitting.value = true
   try {
-    const result: any = await createGenerationJob({
-      source_document_ids: selectedDocumentIds.value,
+    const result = await createGenerationJob({
+      file: selectedFile.value,
       objective: objective.value.trim(),
-      student_level: studentLevel.value
+      studentLevel: studentLevel.value
     })
 
-    const jobId = result?.data?.job_id ?? result?.job_id
-    message.success('生成任务已创建，进入知识点确认')
+    const jobId = (result as any)?.job?.id
+    message.success(`生成任务已创建，AI 拆解出 ${(result as any)?.knowledge_points?.length ?? 0} 个知识点`)
     if (jobId) {
       router.push(`/teacher/ai-practice-generator/${jobId}/knowledge`)
     }
   } catch (error) {
-    // 后端接口尚未实现，第一版先给出明确提示，不假装成功
-    message.error('创建生成任务失败（后端接口开发中，暂无法联调）')
+    message.error('创建生成任务失败，请检查后端服务是否已启动')
     console.error(error)
   } finally {
     submitting.value = false

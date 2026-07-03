@@ -8,9 +8,9 @@
 
     <div class="content">
       <a-alert
-        message="当前为占位数据"
-        description="本页展示的知识点为 mock 假数据，用于走通交互与布局。后续接入 @/api/teacher-ai.ts 的 getKnowledgePoints / confirmKnowledgePoints 接口后替换为真实数据。"
-        type="warning"
+        v-if="loadError"
+        type="error"
+        :message="loadError"
         show-icon
         style="margin-bottom: 16px"
       />
@@ -19,21 +19,22 @@
         <a-table
           :columns="columns"
           :data-source="knowledgePoints"
+          :loading="loading"
           :pagination="false"
-          row-key="knowledge_point_id"
+          row-key="id"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'source'">
-              {{ record.source.document_title }} · {{ record.source.location }}
+              {{ record.source_refs_json?.[0]?.chunk_id }} · {{ record.source_refs_json?.[0]?.location }}
             </template>
-            <template v-else-if="column.key === 'suggested_for_challenge'">
-              <a-tag :color="record.suggested_for_challenge ? 'green' : 'default'">
-                {{ record.suggested_for_challenge ? '建议生成关卡' : '仅背景知识' }}
+            <template v-else-if="column.key === 'suggested_challenge_type'">
+              <a-tag :color="record.suggested_challenge_type === 'auto' ? 'green' : 'default'">
+                {{ record.suggested_challenge_type === 'auto' ? '建议生成关卡' : '仅背景知识' }}
               </a-tag>
             </template>
             <template v-else-if="column.key === 'status'">
-              <a-tag :color="record.confirmed ? 'blue' : 'red'">
-                {{ record.confirmed ? '已保留' : '已删除' }}
+              <a-tag :color="record.selected ? 'blue' : 'red'">
+                {{ record.selected ? '已保留' : '已删除' }}
               </a-tag>
             </template>
             <template v-else-if="column.key === 'actions'">
@@ -41,7 +42,7 @@
                 <a-button
                   type="link"
                   size="small"
-                  :disabled="record.confirmed"
+                  :disabled="record.selected"
                   @click="handleConfirm(record)"
                 >
                   确认
@@ -50,7 +51,7 @@
                   type="link"
                   danger
                   size="small"
-                  :disabled="!record.confirmed"
+                  :disabled="!record.selected"
                   @click="handleRemove(record)"
                 >
                   删除
@@ -63,7 +64,12 @@
 
       <div class="actions">
         <a-button @click="() => $router.back()">上一步</a-button>
-        <a-button type="primary" :disabled="confirmedCount === 0" @click="handleNext">
+        <a-button
+          type="primary"
+          :loading="generating"
+          :disabled="confirmedCount === 0"
+          @click="handleNext"
+        >
           下一步：生成关卡草稿（{{ confirmedCount }} 个知识点）
         </a-button>
       </div>
@@ -72,12 +78,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { KnowledgePoint } from '@/api/teacher-ai'
-// TODO: 接入真实接口后替换 mock 数据：
-// import { getKnowledgePoints, confirmKnowledgePoints } from '@/api/teacher-ai'
+import {
+  getKnowledgePoints,
+  confirmKnowledgePoints,
+  generateChallengeDrafts,
+  type KnowledgePoint
+} from '@/api/teacher-ai'
 
 const route = useRoute()
 const router = useRouter()
@@ -85,82 +94,74 @@ const router = useRouter()
 const jobId = route.params.jobId as string
 
 const columns = [
-  { title: '知识点名称', dataIndex: 'name', key: 'name' },
+  { title: '知识点名称', dataIndex: 'title', key: 'title' },
   { title: '简要说明', dataIndex: 'summary', key: 'summary' },
   { title: '来源位置', key: 'source' },
   { title: '建议难度', dataIndex: 'suggested_difficulty', key: 'suggested_difficulty', width: 100 },
-  { title: '建议生成关卡', key: 'suggested_for_challenge', width: 140 },
+  { title: '建议生成关卡', key: 'suggested_challenge_type', width: 140 },
   { title: '状态', key: 'status', width: 100 },
   { title: '操作', key: 'actions', width: 140 }
 ]
 
-// TODO: mock 数据，接入 getKnowledgePoints(jobId) 后删除
-const knowledgePoints = ref<KnowledgePoint[]>([
-  {
-    knowledge_point_id: 'kp_1',
-    name: 'CSV 文件读取',
-    summary: '使用 pandas 读取 CSV 文件并预览数据结构',
-    source: { document_id: 'doc_1', document_title: '数据分析基础课件', location: '第 3 页' },
-    suggested_difficulty: '零基础',
-    suggested_for_challenge: true,
-    confirmed: true
-  },
-  {
-    knowledge_point_id: 'kp_2',
-    name: '缺失值处理',
-    summary: '识别并处理数据集中的缺失值（删除/填充）',
-    source: { document_id: 'doc_1', document_title: '数据分析基础课件', location: '第 7 页' },
-    suggested_difficulty: '入门',
-    suggested_for_challenge: true,
-    confirmed: true
-  },
-  {
-    knowledge_point_id: 'kp_3',
-    name: '字段清洗',
-    summary: '统一字段格式、去除异常字符、类型转换',
-    source: { document_id: 'doc_1', document_title: '数据分析基础课件', location: '第 9 页' },
-    suggested_difficulty: '入门',
-    suggested_for_challenge: true,
-    confirmed: true
-  },
-  {
-    knowledge_point_id: 'kp_4',
-    name: '数据分析发展史',
-    summary: '数据分析学科的历史背景介绍',
-    source: { document_id: 'doc_1', document_title: '数据分析基础课件', location: '第 1 页' },
-    suggested_difficulty: '零基础',
-    suggested_for_challenge: false,
-    confirmed: false
-  },
-  {
-    knowledge_point_id: 'kp_5',
-    name: '基础可视化',
-    summary: '使用 matplotlib 绘制柱状图、折线图展示清洗后的数据',
-    source: { document_id: 'doc_1', document_title: '数据分析基础课件', location: '第 14 页' },
-    suggested_difficulty: '中等',
-    suggested_for_challenge: true,
-    confirmed: true
+const knowledgePoints = ref<KnowledgePoint[]>([])
+const loading = ref(false)
+const generating = ref(false)
+const loadError = ref('')
+
+const loadKnowledgePoints = async () => {
+  loading.value = true
+  loadError.value = ''
+  try {
+    const result = await getKnowledgePoints(jobId)
+    knowledgePoints.value = result as unknown as KnowledgePoint[]
+  } catch (error) {
+    loadError.value = '加载知识点失败，请检查后端服务是否已启动'
+    console.error(error)
+  } finally {
+    loading.value = false
   }
-])
+}
+
+onMounted(() => {
+  loadKnowledgePoints()
+})
 
 const confirmedCount = computed(
-  () => knowledgePoints.value.filter((kp) => kp.confirmed).length
+  () => knowledgePoints.value.filter((kp) => kp.selected).length
 )
 
+const persistSelection = async () => {
+  const selectedIds = knowledgePoints.value.filter((kp) => kp.selected).map((kp) => kp.id)
+  try {
+    await confirmKnowledgePoints(jobId, selectedIds)
+  } catch (error) {
+    message.error('保存知识点确认状态失败')
+    console.error(error)
+  }
+}
+
 const handleConfirm = (record: KnowledgePoint) => {
-  record.confirmed = true
-  // TODO: 调用 confirmKnowledgePoints(jobId, { confirmed_ids: [...], removed_ids: [...] })
+  record.selected = true
+  persistSelection()
 }
 
 const handleRemove = (record: KnowledgePoint) => {
-  record.confirmed = false
-  // TODO: 调用 confirmKnowledgePoints(jobId, { confirmed_ids: [...], removed_ids: [...] })
+  record.selected = false
+  persistSelection()
 }
 
-const handleNext = () => {
-  // TODO: 调用 generateChallengeDrafts(jobId) 后跳转草稿审核页
-  message.info('关卡草稿生成/审核页尚未实现，敬请期待')
-  router.push(`/teacher/ai-practice-generator/${jobId}/drafts`)
+const handleNext = async () => {
+  generating.value = true
+  try {
+    const drafts = await generateChallengeDrafts(jobId, confirmedCount.value)
+    message.success(`AI 生成了 ${(drafts as any)?.length ?? 0} 个关卡草稿`)
+    router.push(`/teacher/ai-practice-generator/${jobId}/drafts`)
+  } catch (error) {
+    message.error('生成关卡草稿失败，请检查后端服务是否已启动')
+    console.error(error)
+  } finally {
+    generating.value = false
+  }
 }
 </script>
 

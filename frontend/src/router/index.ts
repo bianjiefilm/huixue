@@ -240,6 +240,16 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: '/teacher/ai-practice-generator/:jobId/drafts',
+        name: 'TeacherAiPracticeGeneratorDrafts',
+        component: () => import('../views/teacher-ai/DraftsReview.vue'),
+        meta: {
+          title: '关卡草稿审核',
+          requiresAuth: true,
+          requiresTeacher: true
+        }
+      },
+      {
         path: 'classroom/:id/learning-analytics',
         name: 'LearningAnalytics',
         component: () => import('../views/classroom/LearningAnalytics.vue'),

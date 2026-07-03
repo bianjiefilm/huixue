@@ -294,3 +294,13 @@ async def create_challenge_drafts(
         db.refresh(row)
 
     return draft_rows
+
+
+# ==================== ⑤ 获取草稿列表(供审核页刷新/直接访问) ====================
+
+@router.get("/{job_id}/challenge-drafts", response_model=List[ChallengeDraftOut])
+async def get_challenge_drafts(job_id: str, db: Session = Depends(get_ai_db)):
+    job = db.query(AIGenerationJob).filter(AIGenerationJob.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="生成任务不存在")
+    return db.query(AIChallengeDraft).filter(AIChallengeDraft.job_id == job_id).all()
