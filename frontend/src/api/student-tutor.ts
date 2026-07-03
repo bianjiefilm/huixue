@@ -1,11 +1,18 @@
 /**
  * 学生端 AI 闯关辅导助手 API
  *
- * 对齐《慧学AI升级方案-v2.md》第十六章「学生端 AI 辅导」接口设计：
- * POST /api/ai/student-hints
+ * 对齐《慧学AI升级方案-v2.md》第十六章「学生端 AI 辅导」接口设计。
  *
- * 后端实现见 backend/app/services/tutor/（本文件对应 endpoint 尚未在
- * backend router 中注册，需要另行由负责 router 的 agent 接入）。
+ * 真实挂载路径是 POST /api/v1/ai/student-hints（不是方案文档字面的
+ * /api/ai/student-hints）—— 后端 backend/app/api/v1/endpoints/ai_generation.py
+ * 里的 student_hints_router 通过 app.main.py 以 prefix="/api/v1" 注册，
+ * 且 frontend/vite.config.ts 的 '/api' 代理规则不做路径重写，
+ * 所以前端必须直接打 /api/v1/ai/student-hints 才能被真实代理到后端同名路径，
+ * 否则会打到后端一个不存在的 /api/ai/student-hints 路径上收到 404。
+ *
+ * 后端实现见 backend/app/services/tutor/（context_builder 物理隔离参考答案，
+ * output_filter 落地前相似度过滤），端点本身见
+ * backend/app/api/v1/endpoints/ai_generation.py 的 create_student_hint。
  */
 
 import { post } from '@/utils/request'
@@ -29,7 +36,7 @@ export interface StudentHintResponse {
 
 // ==================== API ====================
 
-const STUDENT_HINTS_ENDPOINT = '/api/ai/student-hints'
+const STUDENT_HINTS_ENDPOINT = '/api/v1/ai/student-hints'
 
 /**
  * 向 AI 闯关助教请求一次提示。

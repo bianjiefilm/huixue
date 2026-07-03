@@ -250,6 +250,15 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: '/student/ai-hint-test/:challengeId',
+        name: 'StudentAiHintTest',
+        component: () => import('../views/student-ai/HintPanel.vue'),
+        meta: {
+          title: 'AI 闯关助教（联调测试）',
+          requiresAuth: true
+        }
+      },
+      {
         path: 'classroom/:id/learning-analytics',
         name: 'LearningAnalytics',
         component: () => import('../views/classroom/LearningAnalytics.vue'),

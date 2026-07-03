@@ -1392,6 +1392,17 @@ def _execute_evaluation(task, tests, submission_data):
                     test_cases[0].get('match_rule', 'exact').lower()
                     if test_cases else 'exact'
                 )
+                # 已知合法的 io_based 遗留规则(v1数据 NULL/exact/EXACT_MATCH/CONTAINS，
+                # 均做字符串精确/包含比较)。慧学AI升级Phase1真实E2E UAT发现:AI生成的
+                # 关卡如果被写入一个不在此列表里的占位match_rule(如'manual_review_pending'，
+                # 表示"暂不支持自动评测")，会被这里的else分支静默当成io_based执行——
+                # 但AI生成的test_cases是{function,args,kwargs}/{result}形状，和io_based
+                # 期望的stdin/stdout字符串比较语义完全不兼容，导致学生正确答案也100%判0分，
+                # 且不会报错、只会显示"评测不通过"，教师和学生都无法定位真实原因。
+                # 因此这里改为显式白名单：只有已知的legacy io_based规则才走该分支，
+                # 其他任何未识别的match_rule一律短路返回明确的"暂不支持自动评测"，
+                # 不静默误判分数。
+                KNOWN_IO_BASED_MATCH_RULES = {'exact', 'exact_match', 'contains'}
                 if first_rule == 'function_call':
                     logger.info(f"Using execute_function_call_code for task {task.id}")
                     execution_result = code_executor.execute_function_call_code(
@@ -1405,12 +1416,27 @@ def _execute_evaluation(task, tests, submission_data):
                         student_code=code,
                         test_cases=test_cases
                     )
-                else:
+                elif first_rule in KNOWN_IO_BASED_MATCH_RULES:
                     logger.info(f"Using execute_io_based_code for task {task.id}")
                     execution_result = code_executor.execute_io_based_code(
                         student_code=code,
                         test_cases=test_cases
                     )
+                else:
+                    logger.warning(
+                        f"Task {task.id} has unrecognized match_rule='{first_rule}', "
+                        f"refusing to auto-grade instead of silently misrouting to io_based"
+                    )
+                    # status='error' 命中下面第1452行的短路分支，是唯一能让
+                    # error_message 真正透传给调用方而不是被静默吞成空字符串的路径。
+                    execution_result = {
+                        'status': 'error',
+                        'error_message': (
+                            f"该关卡的评测规则 '{first_rule}' 暂不支持自动评测,"
+                            f"请联系教师人工批改或重新生成评测脚本"
+                        ),
+                        'execution_time': 0,
+                    }
             else:
                 # 使用评测脚本进行评测
                 logger.info(f"Using _execute_with_test_script for task {task.id}")

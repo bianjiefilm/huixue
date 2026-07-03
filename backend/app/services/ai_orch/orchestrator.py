@@ -119,12 +119,17 @@ async def _chat_json_array_with_retry(
     messages: List[Dict[str, str]],
     feature_type: str,
     max_tokens: int,
+    timeout_seconds: int = 90,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """
     调用 doubao_client.chat_completion 并解析出 JSON 数组，解析失败重试一次。
 
     返回 (解析后的 JSON 数组, usage dict)。
     两次都失败时抛出 AIOrchestrationError，绝不静默返回空数组。
+
+    timeout_seconds: 真实 E2E UAT 发现旧的硬编码 30 秒超时在知识点较多时必现 502
+    (2个知识点约27秒、7个知识点两次重试均超时)，按调用方传入的 max_tokens 量级
+    显式给足时间，不依赖 doubao_client 的默认值。
     """
     client = get_doubao_client()
     last_error: Exception | None = None
@@ -141,6 +146,7 @@ async def _chat_json_array_with_retry(
                 # 拿到和第一次完全相同的坏响应，重试形同虚设。重试的意义就是给模型
                 # 一次独立的新机会，必须关闭缓存。
                 use_cache=False,
+                timeout_seconds=timeout_seconds,
             )
             last_response = response
             content = _extract_message_content(response)
@@ -198,7 +204,7 @@ async def extract_knowledge_points(
 
     messages = build_knowledge_extraction_prompt(chunks, objective, student_level)
     raw_items, usage = await _chat_json_array_with_retry(
-        messages, feature_type="knowledge_extraction", max_tokens=4000
+        messages, feature_type="knowledge_extraction", max_tokens=4000, timeout_seconds=90
     )
 
     valid_chunk_ids = {c.get("chunk_id") for c in chunks}
@@ -257,7 +263,9 @@ async def generate_challenge_drafts(
 
     messages = build_challenge_draft_prompt(knowledge_points, student_level, challenge_count)
     raw_items, usage = await _chat_json_array_with_retry(
-        messages, feature_type="challenge_generation", max_tokens=8000
+        # 真实E2E UAT实测:7个知识点在旧30秒超时下两次重试必现502,直连curl测出单次
+        # 调用可达61秒+;这里是max_tokens最大、最容易超时的调用点,给足安全余量。
+        messages, feature_type="challenge_generation", max_tokens=8000, timeout_seconds=150
     )
 
     result: List[ChallengeDraft] = []

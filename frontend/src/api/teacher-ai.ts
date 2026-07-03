@@ -76,7 +76,12 @@ export interface CreateGenerationJobResponse {
 // 会导致前端提前判定失败、弹错误提示，但后端其实还在正常处理并最终成功写库——
 // 用户会看到"失败"但数据其实生成好了，这是比真失败更糟的体验。因此这两个调用
 // 单独传更长的 timeout，不改全局默认值（其他快接口不该被拖慢超时判定）。
-const LLM_CALL_TIMEOUT_MS = 120000
+//
+// 后续 E2E UAT 用真实较大文档（7个知识点）复现出更严重的情况：后端 doubao_client
+// 单次调用超时+重试，最坏情况耗时可达 300 秒（已将后端超时从 30s 提到
+// 90s/150s，但两次重试仍可能累计到这个量级）。前端超时必须留出比后端最坏情况
+// 更宽的余量，否则同样的"后端在跑、前端先放弃"问题会在大文档场景下重现。
+const LLM_CALL_TIMEOUT_MS = 330000
 
 export function createGenerationJob(payload: {
   file: File

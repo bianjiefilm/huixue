@@ -8,6 +8,7 @@
     <div class="hint-panel__section">
       <div class="hint-panel__label">当前任务</div>
       <div class="hint-panel__task">{{ challengeName }}</div>
+      <div class="hint-panel__task-id">关卡 ID：{{ effectiveChallengeId }}</div>
     </div>
 
     <div class="hint-panel__section">
@@ -20,14 +21,24 @@
       />
     </div>
 
-    <div class="hint-panel__section" v-if="evalError">
-      <div class="hint-panel__label">评测报错</div>
-      <pre class="hint-panel__eval-error">{{ evalError }}</pre>
+    <div class="hint-panel__section">
+      <div class="hint-panel__label">评测报错（可选，联调测试用，正常场景由做题页自动传入）</div>
+      <textarea
+        v-model="evalErrorInput"
+        class="hint-panel__question-input"
+        placeholder="粘贴评测失败报错文本，留空则视为未评测过"
+        rows="2"
+      />
+    </div>
+
+    <div class="hint-panel__section" v-if="requestError">
+      <div class="hint-panel__label">请求出错</div>
+      <pre class="hint-panel__eval-error">{{ requestError }}</pre>
     </div>
 
     <div class="hint-panel__section">
       <div class="hint-panel__label">AI 提示</div>
-      <div class="hint-panel__reply" v-if="!loading && replyMessage">
+      <div class="hint-panel__reply" v-if="!loading && replyMessage" data-testid="hint-reply">
         {{ replyMessage }}
       </div>
       <div class="hint-panel__reply hint-panel__reply--placeholder" v-else-if="!loading">
@@ -56,12 +67,19 @@
  * 对齐《慧学AI升级方案-v2.md》第二十章「学生端新增组件 - AI 辅导侧栏」：
  * 显示当前任务、学生问题、AI 提示、提示层级；不显示答案。
  *
- * 当前先用假数据展示 UI（props 均有默认值），真实联调需要接入：
- * - POST /api/ai/student-hints（见 frontend/src/api/student-tutor.ts）
- * - 该 endpoint 尚未在 backend router 注册，路由接入需由负责 router 的
- *   agent 处理，本组件不改 router。
+ * 真实接入 POST /api/v1/ai/student-hints（见 frontend/src/api/student-tutor.ts，
+ * 后端实现见 backend/app/api/v1/endpoints/ai_generation.py 的
+ * create_student_hint + backend/app/services/tutor/）。
+ *
+ * 两种挂载方式：
+ * 1. 作为侧栏组件嵌入 course/challenge/detail.vue：challengeId/challengeName/
+ *    evalError 由父页面通过 props 传入（父页面拿到真实 taskId、真实评测报错）。
+ * 2. 作为独立路由 /student/ai-hint-test/:challengeId 直接访问（联调测试用）：
+ *    从 route.params.challengeId 兜底取值，evalError 通过页面内输入框手填
+ *    （因为没有父页面提供真实评测上下文）。
  */
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { requestStudentHint, type HintLevel } from '@/api/student-tutor'
 
 interface Props {
@@ -73,16 +91,31 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  challengeId: 'demo_challenge_001',
+  challengeId: '',
   challengeName: '示例关卡：数据清洗与聚合',
   evalError: null,
   initialHintLevel: 1,
   maxHintsPerChallenge: 5,
 })
 
+const route = useRoute()
+
+// props.challengeId 优先（嵌入模式）；独立路由模式下从 route.params 兜底取值。
+const effectiveChallengeId = computed(() => {
+  if (props.challengeId) return props.challengeId
+  const fromRoute = route.params.challengeId
+  return Array.isArray(fromRoute) ? fromRoute[0] : fromRoute || ''
+})
+
 const question = ref('')
+// 独立路由模式下评测报错没有页面上下文自动填充，允许学生/测试者手动输入；
+// 嵌入模式下 props.evalError 优先。
+const evalErrorInput = ref(props.evalError || '')
+const effectiveEvalError = computed(() => props.evalError ?? (evalErrorInput.value || null))
+
 const hintLevel = ref<HintLevel>(props.initialHintLevel)
 const replyMessage = ref('')
+const requestError = ref('')
 const loading = ref(false)
 const usedHints = ref(0)
 
@@ -90,13 +123,18 @@ const remainingHints = ref(props.maxHintsPerChallenge)
 
 async function handleAskAI() {
   if (loading.value || remainingHints.value <= 0) return
+  if (!effectiveChallengeId.value) {
+    requestError.value = '缺少关卡 ID，无法请求 AI 辅导'
+    return
+  }
   loading.value = true
   replyMessage.value = ''
+  requestError.value = ''
   try {
     const res = await requestStudentHint({
-      challenge_id: props.challengeId,
+      challenge_id: effectiveChallengeId.value,
       question: question.value || '为什么我的评测失败？',
-      eval_error: props.evalError,
+      eval_error: effectiveEvalError.value,
       hint_level: hintLevel.value,
     })
     replyMessage.value = res.message
@@ -108,8 +146,12 @@ async function handleAskAI() {
     if (hintLevel.value < 3) {
       hintLevel.value = (hintLevel.value + (usedHints.value > 1 ? 1 : 0)) as HintLevel
     }
-  } catch (err) {
-    replyMessage.value = 'AI 助教暂时无法响应，请稍后再试。'
+  } catch (err: any) {
+    const backendDetail = err?.response?.data?.detail
+    requestError.value =
+      (typeof backendDetail === 'string' ? backendDetail : backendDetail?.message) ||
+      err?.message ||
+      'AI 助教暂时无法响应，请稍后再试。'
     console.error('[HintPanel] requestStudentHint failed:', err)
   } finally {
     loading.value = false
@@ -164,6 +206,11 @@ async function handleAskAI() {
 .hint-panel__task {
   font-size: 13px;
   color: #111827;
+}
+
+.hint-panel__task-id {
+  font-size: 11px;
+  color: #9ca3af;
 }
 
 .hint-panel__question-input {

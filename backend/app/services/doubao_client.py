@@ -40,7 +40,8 @@ class DoubaoClient:
     async def chat_completion(self, messages: List[Dict],
                             max_tokens: int = 2000,
                             temperature: float = 0.7,
-                            use_cache: bool = True) -> Dict[str, Any]:
+                            use_cache: bool = True,
+                            timeout_seconds: int = 90) -> Dict[str, Any]:
         """
         调用豆包聊天完成API
 
@@ -49,6 +50,11 @@ class DoubaoClient:
             max_tokens: 最大token数
             temperature: 温度参数
             use_cache: 是否使用缓存
+            timeout_seconds: 请求超时秒数。真实压测发现(慧学AI升级Phase1 E2E UAT):
+                思考型模型(如 doubao-seed-2.0-lite)在 reasoning_content 上会消耗
+                大量时间,2个知识点的关卡生成实测约27秒,7个知识点必现超时。
+                旧默认30秒对 max_tokens 较大的调用(如关卡生成用8000)完全不够,
+                调用方按预期输出量级传入更长的值,不要依赖这里的默认值兜底。
 
         Returns:
             API响应结果
@@ -91,7 +97,7 @@ class DoubaoClient:
                     f"{self.base_url}/chat/completions",
                     json=request_data,
                     headers=headers,
-                    timeout=aiohttp.ClientTimeout(total=30)
+                    timeout=aiohttp.ClientTimeout(total=timeout_seconds)
                 ) as response:
 
                     if response.status != 200:
@@ -111,7 +117,9 @@ class DoubaoClient:
                     return result
 
         except Exception as e:
-            logger.error(f"豆包API调用异常: {e}")
+            # str(asyncio.TimeoutError()) 是空字符串,不带类型名会把超时异常打印成
+            # "豆包API调用异常: "(冒号后空白),掩盖真实原因(真实压测中发现过这个坑)。
+            logger.error(f"豆包API调用异常: {type(e).__name__}: {e}")
             raise
 
     async def simple_chat(self, user_message: str,
