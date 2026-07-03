@@ -171,8 +171,6 @@ async def get_service_status(db: Session = Depends(get_db)):
     """
     Check if the AI features service is available.
     """
-    from app.services.agentpilot import PROMPTPILOT_TASKS
-
     if not settings.AI_FEATURES_ENABLED:
         return ServiceStatusResponse(
             available=False,
@@ -184,7 +182,7 @@ async def get_service_status(db: Session = Depends(get_db)):
     return ServiceStatusResponse(
         available=service.is_available,
         message="PromptPilot service is available" if service.is_available else "PromptPilot not configured",
-        task_ids=PROMPTPILOT_TASKS
+        task_ids={}
     )
 
 

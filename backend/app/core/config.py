@@ -93,17 +93,8 @@ class Settings(BaseSettings):
     # AI 功能总开关：默认关闭，需要时在部署环境 .env 设 AI_FEATURES_ENABLED=true 并重启
     AI_FEATURES_ENABLED: bool = Field(default=False, env="AI_FEATURES_ENABLED")
 
-    # AgentPilot SDK
-    AGENTPILOT_API_URL: Optional[str] = Field(default="https://prompt-pilot.cn-beijing.volces.com", env="AGENTPILOT_API_URL")
-    AGENTPILOT_API_KEY: Optional[str] = Field(default=None, env="AGENTPILOT_API_KEY")
-    AGENTPILOT_WORKSPACE_ID: Optional[str] = Field(default=None, env="AGENTPILOT_WORKSPACE_ID")
-    AGENTPILOT_SAMPLE_RATE: float = Field(default=1.0, env="AGENTPILOT_SAMPLE_RATE")
     ARK_API_KEY: Optional[str] = Field(default=None, env="ARK_API_KEY")
 
-    @property
-    def agentpilot_enabled(self) -> bool:
-        return bool(self.AGENTPILOT_API_KEY and self.AGENTPILOT_WORKSPACE_ID)
-    
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"
@@ -178,7 +169,3 @@ def validate_settings():
             "WARNING: SQLite detected in production mode. "
             "Consider using PostgreSQL for better performance and concurrency."
         )
-
-    if settings.agentpilot_enabled and not settings.ARK_API_KEY:
-        logger = logging.getLogger("app.core.config")
-        logger.warning("AgentPilot 启用但缺少 ARK_API_KEY，部分探查能力可能不可用")

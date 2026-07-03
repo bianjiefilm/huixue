@@ -1,7 +1,11 @@
 """
 PromptPilot Feature Service
 
-Provides high-level AI feature methods that integrate with PromptPilot tasks.
+Provides high-level AI feature methods for the platform. Previously backed by
+AgentPilot/PromptPilot (removed: the actual prompt templates lived in an
+external SaaS this repo has no access to, so they could not be faithfully
+migrated). Every method below now always takes its existing "AI 不可用"
+fallback branch — response shape is unchanged, callers do not need to change.
 """
 
 import json
@@ -11,9 +15,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from collections import defaultdict
 
-from app.services.agentpilot import AgentPilotClient, AgentPilotNotConfigured, PROMPTPILOT_TASKS
 from app.models.models import (
-    AIUsageLog, User, Task, TaskEvaluationResult, 
+    AIUsageLog, User, Task, TaskEvaluationResult,
     StudentCourseProgress, ClassroomCourse, Course, Practice,
     StudentPracticeProgress, CourseVisibilityEnum
 )
@@ -23,26 +26,19 @@ logger = logging.getLogger(__name__)
 
 class PromptPilotFeatureService:
     """
-    High-level service for AI features powered by PromptPilot.
-    
-    This service wraps the AgentPilotClient and provides business-logic-aware
-    methods for each AI feature in the platform.
+    High-level service for AI features. AgentPilot/PromptPilot backing has
+    been removed; every feature method takes its existing unavailable-fallback
+    branch until a Phase1 doubao_client-backed replacement lands.
     """
-    
+
     def __init__(self, db: Session):
         self.db = db
-        self._client: Optional[AgentPilotClient] = None
-        self._init_error: Optional[str] = None
-        
-        try:
-            self._client = AgentPilotClient()
-        except AgentPilotNotConfigured as e:
-            self._init_error = str(e)
-            logger.warning(f"PromptPilot not configured: {e}")
-    
+        self._client = None
+        self._init_error: Optional[str] = "AgentPilot 已下线，功能待迁移到方舟直连"
+
     @property
     def is_available(self) -> bool:
-        """Check if the PromptPilot service is available."""
+        """Check if the underlying LLM client is available."""
         return self._client is not None
     
     def _log_usage(

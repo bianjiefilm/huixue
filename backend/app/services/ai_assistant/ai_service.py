@@ -14,7 +14,6 @@ from sqlalchemy.orm import Session
 
 from app.models.models import AIConfig, AIUsageLog, User
 from .prompts import PromptTemplates
-from app.services.agentpilot import AgentPilotClient, AgentPilotNotConfigured
 from app.services.doubao_client import get_doubao_client
 from app.services.ai_quota import get_quota_manager
 
@@ -750,11 +749,6 @@ class AIService:
 
     async def summarize_markdown(self, content: str, course_title: str = "") -> Dict[str, Any]:
         """对教学大纲等 Markdown 文本生成摘要"""
-        # 检查是否使用AgentPilot
-        if self.config and self.config.provider == "agentpilot":
-            return await self._summarize_with_agentpilot(content, course_title)
-        
-        # 使用传统LLM API
         prompt = self.prompts.get_markdown_summary_prompt(content, course_title)
 
         try:
@@ -775,122 +769,6 @@ class AIService:
         except Exception as e:
             logger.error(f"Markdown 摘要生成失败: {e}")
             raise
-
-    async def _summarize_with_agentpilot(self, content: str, course_title: str = "") -> Dict[str, Any]:
-        """使用AgentPilot生成摘要"""
-        try:
-            client = AgentPilotClient()
-            
-            # 使用现有的任务ID进行渲染
-            task_id = "ta-20250925060137-YEb9y"
-            version = "v1"
-            
-            # 准备变量 - 根据模板中的占位符调整变量名
-            variables = {}
-            
-            # 渲染模板
-            render_result = client.render_input(task_id, version, variables)
-            
-            # 提取渲染后的内容
-            if render_result and "messages" in render_result:
-                rendered_content = render_result["messages"][0]["content"][0]["text"]
-                
-                # 手动替换占位符
-                rendered_content = rendered_content.replace(
-                    "<course_title>\n\n</course_title>", 
-                    f"<course_title>\n{course_title}\n</course_title>"
-                )
-                rendered_content = rendered_content.replace(
-                    "<markdown_content>\n\n</markdown_content>", 
-                    f"<markdown_content>\n{content}\n</markdown_content>"
-                )
-                
-                # 这里我们需要调用实际的LLM来生成响应
-                # 由于AgentPilot主要用于模板管理，我们仍需要LLM来生成实际内容
-                response = await self._call_llm_with_rendered_content(rendered_content)
-                
-                return response
-            else:
-                raise Exception("AgentPilot渲染失败")
-                
-        except AgentPilotNotConfigured:
-            logger.warning("AgentPilot未配置，回退到传统方式")
-            # 回退到传统方式
-            prompt = self.prompts.get_markdown_summary_prompt(content, course_title)
-            response = await self.call_api(prompt, temperature=0.6, max_tokens=800)
-            text = response["choices"][0]["message"]["content"].strip()
-            
-            try:
-                return json.loads(text)
-            except json.JSONDecodeError:
-                return {
-                    "brief": text[:120],
-                    "highlights": [],
-                    "suggested_activities": []
-                }
-        except Exception as e:
-            logger.error(f"AgentPilot摘要生成失败: {e}")
-            raise
-
-    async def _call_llm_with_rendered_content(self, rendered_content: str) -> Dict[str, Any]:
-        """使用渲染后的内容调用LLM"""
-        try:
-            import aiohttp
-            
-            # 使用火山方舟API
-            headers = {
-                "Authorization": f"Bearer {self.config.api_key}",
-                "Content-Type": "application/json"
-            }
-            
-            request_data = {
-                "model": "doubao-seed-1.6-250615",
-                "messages": [{"role": "user", "content": rendered_content}],
-                "max_tokens": 800,
-                "temperature": 0.6
-            }
-            
-            # 火山方舟API端点
-            ark_endpoint = "https://ark.cn-beijing.volces.com/api/v3/chat/completions"
-            
-            async with aiohttp.ClientSession() as session:
-                try:
-                    async with session.post(
-                        ark_endpoint,
-                        json=request_data,
-                        headers=headers,
-                        timeout=aiohttp.ClientTimeout(total=30)
-                    ) as response:
-                        if response.status == 200:
-                            result = await response.json()
-                            content = result["choices"][0]["message"]["content"].strip()
-                            
-                            # 尝试解析JSON响应
-                            try:
-                                # 提取<output>标签中的JSON
-                                if "<output>" in content and "</output>" in content:
-                                    json_start = content.find("<output>") + 8
-                                    json_end = content.find("</output>")
-                                    json_content = content[json_start:json_end].strip()
-                                    return json.loads(json_content)
-                                else:
-                                    # 尝试直接解析整个内容
-                                    return json.loads(content)
-                            except json.JSONDecodeError:
-                                logger.warning("LLM返回的不是有效JSON，使用智能解析")
-                                return self._parse_llm_response(content)
-                        else:
-                            logger.error(f"火山方舟API调用失败: {response.status}")
-                            raise Exception(f"API调用失败: {response.status}")
-                            
-                except aiohttp.ClientError as e:
-                    logger.error(f"网络请求失败: {e}")
-                    raise Exception(f"网络请求失败: {e}")
-                    
-        except Exception as e:
-            logger.error(f"LLM调用失败: {e}")
-            # 返回基于内容的智能响应
-            return self._generate_smart_response(rendered_content)
 
     def _parse_llm_response(self, content: str) -> Dict[str, Any]:
         """智能解析LLM响应"""
@@ -935,55 +813,3 @@ class AIService:
                 ]
             }
 
-    def _generate_smart_response(self, rendered_content: str) -> Dict[str, Any]:
-        """基于渲染内容生成智能响应"""
-        logger.info("使用智能响应生成摘要")
-        
-        if "Spark编程基础" in rendered_content:
-            return {
-                "brief": "Apache Spark大数据处理框架编程基础课程，涵盖分布式计算、RDD操作、Spark SQL、流处理和机器学习等核心技术，采用15个渐进式关卡的实践教学模式。",
-                "highlights": [
-                    {
-                        "title": "分布式计算核心",
-                        "description": "掌握RDD弹性分布式数据集和Spark架构原理",
-                        "tag": "核心技术"
-                    },
-                    {
-                        "title": "实战项目驱动",
-                        "description": "15个编程关卡，从基础到高级循序渐进",
-                        "tag": "实践教学"
-                    },
-                    {
-                        "title": "全栈大数据技能",
-                        "description": "涵盖批处理、流处理、SQL查询和机器学习",
-                        "tag": "技能体系"
-                    }
-                ],
-                "suggested_activities": [
-                    {
-                        "title": "Spark集群搭建实验",
-                        "description": "让学生动手搭建Spark集群，理解分布式架构"
-                    },
-                    {
-                        "title": "大数据案例分析",
-                        "description": "分析真实企业大数据处理场景，培养实际应用能力"
-                    }
-                ]
-            }
-        else:
-            return {
-                "brief": "本课程教学大纲内容丰富，涵盖理论知识和实践技能，采用多元化教学方法。",
-                "highlights": [
-                    {
-                        "title": "理论与实践结合",
-                        "description": "平衡理论学习和实际操作",
-                        "tag": "教学特色"
-                    }
-                ],
-                "suggested_activities": [
-                    {
-                        "title": "案例讨论",
-                        "description": "结合实际案例进行课堂讨论"
-                    }
-                ]
-            }

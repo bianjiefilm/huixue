@@ -1,6 +1,6 @@
 """AI 功能总开关。
 
-所有 AI 类路由(ai_assistant / ai_features / text_explain / generation / agentpilot)
+所有 AI 类路由(ai_assistant / ai_features / text_explain / generation)
 共用此 dependency。关闭时动作类接口统一返回 403 + code=AI_DISABLED,
 前端拦截器据此静默处理,不弹全局错误提示。
 """

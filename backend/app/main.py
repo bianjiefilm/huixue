@@ -113,7 +113,6 @@ from app.api.v1.endpoints import ai_features
 # from app.api.v1.endpoints import course_resources
 from app.api.v1.endpoints import common
 from app.api.v1.endpoints import resource_import
-from app.api.v1.endpoints import agentpilot
 from app.api.v1.endpoints import training_environments
 from app.api.v1.endpoints import course_management
 from app.api.v1.endpoints import teaching_resources
@@ -161,7 +160,6 @@ async def test_ai():
 app.include_router(ai_assistant.router, prefix="/api/v1", tags=["AI助教"], dependencies=[Depends(require_ai_enabled)])
 app.include_router(ai_features.router, prefix="/api/v1", tags=["AI Features"])
 app.include_router(resource_import.router, prefix="/api/v1", tags=["资源导入"])
-app.include_router(agentpilot.router, prefix="/api/v1", tags=["AgentPilot"], dependencies=[Depends(require_ai_enabled)])
 app.include_router(training_environments.router, prefix="/api/v1", tags=["实训环境"])
 app.include_router(practices.router, prefix="/api/v1", tags=["practices"])
 app.include_router(course_management.router, prefix="/api/v1/course-management", tags=["课程管理"])
@@ -480,7 +478,6 @@ async def catch_all_api_proxy(request: Request, path: str):
         "ai-assistant",
         "ai-features",
         "resource-import",
-        "agentpilot",
         "course-management",
         "usage-statistics",
         "student",
