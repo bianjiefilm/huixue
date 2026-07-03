@@ -110,6 +110,7 @@ from app.api.v1.endpoints import compatibility
 from app.api.v1.endpoints import text_explain
 from app.api.v1.endpoints import ai_assistant
 from app.api.v1.endpoints import ai_features
+from app.api.v1.endpoints import ai_generation
 # from app.api.v1.endpoints import course_resources
 from app.api.v1.endpoints import common
 from app.api.v1.endpoints import resource_import
@@ -159,6 +160,7 @@ async def test_ai():
 
 app.include_router(ai_assistant.router, prefix="/api/v1", tags=["AI助教"], dependencies=[Depends(require_ai_enabled)])
 app.include_router(ai_features.router, prefix="/api/v1", tags=["AI Features"])
+app.include_router(ai_generation.router, prefix="/api/v1", tags=["AI 实践课生成器"])
 app.include_router(resource_import.router, prefix="/api/v1", tags=["资源导入"])
 app.include_router(training_environments.router, prefix="/api/v1", tags=["实训环境"])
 app.include_router(practices.router, prefix="/api/v1", tags=["practices"])
