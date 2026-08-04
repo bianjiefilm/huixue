@@ -4,8 +4,8 @@
 |----|------|
 | 日期 | 2026-08-04 |
 | 仓库 | https://github.com/bianjiefilm/huixue |
-| 状态 | 已评审（brainstorming 定稿） |
-| 范围策略 | 全站系统性升级，分期交付；本 spec 以 **Phase 1** 为可实现边界，并给出 P2/P3 路线 |
+| 状态 | 已评审；**§14 Phase 2 已展开**（2026-08-04） |
+| 范围策略 | 全站系统性升级，分期交付；P1 见实现分支；**P2 详见 §14** 与 `plans/2026-08-04-ui-upgrade-p2.md` |
 
 ---
 
@@ -351,13 +351,11 @@ P1 不做：全量 229 页去硬编码；业务组件大重构；后端改动。
 
 ## 9. 分期路线（全站 D 方案）
 
-| 期 | 目标 |
-|----|------|
-| **P1** | Token + 原语 + D1–D8 + §6 核心页 + 轻度现代化 |
-| **P2** | 考试、成绩、资源、项目实训、管理后台列表接 PageShell |
-| **P3** | 长尾页、微动效、无障碍与桌面下平板增强；删除 `--copilot-*` alias |
-
-实现计划文档仅先覆盖 **P1**；P2/P3 另开 plan 或附录增量。
+| 期 | 目标 | 计划文档 |
+|----|------|----------|
+| **P1** | Token + 原语 + D1–D8 + §6 核心页 + 轻度现代化 | `docs/superpowers/plans/2026-08-04-ui-upgrade-p1.md`（已实现于 `feat/ui-upgrade-p1`） |
+| **P2** | 次高频业务面接入原语 + P1 遗留收口（见 **§14**） | `docs/superpowers/plans/2026-08-04-ui-upgrade-p2.md` |
+| **P3** | 长尾页、微动效、无障碍与桌面下平板增强；删除 `--copilot-*` alias | 另开 |
 
 ---
 
@@ -414,6 +412,159 @@ P1 不做：全量 229 页去硬编码；业务组件大重构；后端改动。
 
 ## 13. 后续步骤
 
-1. 用户审阅本 spec；如有修改则更新本文档。
-2. 批准后进入 **writing-plans**：输出 P1 可执行实现计划（任务粒度、文件清单、验收命令）。
-3. 再按 Slice 0→5 实现与本地验收。
+1. ~~用户审阅本 spec；P1 writing-plans + 实现~~（P1 代码在 `feat/ui-upgrade-p1`）。
+2. 审阅 **§14 P2 范围** 与 `docs/superpowers/plans/2026-08-04-ui-upgrade-p2.md`。
+3. 批准后按 P2 plan 切片实现；补一次 P1 浏览器 UAT（若仍未跑）。
+4. P3 另开 design 增量。
+
+---
+
+## 14. Phase 2 详细范围（次高频业务面）
+
+> **前置条件：** P1 的 L0 Token、L1 AppShell、L2 原语（`PageShell` / `PageHeaderBar` / `EmptyStateBlock` / `Stack` / `ContentCard`）已存在。P2 **不** 再造设计系统，只做 **接入 + 收口 + 表格/表单页节奏统一**。
+
+### 14.1 P2 成功标准
+
+1. **次高频业务面壳统一：** 考试中心、课堂内考试/成绩、资源与云盘、项目实训列表/详情、管理后台列表与仪表盘，全部使用 PageShell + PageHeaderBar（或等价），间距阶梯与空态统一。
+2. **P1 遗留收口：** `detail.vue` 内部 token 扫尾；工作台/作业页残留硬编码主色清理；全屏路由 `hideFooter` 补全（考试作答、Jupyter、BI 预览等）。
+3. **管理后台可辨识：** Admin 布局与内容区 padding 不与 PageShell 双重叠；列表页筛选 + 表格 + 一个 primary 的节奏一致。
+4. **不重做：** 试卷编辑器画布逻辑、考试计时内核、ML/BI 设计器交互、审批业务规则。
+
+### 14.2 继承约束（与 P1 相同）
+
+- Token：`--hx-*`；间距仅 0/4/8/12/16/24/32/48；主色 `#1677ff`；圆角 6/10/14。
+- 新代码禁止裸 `#1890ff` / 非阶梯 padding；优先 `var(--hx-*)`。
+- 桌面 1280–1920 优先；手机仅防炸。
+- 不改 API / 导航信息架构（菜单项不增删重命名）。
+- 每 Task 独立 commit；本地 build + 结构/可点检证据。
+
+### 14.3 切片顺序
+
+```
+P2-Slice 0  P1 遗留收口（detail 内 token、hideFooter 补全、硬编码主色扫核心残留）
+     ↓
+P2-Slice 1  考试中心（题库 / 试卷库 / 我的考试 / 出题表单壳）
+P2-Slice 2  课堂内考试 + 成绩 + 作答/批改壳
+P2-Slice 3  资源 / 云盘 / 学习分析（壳 + 空态；大屏不重设计）
+P2-Slice 4  项目实训（列表 / 详情 / 创建编辑壳；Jupyter 全高）
+P2-Slice 5  管理后台（仪表盘 + 用户/组织/课程列表 + 资源导入壳）
+P2-Slice 6  回归清单（含 P1 路径抽检 + P2 新路径）
+```
+
+### 14.4 页面清单与深度
+
+#### P2-Slice 0 — P1 遗留（先做，成本低收益高）
+
+| 项 | 文件 / 动作 | 深度 |
+|----|-------------|------|
+| 课堂详情内样式 | `views/classroom/detail.vue` | 内部 spacing/颜色 token 化；去掉 cyan 暗色 hover 语言 |
+| 工作台残留主色 | `TrainingWorkspace.vue`、`BiTrainingWorkspace.vue` | `#1890ff` / 非法 padding → token |
+| hideFooter 补全 | `router/index.ts` | `ExamTake`、`exam-take` 相关、`JupyterTraining`、`PublicJupyterTraining`、`VisualPreview`、`BIPreviewFullscreen`、`ProjectTrainingCodeTask`、`MachineLearningDesigner` 等全屏页 |
+| 可选 | `PageHeaderBar` 返回文案/图标统一 | 小改 |
+
+#### P2-Slice 1 — 考试中心（`/exam/*`）
+
+| 路由 | 文件 | 深度 |
+|------|------|------|
+| `/exam` | `views/exam/index.vue` | L-Full（入口/导航壳） |
+| `/exam/question-bank` | `question-bank.vue` | L-Full |
+| `/exam/paper-bank` | `paper-bank.vue` | L-Full |
+| `/exam/my-exams` | `my-exams.vue` | L-Full |
+| `/exam/create-question`、`edit-question` | 对应 vue | L-Shell（表单页头 + 区块间距） |
+| `/exam/edit-paper`、`template-paper` | 对应 vue | L-Shell（**不**重做拖拽出卷内核） |
+
+#### P2-Slice 2 — 课堂内考试 / 成绩
+
+| 路由 / 场景 | 文件 | 深度 |
+|-------------|------|------|
+| 课堂考试列表 | `ClassroomExams.vue`、`ClassroomExamList.vue` | L-Full |
+| 创建考试 | `ClassroomExamCreate.vue` | L-Shell |
+| 课程考试 | `course-exam.vue` | L-Shell |
+| 考试详情 / 结果 / 统计 | `exam-detail.vue`、`exam-results.vue`、`exam-statistics.vue`、`exam-my-result.vue` | L-Shell |
+| 批改列表 / 详情 | `exam-marking-list.vue`、`exam-marking-detail.vue`、`exam-marking.vue` | L-Shell |
+| 答卷查看 | `exam-paper-view.vue` | L-Shell |
+| **学生作答** | `exam-take.vue` | L-Shell + **hideFooter** + 顶栏/题区高度可用（类似工作台，勿 PageShell 大 padding） |
+| 课程成绩 / 学生成绩 | `course-grades.vue`、`student-grades.vue`、`course-status.vue`、`student-course-status.vue` | L-Shell |
+
+#### P2-Slice 3 — 资源 / 云盘 / 分析
+
+| 路由 / 场景 | 文件 | 深度 |
+|-------------|------|------|
+| 课程资源库 | `views/course/resource/index.vue`、`detail.vue` | L-Full / L-Shell |
+| 课堂资源 Tab | `ResourcesList.vue`（及 detail 内嵌） | L-Shell |
+| 云盘 | `CloudDisk.vue` | L-Shell |
+| 学习分析 | `LearningAnalytics.vue` | L-Shell（图表容器间距；**不**重设计图表主题，除非 echarts 色可单点映射 primary） |
+
+#### P2-Slice 4 — 项目实训
+
+| 路由 | 文件 | 深度 |
+|------|------|------|
+| `/project` | `views/project/index.vue` | L-Full |
+| `/project/:id` | `detail-new.vue`（或当前生效详情） | L-Full / L-Shell |
+| 创建/我的 | `create/*`、`myprojects.vue` 若入口存活 | L-Shell |
+| Jupyter / code task | `jupyter-training.vue`、`code-task.vue`、`ProjectTraining.vue` | L-Shell 全高 + hideFooter；**不**改内核 |
+
+#### P2-Slice 5 — 管理后台
+
+Admin 使用 `views/admin/index.vue` 自有 layout；P2 要求：
+
+- 内容区与子页 **约定唯一 padding 责任**（layout 或 PageShell 二选一，禁止双 24）。
+- 列表页统一：PageHeaderBar（或 admin 内同等页头）+ 筛选 Stack + `a-table` + EmptyStateBlock。
+
+| 路由 | 文件 | 深度 |
+|------|------|------|
+| `/admin/dashboard` | `admin/dashboard/index.vue` | L-Full（卡片栅格 gap token） |
+| 教师/学生/角色 | `system/teacher-management.vue`、`admin/user/Student.vue`、`Role.vue` | L-Full |
+| 学校/院系 | `system/school-info.vue`、`admin/organization/Department.vue` | L-Shell |
+| 实践/实训课程管理与审批 | `admin/course/*.vue` | L-Shell |
+| 资源导入 | `admin/resource-import.vue` | L-Shell |
+| 日志类（若常用） | `admin/logs/*` **抽 1–2 高频列表** | L-Shell；其余 L-Global |
+
+#### 明确 Out of Scope（P2）
+
+- ML 画布 / BI 设计器交互重做（仅 hideFooter + 外层不炸）。
+- 试卷拖拽编辑器内核、评分算法、导入解析逻辑。
+- P3：全量长尾、删 `--copilot-*` alias、无障碍 AA、微动效体系。
+- 暗色主题、移动端精品。
+
+### 14.5 深度与 DoD（复用 §6.3 / §6.4）
+
+| 类型 | 深度 | 要点 |
+|------|------|------|
+| 列表 / 题库 / 管理表 | L-Full | Shell + Header + Empty + 筛选间距 + 一 primary |
+| 表单 / 批改 / 详情 | L-Shell | Shell + Header + 区块 gap；业务控件不重写 |
+| 作答 / Jupyter / 预览全屏 | L-Shell 全高 | **禁止** PageShell 默认 24 全包；用 workspace 模式或 `maxWidth=fluid` + 零/小 padding |
+| 分析大屏 | L-Shell | 容器与标题齐；图表内部可保持 |
+
+页面标完成仍须满足 §6.4 清单（骨架、token、三态、桌面宽度、主流程不因 CSS 挂）。
+
+### 14.6 P2 清债增量
+
+| ID | 项 | 完成标准 |
+|----|-----|----------|
+| D9 | P1 页残留 `#1890ff` / 非法 spacing（已改文件） | 核心 P1 文件 grep 显著下降 |
+| D10 | 全屏路由 hideFooter 覆盖 | 作答/Jupyter/预览无 footer 挤高度 |
+| D11 | Admin 双 padding | 子页抽查无 48px 观感 |
+| D12 | （可选）死 CSS 文件 `antd-theme.css` | 主入口未用则删除或标注 only test |
+
+### 14.7 风险
+
+| 风险 | 缓解 |
+|------|------|
+| 考试页极多、易 scope 膨胀 | 严格 L-Shell；edit-paper 只动壳 |
+| exam-take 高度被 Shell 压矮 | 单独 workspace 模式，参考 TrainingWorkspace |
+| Admin 自有 layout 与 PageShell 冲突 | 先定 padding 归属再批量改子页 |
+| 无本地账号无法 UAT | 静态 + build 可合代码；验收通过必须补浏览器 |
+
+### 14.8 P2 一句话成功标准
+
+在 P1 底座之上，考试 / 成绩 / 资源 / 项目实训 / 管理后台次高频面与主路径 **同一套页面骨架与间距语言**；全屏作答与 Jupyter 高度可用；P1 已知半吊子页（尤其课堂 detail 内部）收口——仍不宣称全站 229 页完成。
+
+### 14.9 工程落地顺序（P2）
+
+1. P2-Slice 0 遗留收口。  
+2. Slice 1→5 按域接入原语。  
+3. Slice 6 回归（P1 抽检 + P2 新路径 + build + token check）。  
+4. 浏览器 UAT（有本地栈时必跑）。  
+
+详细任务拆解见：`docs/superpowers/plans/2026-08-04-ui-upgrade-p2.md`。
