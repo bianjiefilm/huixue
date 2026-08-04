@@ -4,7 +4,6 @@ import { useUserStore } from '../stores/user'
 import { useRouter } from 'vue-router'
 // import { Permission, routePermissions } from '@/constants/permissions'
 // import { usePermission } from '@/composables/usePermission'
-// import { ElMessage } from 'element-plus'
 
 const routes: RouteRecordRaw[] = [
   {

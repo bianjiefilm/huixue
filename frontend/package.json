@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "@element-plus/icons-vue": "^2.3.1",
     "@kanaries/graphic-walker": "^0.4.77",
     "@superset-ui/embedded-sdk": "^0.2.0",
     "@types/echarts": "^4.9.22",
@@ -32,7 +31,6 @@
     "docx-preview": "^0.3.7",
     "dompurify": "^3.2.7",
     "echarts": "^5.6.0",
-    "element-plus": "^2.10.4",
     "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
