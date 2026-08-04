@@ -1,8 +1,10 @@
 <template>
   <div class="cloud-disk-container">
-    <div class="cloud-header">
-      <h2>课堂云盘</h2>
-      <div class="header-actions">
+    <PageHeaderBar
+      title="课堂云盘"
+      subtitle="教师可将课件、文档等课程资源上传分享给课程内学生。支持常用格式在线预览。"
+    >
+      <template #actions>
         <a-button v-if="isTeacher" type="primary" @click="openUploadDialog">
           <UploadOutlined /> 上传文件
         </a-button>
@@ -12,47 +14,49 @@
         <a-button v-if="isTeacher && selectedFiles.length > 0" danger @click="handleBatchDelete">
           <DeleteOutlined /> 批量删除 ({{ selectedFiles.length }})
         </a-button>
-      </div>
-    </div>
-    
-    <div class="cloud-description">
-      <p>教师可将课件、文档等课程资源上传分享给课程内的学生查看。支持常用格式文件在线预览。</p>
-    </div>
+      </template>
+    </PageHeaderBar>
 
+    <Stack direction="vertical" :gap="4">
     <!-- 筛选器 -->
-    <div class="filters" style="margin-bottom: 16px;">
-      <a-space>
-        <a-input
-          v-model:value="keyword"
-          placeholder="搜索文件名"
-          style="width: 200px;"
-          @press-enter="handleFilter"
-        >
-          <template #suffix>
-            <SearchOutlined @click="handleFilter" style="cursor: pointer;" />
-          </template>
-        </a-input>
-        <a-select
-          v-model:value="fileTypeFilter"
-          placeholder="文件类型"
-          style="width: 120px;"
-          allowClear
-          @change="handleFilter"
-        >
-          <a-select-option value="pdf">PDF文档</a-select-option>
-          <a-select-option value="doc">Word文档</a-select-option>
-          <a-select-option value="ppt">PPT演示文稿</a-select-option>
-          <a-select-option value="image">图片</a-select-option>
-          <a-select-option value="video">视频</a-select-option>
-        </a-select>
-      </a-space>
-    </div>
+    <Stack direction="horizontal" :gap="3" align="center" class="filters">
+      <a-input
+        v-model:value="keyword"
+        placeholder="搜索文件名"
+        style="width: 200px;"
+        @press-enter="handleFilter"
+      >
+        <template #suffix>
+          <SearchOutlined @click="handleFilter" style="cursor: pointer;" />
+        </template>
+      </a-input>
+      <a-select
+        v-model:value="fileTypeFilter"
+        placeholder="文件类型"
+        style="width: 120px;"
+        allowClear
+        @change="handleFilter"
+      >
+        <a-select-option value="pdf">PDF文档</a-select-option>
+        <a-select-option value="doc">Word文档</a-select-option>
+        <a-select-option value="ppt">PPT演示文稿</a-select-option>
+        <a-select-option value="image">图片</a-select-option>
+        <a-select-option value="video">视频</a-select-option>
+      </a-select>
+    </Stack>
 
     <!-- 文件列表 -->
     <a-spin :spinning="loading" tip="加载中...">
-      <div v-if="filesList.length === 0 && !loading" class="empty-cloud">
-        <a-empty description="暂无文件，点击上传文件开始分享" />
-      </div>
+      <EmptyStateBlock
+        v-if="filesList.length === 0 && !loading"
+        description="暂无文件，点击上传文件开始分享"
+      >
+        <template v-if="isTeacher" #action>
+          <a-button type="primary" @click="openUploadDialog">
+            <UploadOutlined /> 上传文件
+          </a-button>
+        </template>
+      </EmptyStateBlock>
       
       <div v-else class="files-grid">
         <a-row :gutter="[16, 16]">
@@ -197,6 +201,7 @@
         </div>
       </div>
     </a-modal>
+    </Stack>
   </div>
 </template>
 
@@ -227,6 +232,9 @@ import {
   previewCloudDiskFile,
   formatFileSize
 } from '../../api/resources';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
+import Stack from '@/components/common/Stack.vue';
 
 // Props
 interface Props {
@@ -593,42 +601,11 @@ onMounted(() => {
 
 <style scoped>
 .cloud-disk-container {
-  padding: 20px;
-}
-
-.cloud-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.cloud-header h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.header-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.cloud-description {
-  color: #666;
-  margin-bottom: 20px;
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-}
-
-.empty-cloud {
-  padding: 60px 20px;
-  text-align: center;
+  /* nested in classroom detail PageShell */
 }
 
 .files-grid {
-  margin-bottom: 20px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .file-card {
@@ -636,8 +613,8 @@ onMounted(() => {
 }
 
 .file-card.selected {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
 }
 
 .file-preview-container {
@@ -647,12 +624,12 @@ onMounted(() => {
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: var(--hx-radius-md, 10px);
 }
 
 .file-icon {
   font-size: 48px;
-  color: #1890ff;
+  color: #1677ff;
 }
 
 .file-name {
@@ -665,20 +642,20 @@ onMounted(() => {
 
 .file-info {
   font-size: 12px;
-  color: #999;
+  color: var(--hx-color-text-tertiary, #999);
   line-height: 1.6;
 }
 
 .pagination-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: var(--hx-space-4);
 }
 
 .upload-tips {
-  margin-top: 8px;
+  margin-top: var(--hx-space-2);
   font-size: 12px;
-  color: #999;
+  color: var(--hx-color-text-tertiary, #999);
 }
 
 .preview-content {
@@ -707,11 +684,11 @@ onMounted(() => {
 
 .unsupported-preview {
   text-align: center;
-  padding: 60px;
+  padding: var(--hx-space-7);
 }
 
 .unsupported-preview p {
-  margin: 20px 0;
-  color: #666;
+  margin: var(--hx-space-4) 0;
+  color: var(--hx-color-text-secondary, #666);
 }
 </style>

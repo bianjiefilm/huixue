@@ -1,10 +1,23 @@
 <template>
+  <PageShell max-width="wide" class="resource-detail-shell">
+    <PageHeaderBar
+      :title="courseDetail?.title || '课程资源详情'"
+      :subtitle="courseDetail?.direction || '课程资源'"
+      show-back
+      back-to="/course/resource"
+    >
+      <template #actions>
+        <a-button type="primary" class="create-btn" @click="openCreateModal">创建课堂</a-button>
+        <a-button class="add-btn" @click="openAddToClassroomModal">添加到课堂</a-button>
+      </template>
+    </PageHeaderBar>
+
   <div class="detail-page copilot-theme">
     <!-- 课程顶部信息 Banner -->
-    <div class="course-banner" :style="{ background: course?.cover || 'linear-gradient(135deg, #1890ff, #36cfc9)' }">
+    <div class="course-banner" :style="{ background: course?.cover || 'linear-gradient(135deg, #1677ff, #36cfc9)' }">
       <div class="responsive-container banner-wrapper">
         <div class="course-img">
-          <img :src="courseDetail?.cover_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Crect fill=%22%231890ff%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2240%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E📚%3C/text%3E%3C/svg%3E'" alt="课程教材" />
+          <img :src="courseDetail?.cover_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Crect fill=%22%231677ff%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2240%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E📚%3C/text%3E%3C/svg%3E'" alt="课程教材" />
         </div>
         <div class="course-info">
           <h1 class="course-title">{{ courseDetail?.title }}</h1>
@@ -21,10 +34,6 @@
               <span class="label">课程方向</span>
               <span class="value">{{ courseDetail?.direction || '未知' }}</span>
             </div>
-          </div>
-          <div class="course-actions">
-            <a-button type="primary" class="create-btn" @click="openCreateModal">创建课堂</a-button>
-            <a-button class="add-btn" @click="openAddToClassroomModal">添加到课堂</a-button>
           </div>
         </div>
       </div>
@@ -207,7 +216,7 @@
                       <template #avatar>
                         <a-avatar 
                           :style="{ 
-                            backgroundColor: selectedChapterId === item.id ? '#52c41a' : '#1890ff' 
+                            backgroundColor: selectedChapterId === item.id ? '#52c41a' : '#1677ff' 
                           }"
                         >
                           {{ index + 1 }}
@@ -556,7 +565,7 @@
             <a-card v-if="courseDetail?.lead_teacher_name" title="推荐教师" class="info-card">
               <div class="teacher-info">
                 <a-avatar v-if="courseDetail.lead_teacher_avatar" :size="64" :src="courseDetail.lead_teacher_avatar" />
-                <a-avatar v-else :size="64" style="background-color: #1890ff">
+                <a-avatar v-else :size="64" style="background-color: #1677ff">
                   <EyeOutlined />
                   <span style="font-size: 18px;">Preview</span>
                 </a-avatar>
@@ -653,6 +662,7 @@
       :key="currentPreviewResource?.id"
     />
   </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -669,6 +679,8 @@ import dayjs from 'dayjs';
 import { materialDetail } from '@/api/cmaterial';
 import { addClassRoomByCourse, techerClassRooms, addClassRoomPractice } from '@/api/classrooms';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { 
   AppstoreOutlined,
   ProfileOutlined,
@@ -1312,11 +1324,18 @@ const fetchSyllabusSummary = async (syllabus: string) => {
 <style scoped>
 /* ==================== 深色主题样式 ==================== */
 
+/* PageShell outer spacing */
+.resource-detail-shell {
+  /* PageShell handles padding */
+}
+
 /* 页面基础 */
 .detail-page.copilot-theme {
   background-color: var(--copilot-bg-primary, #f5f5f5);
   color: var(--copilot-text-primary, #e0e0e0);
-  min-height: 100vh;
+  min-height: auto;
+  border-radius: var(--hx-radius-md, 10px);
+  overflow: hidden;
 }
 
 /* 三栏布局容器 */

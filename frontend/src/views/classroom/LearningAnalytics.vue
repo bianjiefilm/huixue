@@ -1,8 +1,10 @@
 <template>
-  <div class="learning-analytics-page">
-    <a-spin :spinning="loading" tip="加载中...">
-      <!-- 搜索框 -->
-      <div class="search-section">
+  <PageShell max-width="wide" class="learning-analytics-page">
+    <PageHeaderBar
+      title="学情分析"
+      subtitle="课堂学习数据总览与分课程统计"
+    >
+      <template #actions>
         <a-input-search
           v-model:value="searchKeyword"
           placeholder="按姓名或学号搜索"
@@ -10,14 +12,15 @@
           @search="handleSearch"
           @change="handleSearch"
         />
-      </div>
+      </template>
+    </PageHeaderBar>
 
-      <!-- 标签页 -->
+    <a-spin :spinning="loading" tip="加载中...">
       <a-tabs v-model:activeKey="activeTab" class="analytics-tabs">
         <!-- 学情总览 -->
         <a-tab-pane key="overview" tab="学情总览">
-          <LearningOverviewTab 
-            :classroom-id="classroomId" 
+          <LearningOverviewTab
+            :classroom-id="classroomId"
             :teacher-id="teacherId"
             :keyword="searchKeyword"
           />
@@ -25,8 +28,8 @@
 
         <!-- 必修课程统计 -->
         <a-tab-pane key="required" tab="必修课程统计">
-          <LearningStatsTab 
-            :classroom-id="classroomId" 
+          <LearningStatsTab
+            :classroom-id="classroomId"
             :teacher-id="teacherId"
             :course-type="'required'"
             :keyword="searchKeyword"
@@ -35,8 +38,8 @@
 
         <!-- 拓展课程统计 -->
         <a-tab-pane key="optional" tab="拓展课程统计">
-          <LearningStatsTab 
-            :classroom-id="classroomId" 
+          <LearningStatsTab
+            :classroom-id="classroomId"
             :teacher-id="teacherId"
             :course-type="'optional'"
             :keyword="searchKeyword"
@@ -44,7 +47,7 @@
         </a-tab-pane>
       </a-tabs>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -53,6 +56,13 @@ import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import LearningOverviewTab from '../../components/classroom/LearningOverviewTab.vue';
 import LearningStatsTab from '../../components/classroom/LearningStatsTab.vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+
+// Props when embedded in classroom detail; fall back to route for standalone
+const props = defineProps<{
+  classroomId?: string | number;
+}>();
 
 // 路由和用户信息
 const route = useRoute();
@@ -64,6 +74,11 @@ console.log('路由参数:', route.params);
 console.log('用户信息:', userStore.userInfo);
 
 const classroomId = computed(() => {
+  if (props.classroomId != null && props.classroomId !== '') {
+    return typeof props.classroomId === 'number'
+      ? props.classroomId
+      : parseInt(String(props.classroomId), 10);
+  }
   const id = parseInt(route.params.id as string);
   console.log('计算出的课堂ID:', id);
   return id;
@@ -89,24 +104,16 @@ function handleSearch() {
 
 <style lang="less" scoped>
 .learning-analytics-page {
-  padding: 16px;
-  background: #f0f2f5;
-  min-height: 100vh;
-
-  .search-section {
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: flex-end;
-  }
+  /* PageShell handles outer padding */
 
   .analytics-tabs {
-    background: #fff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--hx-color-bg-container, #fff);
+    padding: var(--hx-space-4);
+    border-radius: var(--hx-radius-md, 10px);
+    border: 1px solid var(--hx-color-border, #f0f0f0);
 
     :deep(.ant-tabs-nav) {
-      margin-bottom: 16px;
+      margin-bottom: var(--hx-space-4);
     }
 
     :deep(.ant-tabs-content-holder) {
@@ -115,6 +122,15 @@ function handleSearch() {
           padding: 0;
         }
       }
+    }
+
+    /* chart card gap — child overview uses rows/cards */
+    :deep(.ant-row) {
+      row-gap: var(--hx-space-4);
+    }
+
+    :deep(.ant-card) {
+      margin-bottom: 0;
     }
   }
 }

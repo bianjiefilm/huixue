@@ -1,34 +1,28 @@
 <template>
-  <div class="resource-page">
-    <!-- 搜索横幅 -->
-    <div class="search-banner">
-      <div class="search-container">
-        <h1>课程资源库</h1>
-        <p>探索丰富的教学资源，提升您的学习效果</p>
+  <PageShell max-width="wide" class="resource-page">
+    <PageHeaderBar
+      title="课程资源库"
+      subtitle="探索丰富的教学资源，提升您的学习效果"
+    />
 
-        <!-- 关键词搜索栏 -->
-        <div class="search-box">
-          <a-input-search
-            v-model:value="keyword"
-            placeholder="搜索课程名称、教师、学校、描述"
-            enter-button="搜索"
-            size="large"
-            allow-clear
-            @search="handleSearch"
-            @pressEnter="handleSearch"
-          >
-            <template #prefix>
-              <search-outlined />
-            </template>
-          </a-input-search>
-        </div>
-      </div>
-    </div>
+    <Stack direction="vertical" :gap="4" class="resource-body">
+      <Stack direction="horizontal" :gap="3" align="center" class="resource-filters">
+        <a-input-search
+          v-model:value="keyword"
+          placeholder="搜索课程名称、教师、学校、描述"
+          enter-button="搜索"
+          allow-clear
+          class="search-input"
+          @search="handleSearch"
+          @pressEnter="handleSearch"
+        >
+          <template #prefix>
+            <search-outlined />
+          </template>
+        </a-input-search>
+      </Stack>
 
-    <!-- 筛选条件部分 -->
-    <div class="filter-section">
-      <div class="filter-container">
-        <!-- 课程方向筛选 -->
+      <div class="filter-section">
         <div class="filter-item">
           <div class="filter-label">课程方向：</div>
           <div class="filter-content">
@@ -40,8 +34,6 @@
             </a-radio-group>
           </div>
         </div>
-
-        <!-- 重置筛选 -->
         <div class="filter-reset" v-if="selectedDirection || keyword">
           <a-button type="primary" ghost @click="clearFilters">
             <template #icon><reload-outlined /></template>
@@ -49,37 +41,48 @@
           </a-button>
         </div>
       </div>
-    </div>
 
-    <!-- 课程列表 -->
-    <div class="course-section">
-      <a-spin :spinning="loading">
-        <div v-if="filteredCourses.length > 0" class="course-list">
-          <a-row :gutter="[16, 16]">
-            <a-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6" :xxl="4" v-for="course in filteredCourses" :key="course.id">
-              <a-card class="course-card" :hoverable="true" :bodyStyle="{ padding: '0' }">
-                <a :href="`#/course/resource/${course.id}`" target="_blank" class="card-link">
-                  <div class="card-cover" :style="getCoverStyle(course)">
-                    <div class="cover-overlay"></div>
-                    <div class="cover-text">{{ course.direction || course.title }}</div>
-                    <div class="university-tag">{{ course.source || '知名高校' }}</div>
-                  </div>
-                  <div class="card-content">
-                    <div class="course-title" :title="course.title">{{ course.title }}</div>
-                    <div class="course-info">
-                      <a-tag color="blue">{{ course.direction || '通用' }}</a-tag>
-                      <span class="university">{{ course.source || '知名高校' }}</span>
+      <div class="course-section">
+        <a-spin :spinning="loading">
+          <EmptyStateBlock
+            v-if="!loading && filteredCourses.length === 0"
+            description="没有找到符合条件的课程资源"
+          />
+          <div v-else-if="filteredCourses.length > 0" class="course-list">
+            <a-row :gutter="[16, 16]">
+              <a-col
+                :xs="24"
+                :sm="12"
+                :md="8"
+                :lg="6"
+                :xl="6"
+                :xxl="4"
+                v-for="course in filteredCourses"
+                :key="course.id"
+              >
+                <a-card class="course-card" :hoverable="true" :bodyStyle="{ padding: '0' }">
+                  <a :href="`#/course/resource/${course.id}`" target="_blank" class="card-link">
+                    <div class="card-cover" :style="getCoverStyle(course)">
+                      <div class="cover-overlay"></div>
+                      <div class="cover-text">{{ course.direction || course.title }}</div>
+                      <div class="university-tag">{{ course.source || '知名高校' }}</div>
                     </div>
-                  </div>
-                </a>
-              </a-card>
-            </a-col>
-          </a-row>
-        </div>
-        <a-empty v-else description="没有找到符合条件的课程资源" />
-      </a-spin>
-    </div>
-  </div>
+                    <div class="card-content">
+                      <div class="course-title" :title="course.title">{{ course.title }}</div>
+                      <div class="course-info">
+                        <a-tag color="blue">{{ course.direction || '通用' }}</a-tag>
+                        <span class="university">{{ course.source || '知名高校' }}</span>
+                      </div>
+                    </div>
+                  </a>
+                </a-card>
+              </a-col>
+            </a-row>
+          </div>
+        </a-spin>
+      </div>
+    </Stack>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -87,6 +90,10 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue';
 import { materialList } from '@/api/cmaterial';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
+import Stack from '@/components/common/Stack.vue';
 
 const route = useRoute();
 
@@ -107,9 +114,9 @@ const directions = computed(() => {
   return Array.from(dirSet);
 });
 
-// 颜色配置
+// 颜色配置（echarts/cover 不读 css var，用 primary 对齐色 #1677ff）
 const directionColors: Record<string, string> = {
-  '大数据': 'linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)',
+  '大数据': 'linear-gradient(135deg, #1677ff 0%, #40a9ff 100%)',
   '人工智能': 'linear-gradient(135deg, #2d1a5c 0%, #5a2d87 100%)',
   '区块链': 'linear-gradient(135deg, #1a5c3a 0%, #2d875a 100%)',
   '云计算': 'linear-gradient(135deg, #5c1a3a 0%, #872d5a 100%)',
@@ -128,7 +135,7 @@ const getCoverStyle = (course: any) => {
     };
   }
   return {
-    background: directionColors[course.direction] || 'linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)'
+    background: directionColors[course.direction] || 'linear-gradient(135deg, #1677ff 0%, #40a9ff 100%)'
   };
 };
 
@@ -210,67 +217,28 @@ onMounted(async () => {
 
 <style scoped>
 .resource-page {
-  min-height: 100vh;
-  background-color: #f5f7fa;
+  min-height: 100%;
 }
 
-.search-banner {
-  height: 200px;
-  background: linear-gradient(135deg, #1890ff, #36cfc9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.search-container {
-  position: relative;
-  z-index: 1;
-  text-align: center;
+.resource-body {
   width: 100%;
-  max-width: 1200px;
-  padding: 0 20px;
 }
 
-.search-container h1 {
-  font-size: 32px;
-  font-weight: 500;
-  margin-bottom: 10px;
-  color: #fff;
-}
-
-.search-container p {
-  font-size: 16px;
-  opacity: 0.9;
-  margin-bottom: 20px;
-  color: #fff;
-}
-
-.search-box {
+.search-input {
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+  max-width: 480px;
 }
 
-/* 筛选部分样式 */
 .filter-section {
-  background-color: #fff;
-  padding: 16px 0;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-}
-
-.filter-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  background: var(--hx-color-bg-container, #fff);
+  padding: var(--hx-space-4);
+  border-radius: var(--hx-radius-md, 10px);
+  border: 1px solid var(--hx-color-border, #f0f0f0);
 }
 
 .filter-item {
   display: flex;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-3);
   align-items: center;
 }
 
@@ -280,8 +248,8 @@ onMounted(async () => {
 
 .filter-label {
   width: 80px;
-  font-size: 14px;
-  color: #333;
+  font-size: var(--hx-font-size-base);
+  color: var(--hx-color-text-primary);
   flex-shrink: 0;
   font-weight: 500;
 }
@@ -292,27 +260,25 @@ onMounted(async () => {
 }
 
 .filter-reset {
-  margin-top: 16px;
+  margin-top: var(--hx-space-3);
   display: flex;
   justify-content: flex-end;
 }
 
 .course-section {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
+  width: 100%;
 }
 
 .course-list {
-  margin-bottom: 40px;
+  margin-bottom: var(--hx-space-6);
 }
 
 .course-card {
   height: 100%;
-  border-radius: 8px;
+  border-radius: var(--hx-radius-md, 10px);
   overflow: hidden;
   transition: all 0.3s;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--hx-color-border, #e8e8e8);
 }
 
 .course-card:hover {
@@ -348,17 +314,17 @@ onMounted(async () => {
 .cover-text {
   position: relative;
   z-index: 1;
-  font-size: 18px;
+  font-size: var(--hx-font-size-md, 18px);
   font-weight: 600;
   text-align: center;
-  padding: 0 16px;
+  padding: 0 var(--hx-space-4);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .university-tag {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: var(--hx-space-3);
+  right: var(--hx-space-3);
   padding: 2px 8px;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 12px;
@@ -367,50 +333,42 @@ onMounted(async () => {
 }
 
 .card-content {
-  padding: 16px;
-  background: #fff;
+  padding: var(--hx-space-4);
+  background: var(--hx-color-bg-container, #fff);
 }
 
 .course-title {
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: var(--hx-space-3);
   line-height: 1.4;
   height: 42px;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  color: #333;
+  color: var(--hx-color-text-primary, #333);
 }
 
 .course-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .university {
   font-size: 12px;
-  color: #999;
+  color: var(--hx-color-text-tertiary, #999);
 }
 
 @media (max-width: 768px) {
-  .search-container h1 {
-    font-size: 24px;
-  }
-
-  .search-container p {
-    font-size: 14px;
-  }
-
   .filter-item {
     flex-direction: column;
     align-items: flex-start;
   }
 
   .filter-label {
-    margin-bottom: 8px;
+    margin-bottom: var(--hx-space-2);
   }
 
   .filter-content {

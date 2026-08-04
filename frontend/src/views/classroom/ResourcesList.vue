@@ -1,28 +1,26 @@
 <template>
 	<div class="teaching-resources">
-		<!-- 头部操作区 -->
-		<div class="resources-header">
-			<div class="header-left">
-				<h2>教学资源</h2>
-				<p class="description">教师可上传PDF、DOC、DOCX、PPT、PPTX、MP4格式的教学资源供学生学习</p>
-			</div>
-			<div class="header-actions">
+		<PageHeaderBar
+			title="教学资源"
+			subtitle="教师可上传 PDF、DOC、DOCX、PPT、PPTX、MP4 格式的教学资源供学生学习"
+		>
+			<template #actions>
 				<a-button type="primary" @click="openAddModuleDialog">
 					<template #icon><PlusOutlined /></template>
 					添加模块
 				</a-button>
-			</div>
-		</div>
+			</template>
+		</PageHeaderBar>
 
 		<!-- 模块列表 -->
-		<div v-if="modulesList.length === 0" class="empty-state">
-			<div class="empty-content">
-				<FolderOpenOutlined class="empty-icon" />
-				<h3>暂无教学资源模块</h3>
-				<p>请先创建模块来组织您的教学资源</p>
+		<EmptyStateBlock
+			v-if="modulesList.length === 0"
+			description="暂无教学资源模块，请先创建模块来组织您的教学资源"
+		>
+			<template #action>
 				<a-button type="primary" @click="openAddModuleDialog">创建第一个模块</a-button>
-			</div>
-		</div>
+			</template>
+		</EmptyStateBlock>
 
 		<div v-else class="modules-container">
 			<!-- 模块卡片 -->
@@ -38,7 +36,6 @@
 					</div>
 					<div class="module-actions">
 						<a-button
-							type="primary"
 							size="small"
 							@click="openUploadDialog(module)"
 						>
@@ -290,6 +287,8 @@ import {
 } from '../../api/resources';
 import type { ResourceModule, ResourceFile } from '../../api/resources';
 import { useUserStore } from '../../stores/user';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 interface Props {
 	classroomId: string;
@@ -728,73 +727,19 @@ watch(() => props.classroomId, (newId, oldId) => {
 
 <style scoped>
 .teaching-resources {
-  padding: 24px;
-}
-
-.resources-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.header-left {
-  flex: 1;
-}
-
-.header-left h2 {
-  margin: 0 0 8px 0;
-  color: #262626;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.description {
-  color: #666;
-  margin: 0;
-  font-size: 14px;
-}
-
-.header-actions {
-  flex-shrink: 0;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.empty-content {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.empty-icon {
-  font-size: 64px;
-  color: #d9d9d9;
-  margin-bottom: 16px;
-}
-
-.empty-content h3 {
-  color: #262626;
-  margin-bottom: 8px;
-}
-
-.empty-content p {
-  color: #666;
-  margin-bottom: 24px;
+  /* nested in classroom detail PageShell — no extra outer padding */
 }
 
 .modules-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--hx-space-5);
 }
 
 .module-card {
-  background: #fff;
-  border: 1px solid #d9d9d9;
-  border-radius: 8px;
+  background: var(--hx-color-bg-container, #fff);
+  border: 1px solid var(--hx-color-border, #d9d9d9);
+  border-radius: var(--hx-radius-md, 10px);
   overflow: hidden;
 }
 
@@ -802,26 +747,26 @@ watch(() => props.classroomId, (newId, oldId) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background: #fafafa;
-  border-bottom: 1px solid #f0f0f0;
+  padding: var(--hx-space-4) var(--hx-space-5);
+  background: var(--hx-color-bg-elevated, #fafafa);
+  border-bottom: 1px solid var(--hx-color-border, #f0f0f0);
 }
 
 .module-info h3 {
-  margin: 0 0 4px 0;
-  color: #262626;
-  font-size: 16px;
+  margin: 0 0 var(--hx-space-1) 0;
+  color: var(--hx-color-text-primary, #262626);
+  font-size: var(--hx-font-size-md, 16px);
   font-weight: 600;
 }
 
 .file-count {
-  color: #666;
+  color: var(--hx-color-text-secondary, #666);
   font-size: 12px;
 }
 
 .module-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .files-list {
@@ -832,13 +777,13 @@ watch(() => props.classroomId, (newId, oldId) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: var(--hx-space-3) var(--hx-space-5);
+  border-bottom: 1px solid var(--hx-color-border, #f0f0f0);
   transition: background-color 0.2s;
 }
 
 .file-item:hover {
-  background: #f5f5f5;
+  background: var(--hx-color-bg-elevated, #f5f5f5);
 }
 
 .file-item:last-child {
@@ -852,9 +797,9 @@ watch(() => props.classroomId, (newId, oldId) => {
 }
 
 .file-icon {
-  margin-right: 12px;
+  margin-right: var(--hx-space-3);
   font-size: 16px;
-  color: #666;
+  color: var(--hx-color-text-secondary, #666);
 }
 
 .file-details {
@@ -862,43 +807,43 @@ watch(() => props.classroomId, (newId, oldId) => {
 }
 
 .file-name {
-  color: #262626;
+  color: var(--hx-color-text-primary, #262626);
   font-weight: 500;
   margin-bottom: 2px;
 }
 
 .file-meta {
-  color: #666;
+  color: var(--hx-color-text-secondary, #666);
   font-size: 12px;
 }
 
 .file-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .empty-module {
-  padding: 24px;
+  padding: var(--hx-space-5);
   text-align: center;
-  color: #999;
-  font-size: 14px;
+  color: var(--hx-color-text-tertiary, #999);
+  font-size: var(--hx-font-size-base, 14px);
 }
 
 .upload-modal-content {
-  padding: 20px 0;
+  padding: var(--hx-space-4) 0;
 }
 
 .upload-info {
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f6f6f6;
-  border-radius: 6px;
+  margin-bottom: var(--hx-space-4);
+  padding: var(--hx-space-4);
+  background: var(--hx-color-bg-elevated, #f6f6f6);
+  border-radius: var(--hx-radius-sm, 6px);
 }
 
 .upload-info p {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  color: #666;
+  margin: 0 0 var(--hx-space-2) 0;
+  font-size: var(--hx-font-size-base, 14px);
+  color: var(--hx-color-text-secondary, #666);
 }
 
 .upload-info p:last-child {
@@ -913,17 +858,17 @@ watch(() => props.classroomId, (newId, oldId) => {
 
 .video-player {
   max-width: 100%;
-  border-radius: 6px;
+  border-radius: var(--hx-radius-sm, 6px);
 }
 
 .office-preview,
 .unsupported-preview {
-  padding: 40px;
+  padding: var(--hx-space-6);
   text-align: center;
-  color: #666;
+  color: var(--hx-color-text-secondary, #666);
 }
 
 .preview-header {
-  margin-bottom: 20px;
+  margin-bottom: var(--hx-space-4);
 }
 </style>
