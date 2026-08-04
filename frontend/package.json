@@ -51,7 +51,6 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@arco-design/web-vue": "^2.57.0",
     "@tsconfig/node22": "^22.0.1",
     "@types/dompurify": "^3.0.5",
     "@types/markdown-it": "^14.1.2",

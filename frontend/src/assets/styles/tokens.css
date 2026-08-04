@@ -65,7 +65,8 @@
   --hx-header-height: 64px;
   --hx-footer-height: 64px;
 
-  /* z-index scale (D7)
+  /* z-index scale (D7) — CANONICAL; do not hardcode z-index in components.
+   * Levels: header 100 | modal/drawer/ai-float 1000 | dropdown 1050.
    * AI 浮层与 Modal 同阶 1000：以「Modal 可点确认」优先，避免 1100 盖死 AntD Modal。
    * 浮层仍保持 pointer-events 正常；Modal 后挂载时同 z 下覆盖助手。 */
   --hx-z-header: 100;

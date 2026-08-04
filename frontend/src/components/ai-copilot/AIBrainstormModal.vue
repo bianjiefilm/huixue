@@ -210,7 +210,7 @@ watch(() => props.visible, (val) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: var(--hx-z-modal);
   backdrop-filter: blur(4px);
 }
 
