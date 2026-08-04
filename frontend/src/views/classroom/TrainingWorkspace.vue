@@ -1,7 +1,7 @@
 <template>
-  <div class="training-workspace-page">
-    <!-- 顶部工具栏 -->
-    <div class="workspace-header">
+  <div class="hx-workspace">
+    <!-- 顶部工具栏：不占编辑器高度的固定条 -->
+    <header class="hx-workspace__toolbar">
       <div class="header-left">
         <a-button type="link" @click="goBack">
           <ArrowLeftOutlined /> 返回
@@ -35,10 +35,10 @@
           </template>
         </a-dropdown>
       </div>
-    </div>
+    </header>
 
-    <!-- 主要内容区域：左右分栏 -->
-    <div class="workspace-content">
+    <!-- 主要内容区域：左右分栏，flex 吃满剩余视口 -->
+    <div class="hx-workspace__body">
       <!-- 左侧：手册内容 -->
       <div class="handbook-panel">
         <div class="panel-header">
@@ -494,11 +494,11 @@ function handleVncLoad() {
     
     if (targetHeight === 0) {
       // 使用窗口高度减去其他元素
-      const workspaceContent = panelBody.closest('.workspace-content') as HTMLElement;
+      const workspaceContent = panelBody.closest('.hx-workspace__body') as HTMLElement;
       if (workspaceContent) {
         const contentRect = workspaceContent.getBoundingClientRect();
         targetHeight = contentRect.height;
-        console.log('[VNC调试] 从 workspace-content 获取高度:', targetHeight);
+        console.log('[VNC调试] 从 hx-workspace__body 获取高度:', targetHeight);
       }
     }
     
@@ -906,225 +906,239 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="less">
-.training-workspace-page {
+/* 全高 shell：禁止再加外层 padding:24 压矮编辑器 */
+.hx-workspace {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background: #f5f5f5;
+  height: calc(100vh - var(--hx-header-height));
+  background: var(--hx-color-bg-layout);
+  overflow: hidden;
+}
 
-  .workspace-header {
+.hx-workspace__toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hx-space-2);
+  padding: var(--hx-space-2) var(--hx-space-4);
+  background: var(--hx-color-bg-container);
+  border-bottom: 1px solid var(--hx-color-border-muted);
+
+  .header-left {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 12px 24px;
-    background: white;
-    border-bottom: 1px solid #e8e8e8;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    gap: var(--hx-space-3);
+    min-width: 0;
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .training-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #262626;
-      }
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .training-title {
+      font-size: var(--hx-font-size-base);
+      font-weight: 600;
+      color: var(--hx-color-text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
-  .workspace-content {
+  .header-right {
     display: flex;
+    align-items: center;
+    gap: var(--hx-space-2);
+    flex-shrink: 0;
+  }
+}
+
+.hx-workspace__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  gap: var(--hx-space-2);
+  overflow: hidden;
+
+  .handbook-panel {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--hx-color-bg-container);
+    border-right: 1px solid var(--hx-color-border-muted);
     overflow: hidden;
+    min-width: 0;
 
-    .handbook-panel {
-      flex: 1;
+    .panel-header {
       display: flex;
-      flex-direction: column;
-      background: white;
-      border-right: 1px solid #e8e8e8;
-      overflow: hidden;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--hx-space-3) var(--hx-space-4);
+      border-bottom: 1px solid var(--hx-color-border-muted);
+      background: var(--hx-color-bg-layout);
 
-      .panel-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 24px;
-        border-bottom: 1px solid #e8e8e8;
-        background: #fafafa;
-
-        h3 {
-          margin: 0;
-          font-size: 14px;
-          font-weight: 600;
-          color: #262626;
-        }
+      h3 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--hx-color-text-primary);
       }
+    }
 
-      .panel-body {
-        flex: 1;
-        overflow-y: auto;
-        padding: 24px;
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--hx-space-4);
+      min-height: 0;
 
-        .handbook-content {
-          max-width: 900px;
-          margin: 0 auto;
+      .handbook-content {
+        max-width: 900px;
+        margin: 0 auto;
 
-          :deep(.markdown-body) {
-            h1, h2, h3 {
-              margin-top: 24px;
-              margin-bottom: 12px;
-              color: #262626;
-            }
+        :deep(.markdown-body) {
+          h1, h2, h3 {
+            margin-top: var(--hx-space-5);
+            margin-bottom: var(--hx-space-3);
+            color: var(--hx-color-text-primary);
+          }
 
-            p {
+          p {
+            line-height: 1.8;
+            color: var(--hx-color-text-secondary);
+            margin-bottom: var(--hx-space-3);
+          }
+
+          ul, ol {
+            padding-left: var(--hx-space-5);
+            margin-bottom: var(--hx-space-3);
+
+            li {
               line-height: 1.8;
-              color: #595959;
-              margin-bottom: 12px;
+              color: var(--hx-color-text-secondary);
+              margin-bottom: var(--hx-space-2);
             }
+          }
 
-            ul, ol {
-              padding-left: 24px;
-              margin-bottom: 12px;
+          code {
+            background: var(--hx-color-bg-layout);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+          }
 
-              li {
-                line-height: 1.8;
-                color: #595959;
-                margin-bottom: 8px;
-              }
-            }
+          pre {
+            background: var(--hx-color-bg-layout);
+            padding: var(--hx-space-3);
+            border-radius: 4px;
+            overflow-x: auto;
 
             code {
-              background: #f5f5f5;
-              padding: 2px 6px;
-              border-radius: 3px;
-              font-family: 'Courier New', monospace;
+              background: transparent;
+              padding: 0;
+            }
+          }
+
+          img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: var(--hx-space-4);
+
+            th, td {
+              border: 1px solid var(--hx-color-border-muted);
+              padding: var(--hx-space-2) var(--hx-space-3);
+              text-align: left;
             }
 
-            pre {
-              background: #f5f5f5;
-              padding: 12px;
-              border-radius: 4px;
-              overflow-x: auto;
-
-              code {
-                background: transparent;
-                padding: 0;
-              }
-            }
-
-            img {
-              max-width: 100%;
-              height: auto;
-              border-radius: 4px;
-            }
-
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 16px;
-
-              th, td {
-                border: 1px solid #e8e8e8;
-                padding: 8px 12px;
-                text-align: left;
-              }
-
-              th {
-                background: #fafafa;
-                font-weight: 600;
-              }
+            th {
+              background: var(--hx-color-bg-layout);
+              font-weight: 600;
             }
           }
         }
       }
     }
+  }
 
-    .resizer {
-      width: 4px;
-      background: #e8e8e8;
-      cursor: col-resize;
-      flex-shrink: 0;
+  .resizer {
+    width: 4px;
+    background: var(--hx-color-border-muted);
+    cursor: col-resize;
+    flex-shrink: 0;
 
-      &:hover {
-        background: #1890ff;
+    &:hover {
+      background: var(--hx-color-primary);
+    }
+  }
+
+  .vdi-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--hx-color-bg-container);
+    overflow: hidden;
+    min-width: 400px;
+    min-height: 0;
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--hx-space-3) var(--hx-space-4);
+      border-bottom: 1px solid var(--hx-color-border-muted);
+      background: var(--hx-color-bg-layout);
+
+      h3 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--hx-color-text-primary);
+      }
+
+      .environment-status {
+        display: flex;
+        align-items: center;
+        gap: var(--hx-space-2);
+        font-size: 12px;
+        color: var(--hx-color-text-tertiary);
       }
     }
 
-    .vdi-panel {
-      display: flex;
-      flex-direction: column;
-      background: white;
+    .panel-body {
+      flex: 1;
+      position: relative;
       overflow: hidden;
-      min-width: 400px;
+      pointer-events: auto;
+      min-height: 0;
 
-      .panel-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 24px;
-        border-bottom: 1px solid #e8e8e8;
-        background: #fafafa;
-
-        h3 {
-          margin: 0;
-          font-size: 14px;
-          font-weight: 600;
-          color: #262626;
-        }
-
-        .environment-status {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 12px;
-          color: #8c8c8c;
-        }
-      }
-
-      .panel-body {
-        flex: 1;
-        position: relative;
-        overflow: hidden;
+      .vdi-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         pointer-events: auto;
+        z-index: 1;
 
-        .vdi-container {
+        iframe {
+          border: none;
+          display: block;
           width: 100%;
           height: 100%;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
           pointer-events: auto;
+          touch-action: none;
           z-index: 1;
-
-          iframe {
-            border: none;
-            display: block;
-            width: 100%;
-            height: 100%;
-            pointer-events: auto;
-            touch-action: none;
-            z-index: 1;
-          }
         }
+      }
 
-        .error-container,
-        .empty-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-        }
+      .error-container,
+      .empty-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
       }
     }
   }

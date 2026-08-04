@@ -1,23 +1,24 @@
 <template>
-  <div class="training-detail-container">
-    <div class="breadcrumb">
-      <a-breadcrumb>
-        <a-breadcrumb-item>
-          <router-link to="/classroom">我的课堂</router-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          <router-link :to="`/classroom/${classroomId}`">{{ classroomInfo.name || classroomName }}</router-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>{{ training?.title }}</a-breadcrumb-item>
-      </a-breadcrumb>
-    </div>
-
+  <PageShell max-width="wide" class="training-detail-page">
     <a-spin :spinning="loading" tip="加载中...">
+      <PageHeaderBar
+        v-if="training"
+        :title="training.title"
+        :subtitle="headerSubtitle"
+        show-back
+        :back-to="`/classroom/${classroomId}`"
+      >
+        <template #actions>
+          <a-button type="primary" size="large" @click="launchTraining" :loading="launching">
+            {{ isTeacher ? '👁️ 查看实训' : '🚀 开启实训' }}
+          </a-button>
+        </template>
+      </PageHeaderBar>
+
       <!-- 顶部项目数据看板 (学生端个人看板) -->
       <div class="project-dashboard student-dashboard" v-if="training && !isTeacher">
-        <div class="dashboard-header">
-          <h1 class="project-title">{{ training.title }}</h1>
-          <div class="project-coin" v-if="training.coin">
+        <div class="dashboard-header" v-if="training.coin">
+          <div class="project-coin">
             <span class="coin-icon">🪙</span>
             <span>{{ training.coin }}</span>
           </div>
@@ -67,9 +68,8 @@
 
       <!-- 顶部项目数据看板 (教师端专属) -->
       <div class="project-dashboard" v-if="training && isTeacher">
-        <div class="dashboard-header">
-          <h1 class="project-title">{{ training.title }}</h1>
-          <div class="project-coin" v-if="training.coin">
+        <div class="dashboard-header" v-if="training.coin">
+          <div class="project-coin">
             <span class="coin-icon">🪙</span>
             <span>{{ training.coin }}</span>
           </div>
@@ -117,19 +117,10 @@
         </div>
       </div>
 
-      <a-row :gutter="24" v-if="training">
+      <a-row :gutter="16" v-if="training">
         <!-- 左侧：手册内容 -->
         <a-col :xs="24" :lg="16">
           <div class="handbook-section">
-            <!-- 学生端显示标题头 -->
-            <div class="section-header" v-if="!isTeacher">
-              <h2>{{ training.title }}</h2>
-              <div class="meta-info" v-if="training.difficulty || training.industry">
-                <span class="difficulty-badge">{{ getDifficultyText(training.difficulty) }}</span>
-                <span class="industry-badge" v-if="training.industry">{{ training.industry }}</span>
-              </div>
-            </div>
-
             <a-card class="handbook-card">
               <template #title>
                 📄 实训手册
@@ -145,18 +136,14 @@
 
         <!-- 右侧：操作面板 -->
         <a-col :xs="24" :lg="8">
-          <!-- 操作按钮 -->
-          <div class="action-buttons">
-            <a-button type="primary" size="large" block @click="launchTraining" :loading="launching">
-              {{ isTeacher ? '👁️ 查看实训' : '🚀 开启实训' }}
-            </a-button>
-
-            <!-- 学生端专属：提交作业按钮 -->
+          <!-- 学生端专属：提交作业按钮（次要 CTA，主 CTA 在页头） -->
+          <div
+            class="action-buttons"
+            v-if="!isTeacher && studentProgress.status === 'in_progress'"
+          >
             <a-button
-              v-if="!isTeacher && studentProgress.status === 'in_progress'"
               size="large"
               block
-              style="margin-top: 12px"
               @click="openSubmitModal"
               :loading="submitting"
             >
@@ -200,7 +187,6 @@
             <template #title><FileTextOutlined /> 作业列表</template>
             <template #extra>
               <a-button
-                type="primary"
                 size="small"
                 @click="openSubmitModal"
                 :disabled="!canSubmitAssignment"
@@ -344,20 +330,22 @@
         </a-form-item>
       </a-form>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
-import { UploadOutlined } from '@ant-design/icons-vue';
+import { UploadOutlined, FileTextOutlined } from '@ant-design/icons-vue';
 import type { UploadProps } from 'ant-design-vue';
 import MarkdownIt from 'markdown-it';
 import { useUserStore } from '@/stores/user';
 import request from '@/utils/request';
 import { getToken } from '@/utils/auth';
 import { launchClassroomTraining } from '@/api/training';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 // 路由和状态
 const route = useRoute();
@@ -382,6 +370,12 @@ const submitting = ref(false);
 
 // 判断是否为教师
 const isTeacher = computed(() => userStore.userRole === 'teacher');
+
+const headerSubtitle = computed(() => {
+  const room = classroomInfo.value.name || classroomName.value;
+  if (!room) return '课堂实训';
+  return `所属课堂 · ${room}`;
+});
 
 // 数据
 const training = ref<any>(null);
@@ -921,44 +915,29 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="less">
-.training-detail-container {
-  padding: 24px;
-  background: #f5f5f5;
-  min-height: 100vh;
-
-  .breadcrumb {
-    margin-bottom: 24px;
-  }
-
+.training-detail-page {
   // 顶部项目数据看板（教师端）
   .project-dashboard {
-    background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
-    border-radius: 8px;
-    padding: 24px;
-    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--hx-color-primary) 0%, #096dd9 100%);
+    border-radius: var(--hx-radius-md, 8px);
+    padding: var(--hx-space-5);
+    margin-bottom: var(--hx-space-5);
     color: white;
 
     .dashboard-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      margin-bottom: 20px;
-
-      .project-title {
-        font-size: 24px;
-        font-weight: 600;
-        margin: 0;
-        color: white;
-      }
+      margin-bottom: var(--hx-space-4);
 
       .project-coin {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: var(--hx-space-2);
         background: rgba(255, 255, 255, 0.2);
-        padding: 6px 16px;
+        padding: var(--hx-space-1) var(--hx-space-4);
         border-radius: 20px;
-        font-size: 16px;
+        font-size: var(--hx-font-size-base);
         font-weight: 500;
 
         .coin-icon {
@@ -970,13 +949,13 @@ onUnmounted(() => {
     .dashboard-stats {
       display: flex;
       flex-wrap: wrap;
-      gap: 24px;
+      gap: var(--hx-space-5);
       align-items: center;
 
       .stat-item {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: var(--hx-space-1);
 
         .stat-label {
           font-size: 12px;
@@ -1011,8 +990,8 @@ onUnmounted(() => {
 
   // 所属课堂卡片
   .classroom-card {
-    margin-bottom: 16px;
-    background: white;
+    margin-bottom: var(--hx-space-4);
+    background: var(--hx-color-bg-container);
 
     .classroom-link {
       a {
@@ -1062,40 +1041,40 @@ onUnmounted(() => {
 
   // 目录导航样式
   .toc-card {
-    background: white;
+    background: var(--hx-color-bg-container);
     max-height: calc(100vh - 120px);
     overflow-y: auto;
 
     .toc-list {
       .toc-item {
-        padding: 8px 12px;
+        padding: var(--hx-space-2) var(--hx-space-3);
         cursor: pointer;
         border-radius: 4px;
-        margin-bottom: 4px;
+        margin-bottom: var(--hx-space-1);
         font-size: 13px;
-        color: #595959;
+        color: var(--hx-color-text-secondary);
         transition: all 0.2s;
         border-left: 2px solid transparent;
 
         &:hover {
           background: #f0f5ff;
-          color: #1890ff;
+          color: var(--hx-color-primary);
         }
 
         &.active {
           background: #e6f7ff;
-          color: #1890ff;
-          border-left-color: #1890ff;
+          color: var(--hx-color-primary);
+          border-left-color: var(--hx-color-primary);
           font-weight: 500;
         }
 
         &.level-1 {
-          padding-left: 12px;
+          padding-left: var(--hx-space-3);
           font-weight: 500;
         }
 
         &.level-2 {
-          padding-left: 24px;
+          padding-left: var(--hx-space-5);
         }
 
         &.level-3 {
@@ -1107,33 +1086,9 @@ onUnmounted(() => {
   }
 
   .handbook-section {
-    .section-header {
-      margin-bottom: 24px;
-
-      h2 {
-        margin: 0 0 12px 0;
-        color: #1890ff;
-      }
-
-      .meta-info {
-        display: flex;
-        gap: 12px;
-
-        .difficulty-badge,
-        .industry-badge {
-          display: inline-block;
-          padding: 4px 12px;
-          background: #e6f7ff;
-          color: #1890ff;
-          border-radius: 4px;
-          font-size: 12px;
-        }
-      }
-    }
-
     .handbook-card {
-      background: white;
-      margin-bottom: 24px;
+      background: var(--hx-color-bg-container);
+      margin-bottom: var(--hx-space-5);
 
       .handbook-content {
         :deep(.markdown-body) {
@@ -1180,18 +1135,18 @@ onUnmounted(() => {
   .progress-card,
   .tasks-card,
   .info-card {
-    margin-bottom: 16px;
-    background: white;
+    margin-bottom: var(--hx-space-4);
+    background: var(--hx-color-bg-container);
 
     .progress-stat {
-      margin-bottom: 16px;
+      margin-bottom: var(--hx-space-4);
       display: flex;
       flex-direction: column;
 
       .label {
         font-weight: 600;
-        color: #262626;
-        margin-bottom: 8px;
+        color: var(--hx-color-text-primary);
+        margin-bottom: var(--hx-space-2);
         font-size: 14px;
       }
 
@@ -1202,22 +1157,22 @@ onUnmounted(() => {
         font-weight: 600;
         display: inline-block;
         background: #e6f7ff;
-        color: #1890ff;
+        color: var(--hx-color-primary);
       }
     }
 
     .tasks-list {
       .task-item {
-        padding: 12px;
-        margin-bottom: 12px;
-        background: #fafafa;
-        border-left: 3px solid #1890ff;
+        padding: var(--hx-space-3);
+        margin-bottom: var(--hx-space-3);
+        background: var(--hx-color-bg-layout);
+        border-left: 3px solid var(--hx-color-primary);
         border-radius: 4px;
 
         .task-header {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: var(--hx-space-2);
 
           .task-number {
             display: inline-flex;
@@ -1225,7 +1180,7 @@ onUnmounted(() => {
             justify-content: center;
             width: 24px;
             height: 24px;
-            background: #1890ff;
+            background: var(--hx-color-primary);
             color: white;
             border-radius: 50%;
             font-size: 12px;
@@ -1234,7 +1189,7 @@ onUnmounted(() => {
 
           .task-title {
             font-weight: 600;
-            color: #262626;
+            color: var(--hx-color-text-primary);
           }
         }
       }
@@ -1245,17 +1200,17 @@ onUnmounted(() => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid #f0f0f0;
+        padding: var(--hx-space-2) 0;
+        border-bottom: 1px solid var(--hx-color-border-muted);
 
         .label {
           font-weight: 600;
-          color: #8c8c8c;
+          color: var(--hx-color-text-tertiary);
           font-size: 12px;
         }
 
         .value {
-          color: #262626;
+          color: var(--hx-color-text-primary);
           font-size: 12px;
         }
 
@@ -1267,7 +1222,7 @@ onUnmounted(() => {
   }
 
   .action-buttons {
-    margin-bottom: 16px;
+    margin-bottom: var(--hx-space-4);
 
     :deep(.ant-btn) {
       height: 40px;
@@ -1286,27 +1241,27 @@ onUnmounted(() => {
 
   // 作业列表卡片
   .assignments-card {
-    margin-bottom: 16px;
-    background: white;
+    margin-bottom: var(--hx-space-4);
+    background: var(--hx-color-bg-container);
 
     .empty-assignments {
-      padding: 20px 0;
+      padding: var(--hx-space-5) 0;
       text-align: center;
 
       .empty-tip {
-        color: #8c8c8c;
+        color: var(--hx-color-text-tertiary);
         font-size: 12px;
-        margin-top: 8px;
+        margin-top: var(--hx-space-2);
       }
     }
 
     .assignments-list {
       .assignment-item {
-        padding: 12px;
-        margin-bottom: 12px;
-        background: #fafafa;
+        padding: var(--hx-space-3);
+        margin-bottom: var(--hx-space-3);
+        background: var(--hx-color-bg-layout);
         border-radius: 6px;
-        border-left: 3px solid #1890ff;
+        border-left: 3px solid var(--hx-color-primary);
 
         &.graded {
           border-left-color: #52c41a;
@@ -1316,11 +1271,11 @@ onUnmounted(() => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 8px;
+          margin-bottom: var(--hx-space-2);
 
           .assignment-title {
             font-weight: 600;
-            color: #262626;
+            color: var(--hx-color-text-primary);
           }
 
           .assignment-status {
@@ -1342,26 +1297,26 @@ onUnmounted(() => {
 
         .assignment-meta {
           display: flex;
-          gap: 16px;
+          gap: var(--hx-space-4);
           font-size: 12px;
-          color: #8c8c8c;
+          color: var(--hx-color-text-tertiary);
         }
 
         .assignment-files {
-          margin-top: 8px;
+          margin-top: var(--hx-space-2);
         }
       }
     }
 
     .submit-section {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #f0f0f0;
+      margin-top: var(--hx-space-4);
+      padding-top: var(--hx-space-4);
+      border-top: 1px solid var(--hx-color-border-muted);
 
       .submit-tip {
         font-size: 12px;
         color: #ff4d4f;
-        margin-top: 8px;
+        margin-top: var(--hx-space-2);
         text-align: center;
       }
     }

@@ -1,22 +1,18 @@
 <template>
-  <div class="submission-detail-page">
-    <div class="page-header">
-      <a-page-header
-        title="作业详情"
-        :sub-title="trainingType === 'CODING' ? '查看学生提交的Jupyter Notebook' : '查看学生提交的BI分析结果'"
-        @back="() => $router.go(-1)"
-      >
-        <template #extra>
-           <a-space>
-             <div class="student-info" v-if="submission">
-                <a-tag color="blue">学生ID: {{ submission.student_id }}</a-tag>
-                <a-tag :color="statusColor">{{ statusText }}</a-tag>
-                <a-tag color="purple">{{ trainingType === 'CODING' ? 'Jupyter实训' : 'BI实训' }}</a-tag>
-             </div>
-           </a-space>
-        </template>
-      </a-page-header>
-    </div>
+  <PageShell max-width="wide" class="submission-detail-page">
+    <PageHeaderBar
+      title="作业详情"
+      :subtitle="trainingType === 'CODING' ? '查看学生提交的 Jupyter Notebook' : '查看学生提交的 BI 分析结果'"
+      show-back
+    >
+      <template #actions>
+        <div class="student-info" v-if="submission">
+          <a-tag color="blue">学生ID: {{ submission.student_id }}</a-tag>
+          <a-tag :color="statusColor">{{ statusText }}</a-tag>
+          <a-tag color="purple">{{ trainingType === 'CODING' ? 'Jupyter实训' : 'BI实训' }}</a-tag>
+        </div>
+      </template>
+    </PageHeaderBar>
 
     <div class="content-wrapper">
       <a-spin :spinning="loading" tip="正在加载作业数据...">
@@ -83,7 +79,7 @@
             </a-form>
         </a-card>
     </div>
-  </div>
+  </PageShell>
 </template>
 
 <script lang="ts" setup>
@@ -94,6 +90,8 @@ import BiDesigner from '@/components/BiDesigner.vue';
 import request from '@/utils/request';
 import { queryEnvironmentStatus } from '@/api/training';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -311,81 +309,91 @@ onMounted(() => {
 
 <style scoped>
 .submission-detail-page {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: #f0f2f5;
+  min-height: 100%;
 }
 
-.page-header {
-    background: #fff;
-    padding: 16px 24px;
-    margin-bottom: 16px;
+.student-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hx-space-2);
+  align-items: center;
 }
 
 .content-wrapper {
-    flex: 1;
-    margin: 0 24px;
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 200px); /* Adjust based on header/footer */
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 240px);
+  margin-right: 320px; /* 为固定评分面板留空 */
 }
 
 .bi-container {
-    flex: 1;
-    background: #fff;
-    border-radius: 4px;
-    overflow: hidden;
+  flex: 1;
+  background: var(--hx-color-bg-container);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--hx-color-border-muted);
 }
 
 .jupyter-container {
-    flex: 1;
-    background: #fff;
-    border-radius: 4px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  background: var(--hx-color-bg-container);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--hx-color-border-muted);
 }
 
 .jupyter-frame-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .jupyter-header {
-    padding: 12px 16px;
-    background: #f5f5f5;
-    border-bottom: 1px solid #e8e8e8;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 500;
+  padding: var(--hx-space-3) var(--hx-space-4);
+  background: var(--hx-color-bg-layout);
+  border-bottom: 1px solid var(--hx-color-border-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
 }
 
 .jupyter-iframe {
-    flex: 1;
-    width: 100%;
-    min-height: 600px;
-    border: none;
+  flex: 1;
+  width: 100%;
+  min-height: 600px;
+  border: none;
 }
 
 .jupyter-placeholder {
-    padding: 100px 20px;
-    text-align: center;
+  padding: 100px 20px;
+  text-align: center;
 }
 
 .grading-panel {
-    position: fixed;
-    right: 24px;
-    top: 100px;
-    width: 300px;
-    z-index: 100;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  position: fixed;
+  right: var(--hx-space-5);
+  top: calc(var(--hx-header-height) + var(--hx-space-5));
+  width: 300px;
+  z-index: 100;
+  box-shadow: var(--hx-shadow-md, 0 2px 8px rgba(0, 0, 0, 0.1));
 }
 
 .error-message {
-    padding: 20px;
+  padding: var(--hx-space-5);
+}
+
+@media (max-width: 992px) {
+  .content-wrapper {
+    margin-right: 0;
+  }
+  .grading-panel {
+    position: static;
+    width: 100%;
+    margin-top: var(--hx-space-4);
+  }
 }
 </style>
 

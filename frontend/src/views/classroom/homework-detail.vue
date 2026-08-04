@@ -1,57 +1,44 @@
 <template>
-  <div class="homework-detail-page">
+  <PageShell max-width="wide" class="homework-detail-page">
     <a-spin :spinning="loading" tip="加载中...">
       <div v-if="currentStudent" class="content-container">
-        <div class="back-link">
-          <a-button type="link" @click="goBack">
-            <template #icon><arrow-left-outlined /></template>
-            返回作业列表
-          </a-button>
-        </div>
-
-        <!-- 实训名称 -->
-        <div v-if="courseName" class="training-name-header">
-          <h2>{{ courseName }}</h2>
-        </div>
-
-        <div class="homework-header">
-          <div class="student-info">
-            <a-avatar :size="40" :src="currentStudent.avatar" style="margin-right: 12px;">
+        <PageHeaderBar
+          :title="`${currentStudent.name} 的作业`"
+          :subtitle="courseName || '作业详情'"
+          show-back
+          :back-to="`/classroom/${classroomId}/course/${courseId}/grades`"
+        >
+          <template #actions>
+            <a-avatar :size="32" :src="currentStudent.avatar">
               <template #icon><user-outlined /></template>
             </a-avatar>
-            <h1 class="student-name">{{ currentStudent.name }} 的作业</h1>
             <a-tag :color="getStatusColor(currentStudent.status)">
               {{ getStatusText(currentStudent.status) }}
             </a-tag>
             <a-tag :color="currentStudent.commentStatus === 'commented' ? 'green' : 'orange'">
               {{ currentStudent.commentStatus === 'commented' ? '已点评' : '未点评' }}
             </a-tag>
-            <template v-if="currentStudent.isExcellent">
-              <a-tag color="gold">
-                <template #icon><trophy-outlined /></template>
-                优秀作业
-              </a-tag>
-            </template>
-          </div>
-          <div class="action-buttons">
+            <a-tag v-if="currentStudent.isExcellent" color="gold">
+              <template #icon><trophy-outlined /></template>
+              优秀作业
+            </a-tag>
             <template v-if="currentStudent.status === 'submitted' || currentStudent.status === 'late_submitted'">
-              <a-button 
-                type="primary" 
+              <a-button
+                type="primary"
                 @click="openCommentModal"
                 :disabled="submittingComment"
               >
                 {{ currentStudent.commentStatus === 'commented' ? '修改点评' : '点评作业' }}
               </a-button>
               <template v-if="currentStudent.commentStatus === 'commented'">
-                <a-button 
-                  v-if="!currentStudent.isExcellent" 
-                  type="primary"
+                <a-button
+                  v-if="!currentStudent.isExcellent"
                   @click="markAsExcellent"
                 >
                   <template #icon><star-outlined /></template>
                   评为优秀作业
                 </a-button>
-                <a-button 
+                <a-button
                   v-else
                   danger
                   @click="removeExcellent"
@@ -61,8 +48,8 @@
                 </a-button>
               </template>
             </template>
-          </div>
-        </div>
+          </template>
+        </PageHeaderBar>
 
         <div class="submission-info">
           <a-descriptions bordered :column="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
@@ -158,7 +145,7 @@
                         <a-descriptions-item label="大小">{{ designFile ? formatFileSize(designFile.size) : '-' }}</a-descriptions-item>
                         <a-descriptions-item label="上传时间">{{ designFile ? formatDateTime(designFile.createdAt) : '-' }}</a-descriptions-item>
                       </a-descriptions>
-                      <a-button type="primary" style="margin-top: 16px" @click="downloadDesignFile">
+                      <a-button style="margin-top: 16px" @click="downloadDesignFile">
                         <template #icon><download-outlined /></template>
                         下载设计文件
                       </a-button>
@@ -175,7 +162,7 @@
                       </a-typography-paragraph>
                     </a-typography>
                     <div class="file-actions">
-                      <a-button type="primary" @click="downloadReport">
+                      <a-button @click="downloadReport">
                         <template #icon><download-outlined /></template>
                         导出报告
                       </a-button>
@@ -229,7 +216,6 @@
               style="flex: 1" 
             />
             <a-button 
-              type="primary"
               @click="getAISuggestion"
               :loading="aiLoading"
             >
@@ -289,7 +275,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -298,7 +284,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import {
-  ArrowLeftOutlined,
   StarOutlined,
   TrophyOutlined,
   StopOutlined,
@@ -311,6 +296,8 @@ import request from '@/utils/request'; // Import request utility
 import { useClassroomStore } from '../../stores/classroom';
 import { useUserStore } from '@/stores/user';
 import BiDesigner from '@/components/BiDesigner.vue'; // Import BiDesigner
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 interface TrainingStudentGrade {
   id: string;
@@ -795,77 +782,26 @@ watch(studentId, (newId) => {
 </script>
 
 <style scoped>
-.homework-detail-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.content-container {
-  background: #fff;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
-}
-
-.back-link {
-  margin-bottom: 16px;
-}
-
-.training-name-header {
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.training-name-header h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #1890ff;
-}
-
-.homework-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.student-name {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-  margin-right: 12px;
-  display: inline-block;
-}
-
-.student-info {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 8px;
+.homework-detail-page .content-container {
+  /* PageShell 已提供外边距，避免双层 padding */
 }
 
 .submission-info {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .homework-content {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
-.student-list-container, .homework-detail-container {
-  margin-bottom: 24px;
+.student-list-container,
+.homework-detail-container {
+  margin-bottom: var(--hx-space-5);
 }
 
-.student-list-card, .homework-detail-card, .comment-card {
+.student-list-card,
+.homework-detail-card,
+.comment-card {
   height: 100%;
 }
 
@@ -882,16 +818,16 @@ watch(studentId, (newId) => {
 
 .student-tags {
   display: flex;
-  gap: 4px;
+  gap: var(--hx-space-1);
 }
 
 .student-id {
-  color: rgba(0, 0, 0, 0.45);
-  margin-right: 8px;
+  color: var(--hx-color-text-tertiary);
+  margin-right: var(--hx-space-2);
 }
 
 .submit-time {
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--hx-color-text-tertiary);
   font-size: 12px;
 }
 
@@ -905,32 +841,32 @@ watch(studentId, (newId) => {
 
 .design-file-viewer {
   display: flex;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .report-content {
   min-height: 200px;
-  background: #fafafa;
-  padding: 16px;
+  background: var(--hx-color-bg-layout);
+  padding: var(--hx-space-4);
   border-radius: 8px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--hx-color-border-muted);
 }
 
 .file-info {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
 }
 
 .file-actions {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
   display: flex;
   justify-content: flex-end;
 }
 
 .comment-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .comment-content {
-  padding: 8px;
+  padding: var(--hx-space-2);
 }
 </style> 
