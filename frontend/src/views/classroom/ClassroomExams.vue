@@ -1,13 +1,14 @@
 <template>
-  <div class="classroom-exams-page">
+  <PageShell max-width="wide" class="classroom-exams-page">
     <ClassroomExamList :classroomId="classroomId" />
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import ClassroomExamList from './ClassroomExamList.vue';
+import PageShell from '@/components/common/PageShell.vue';
 
 const route = useRoute();
 const classroomId = computed(() => route.params.classroomId as string);
@@ -15,7 +16,6 @@ const classroomId = computed(() => route.params.classroomId as string);
 
 <style scoped>
 .classroom-exams-page {
-  min-height: 100vh;
-  background: #f5f5f5;
+  min-height: 0;
 }
 </style>

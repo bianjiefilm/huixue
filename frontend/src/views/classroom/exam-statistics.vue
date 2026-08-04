@@ -1,27 +1,17 @@
 <template>
-  <div class="exam-statistics-page">
-    <!-- 顶部信息栏 -->
-    <div class="page-header">
-      <div class="header-left">
-        <a-button type="text" @click="goBack">
-          <template #icon><arrow-left-outlined /></template>
-          返回
-        </a-button>
-        <h1>{{ examInfo?.title || '考试详情' }}</h1>
+  <PageShell max-width="wide" class="exam-statistics-page">
+    <PageHeaderBar
+      :title="examInfo?.title || '考试详情'"
+      :subtitle="`及格分/总分 ${examInfo?.pass_mark || 60}/${totalScore} · 最高 ${stats.maxScore} · 最低 ${stats.minScore} · 平均 ${Number(stats.avgScore || 0).toFixed(1)}`"
+      show-back
+      :back-to="`/classroom/${classroomId}`"
+    >
+      <template #actions>
         <a-tag :color="getStatusColor(examInfo?.status)">
           {{ getStatusText(examInfo?.status) }}
         </a-tag>
-      </div>
-      <div class="header-stats">
-        <a-statistic title="及格分/总分" :value="`${examInfo?.pass_mark || 60}/${totalScore}`" />
-        <a-divider type="vertical" />
-        <a-statistic title="最高分" :value="stats.maxScore" />
-        <a-divider type="vertical" />
-        <a-statistic title="最低分" :value="stats.minScore" />
-        <a-divider type="vertical" />
-        <a-statistic title="平均分" :value="stats.avgScore" :precision="1" />
-      </div>
-    </div>
+      </template>
+    </PageHeaderBar>
 
     <!-- Tab导航 -->
     <a-tabs v-model:activeKey="activeTab" class="main-tabs">
@@ -206,7 +196,7 @@
         </div>
       </a-form>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -222,6 +212,8 @@ import {
   RightOutlined,
   CheckOutlined
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import * as echarts from 'echarts';
 import request from '@/utils/request';
 
@@ -593,41 +585,16 @@ onMounted(() => {
 
 <style scoped lang="less">
 .exam-statistics-page {
-  min-height: 100vh;
-  background: #f0f2f5;
+  /* PageShell handles outer padding */
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-  }
-
-  .header-stats {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-}
 
 .main-tabs {
-  margin: 24px;
-  background: #fff;
+  margin-top: var(--hx-space-4);
+  background: var(--hx-color-bg-container);
   border-radius: 8px;
-  padding: 16px;
+  padding: var(--hx-space-4);
+  border: 1px solid var(--hx-color-border-muted);
 }
 
 .tab-content {

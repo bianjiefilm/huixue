@@ -1,27 +1,24 @@
 <template>
   <div class="classroom-exam-list">
-    <div class="exam-header">
-      <h3 class="section-title">课程考核</h3>
-      <a-button 
-        v-if="isTeacher" 
-        type="primary" 
-        @click="showCreateExamModal"
-      >
-        <template #icon><plus-outlined /></template>
-        创建考试
-      </a-button>
-    </div>
+    <PageHeaderBar title="课程考核">
+      <template #actions>
+        <a-button
+          v-if="isTeacher"
+          type="primary"
+          @click="showCreateExamModal"
+        >
+          <template #icon><plus-outlined /></template>
+          创建考试
+        </a-button>
+      </template>
+    </PageHeaderBar>
 
     <a-spin :spinning="loading">
       <!-- 空状态 -->
-      <a-empty 
-        v-if="!loading && examList.length === 0" 
+      <EmptyStateBlock
+        v-if="!loading && examList.length === 0"
         description="暂无考试"
-      >
-        <template #image>
-          <file-text-outlined style="font-size: 64px; color: #d9d9d9;" />
-        </template>
-      </a-empty>
+      />
 
       <!-- 考试列表 -->
       <div v-else class="exam-cards">
@@ -337,6 +334,8 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import request from '@/utils/request';
 import { useUserStore } from '@/stores/user';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 const props = defineProps<{
   classroomId: number | string;
@@ -868,40 +867,27 @@ onMounted(() => {
 
 <style scoped lang="less">
 .classroom-exam-list {
-  padding: 16px;
-}
-
-.exam-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  /* nested in classroom detail or PageShell; no extra outer padding */
 }
 
 .exam-cards {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
 }
 
 .exam-card {
   height: 100%;
   
   :deep(.ant-card-head) {
-    padding: 12px 16px;
+    padding: var(--hx-space-3) var(--hx-space-4);
     min-height: auto;
   }
   
   :deep(.ant-card-body) {
-    padding: 16px;
+    padding: var(--hx-space-4);
   }
   
   :deep(.ant-card-actions) {
-    background: #fafafa;
+    background: var(--hx-color-bg-layout);
   }
 }
 
@@ -914,16 +900,16 @@ onMounted(() => {
 .title-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .more-btn {
   padding: 0 4px;
   font-size: 16px;
-  color: #666;
+  color: var(--hx-color-text-secondary);
 
   &:hover {
-    color: #1890ff;
+    color: var(--hx-color-primary);
   }
 }
 

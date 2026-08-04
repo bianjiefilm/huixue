@@ -1,24 +1,13 @@
 <template>
-  <div class="course-status-page">
+  <PageShell max-width="wide" class="course-status-page">
     <a-spin :spinning="loading" tip="加载中...">
-      <div v-if="currentClassroom" class="content-container">
-        <!-- 返回按钮 -->
-        <div class="back-link">
-          <router-link to="/classroom">
-            <a-button type="link">
-              <template #icon><arrow-left-outlined /></template>
-              返回课堂列表
-            </a-button>
-          </router-link>
-        </div>
-
-        <!-- 课堂标题和状态 -->
-        <div class="classroom-header">
-          <div class="status-badge" :class="getStatusClass(currentClassroom.status)">
-            {{ getStatusText(currentClassroom.status) }}
-          </div>
-          <h1 class="classroom-title">{{ currentClassroom.name }}</h1>
-        </div>
+      <template v-if="currentClassroom">
+        <PageHeaderBar
+          :title="currentClassroom.name"
+          :subtitle="getStatusText(currentClassroom.status)"
+          show-back
+          back-to="/classroom"
+        />
 
         <!-- 课堂基本信息卡片 -->
         <a-card class="info-card">
@@ -169,7 +158,7 @@
             </template>
           </a-table>
         </div>
-      </div>
+      </template>
       <a-result v-else status="404" title="找不到课堂" sub-title="您访问的课堂不存在或已被删除">
         <template #extra>
           <router-link to="/classroom">
@@ -247,7 +236,7 @@
       @success="handlePublishSuccess"
       @cancel="handlePublishCancel"
     />
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -262,6 +251,8 @@ import {
   FlagOutlined,
   CheckCircleOutlined
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { useClassroomStore } from '../../stores/classroom';
 import { useUserStore } from '../../stores/user';
 import type { ClassroomDetail, CourseItem, CourseStatus } from '@/types/classroom';
@@ -735,27 +726,11 @@ onMounted(() => {
 
 <style scoped>
 .course-status-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  /* PageShell handles outer padding */
 }
 
-.content-container {
-  background: #fff;
-  border-radius: 2px;
-  padding: 24px;
-}
 
-.back-link {
-  margin-bottom: 16px;
-}
 
-.classroom-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
 
 .status-badge {
   padding: 4px 12px;

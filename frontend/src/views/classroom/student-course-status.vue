@@ -1,24 +1,14 @@
 <template>
-  <div class="student-course-status-page">
+  <PageShell max-width="wide" class="student-course-status-page">
     <a-spin :spinning="classroomStore.loading.detail" tip="加载中...">
-      <div v-if="currentClassroom" class="content-container">
-        <!-- 返回按钮 -->
-        <div class="back-link">
-          <router-link to="/classroom">
-            <a-button type="link">
-              <template #icon><arrow-left-outlined /></template>
-              返回课堂列表
-            </a-button>
-          </router-link>
-        </div>
-
-        <!-- 课堂标题和状态 -->
-        <div class="classroom-header">
-          <div class="status-badge" :class="getStatusClass(currentClassroom.status)">
-            {{ getStatusText(currentClassroom.status) }}
-          </div>
-          <h1 class="classroom-title">{{ currentClassroom.name }}</h1>
-          <div class="student-info">
+      <template v-if="currentClassroom">
+        <PageHeaderBar
+          :title="currentClassroom.name"
+          :subtitle="getStatusText(currentClassroom.status)"
+          show-back
+          back-to="/classroom"
+        >
+          <template #actions>
             <a-tag color="blue">
               <user-outlined />
               {{ userInfo.username || '学生' }}
@@ -27,15 +17,11 @@
               <calendar-outlined />
               {{ currentClassroom.semester }}
             </a-tag>
-            <a-button 
-              type="primary" 
-              @click="viewStudentGrades"
-              class="grades-button"
-            >
+            <a-button type="primary" @click="viewStudentGrades" class="grades-button">
               查看成绩单
             </a-button>
-          </div>
-        </div>
+          </template>
+        </PageHeaderBar>
 
         <!-- 课堂基本信息卡片 -->
         <a-card class="info-card">
@@ -170,7 +156,7 @@
             </a-tab-pane>
           </a-tabs>
         </a-card>
-      </div>
+      </template>
       <a-result v-else status="404" title="找不到课堂" sub-title="您访问的课堂不存在或已被删除">
         <template #extra>
           <router-link to="/classroom">
@@ -179,7 +165,7 @@
         </template>
       </a-result>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -191,6 +177,8 @@ import {
   TeamOutlined, UserOutlined, ScheduleOutlined, CheckCircleOutlined,
   ClockCircleOutlined, ExclamationCircleOutlined
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { useClassroomStore } from '../../stores/classroom';
 import { useUserStore } from '../../stores/user';
 import dayjs from 'dayjs';
@@ -397,27 +385,11 @@ const viewStudentGrades = () => {
 
 <style scoped>
 .student-course-status-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  /* PageShell handles outer padding */
 }
 
-.content-container {
-  background: #fff;
-  border-radius: 2px;
-  padding: 24px;
-}
 
-.back-link {
-  margin-bottom: 16px;
-}
 
-.classroom-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
 
 .status-badge {
   padding: 4px 12px;

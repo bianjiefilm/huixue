@@ -1,20 +1,15 @@
 <template>
-  <div class="exam-result-container">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-left">
-        <a-button @click="goBack">
-          <template #icon><arrow-left-outlined /></template>
-          返回
-        </a-button>
-        <h2>{{ examInfo?.title || '考试成绩' }}</h2>
-      </div>
-    </div>
+  <PageShell max-width="wide" class="exam-result-container">
+    <PageHeaderBar
+      :title="examInfo?.title || '考试成绩'"
+      show-back
+      :back-to="`/classroom/${classroomId}`"
+    />
 
     <!-- 加载中 -->
     <a-spin :spinning="loading">
       <!-- 无成绩 -->
-      <a-empty 
+      <EmptyStateBlock
         v-if="!loading && !resultData"
         description="暂无考试成绩"
       />
@@ -130,7 +125,7 @@
         </div>
       </div>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -138,13 +133,15 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import {
-  ArrowLeftOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   CheckOutlined,
   CloseOutlined,
   FileTextOutlined
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 import { useUserStore } from '@/stores/user';
 import request from '@/utils/request';
 import dayjs from 'dayjs';
@@ -264,30 +261,7 @@ onMounted(() => {
 
 <style scoped lang="less">
 .exam-result-container {
-  padding: 24px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: #fff;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
-    h2 {
-      margin: 0;
-    }
-  }
+  /* PageShell handles outer padding */
 }
 
 .result-content {

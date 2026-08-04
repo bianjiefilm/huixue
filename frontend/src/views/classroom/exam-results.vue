@@ -1,48 +1,33 @@
 <template>
-  <div class="exam-results-page">
-    <a-spin :spinning="loading" tip="加载中...">
-      <!-- 返回按钮 -->
-      <div class="back-link">
-        <router-link :to="`/classroom/${classroomId}/course/${courseId}/exam`">
-          <a-button type="link">
-            <template #icon><arrow-left-outlined /></template>
-            返回考试列表
-          </a-button>
-        </router-link>
-      </div>
-
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <h1>{{ exam?.exam_name || '考试' }}结果</h1>
-        <div class="header-info">
-          <span>总人数: {{ examStats?.total_students || 0 }}</span>
-          <a-divider type="vertical" />
-          <span>完成人数: {{ completeCount }}</span>
-          <a-divider type="vertical" />
-          <span>通过人数: {{ passedCount }}</span>
+  <PageShell max-width="wide" class="exam-results-page">
+    <PageHeaderBar
+      :title="`${exam?.exam_name || '考试'}结果`"
+      :subtitle="`总人数: ${examStats?.total_students || 0} · 完成: ${completeCount} · 通过: ${passedCount}`"
+      show-back
+      :back-to="`/classroom/${classroomId}/course/${courseId}/exam`"
+    >
+      <template #extra>
+        <div class="filter-section">
+          <a-input-search
+            v-model:value="searchText"
+            placeholder="搜索学生姓名"
+            style="width: 250px"
+            @search="handleSearch"
+          />
+          <a-radio-group v-model:value="filterType" button-style="solid" @change="handleFilterChange">
+            <a-radio-button value="all">全部</a-radio-button>
+            <a-radio-button value="passed">通过</a-radio-button>
+            <a-radio-button value="failed">未通过</a-radio-button>
+          </a-radio-group>
         </div>
-      </div>
+      </template>
+    </PageHeaderBar>
 
-      <!-- 搜索和筛选 -->
-      <div class="filter-section">
-        <a-input-search
-          v-model:value="searchText"
-          placeholder="搜索学生姓名"
-          style="width: 250px"
-          @search="handleSearch"
-        />
-        
-        <a-radio-group v-model:value="filterType" button-style="solid" @change="handleFilterChange">
-          <a-radio-button value="all">全部</a-radio-button>
-          <a-radio-button value="passed">通过</a-radio-button>
-          <a-radio-button value="failed">未通过</a-radio-button>
-        </a-radio-group>
-      </div>
-
+    <a-spin :spinning="loading" tip="加载中...">
       <!-- 学生列表 -->
       <div class="student-list-container">
-        <a-empty v-if="filteredStudents.length === 0" description="暂无学生数据" />
-        
+        <EmptyStateBlock v-if="filteredStudents.length === 0" description="暂无学生数据" />
+
         <a-table
           v-else
           :columns="columns"
@@ -130,7 +115,7 @@
         </div>
       </div>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -138,10 +123,12 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { 
-  ArrowLeftOutlined, 
   SearchOutlined
 } from '@ant-design/icons-vue';
 import { useUserStore } from '../../stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 import { 
   getExamDetail,
   getExamPapers,
@@ -392,70 +379,45 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.exam-results-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.back-link {
-  margin-bottom: 16px;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.header-info {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
 .filter-section {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hx-space-3);
 }
 
 .student-list-container {
-  background: #fff;
-  padding: 24px;
+  background: var(--hx-color-bg-container);
+  padding: var(--hx-space-5);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
-  margin-bottom: 24px;
+  border: 1px solid var(--hx-color-border-muted);
+  margin-bottom: var(--hx-space-5);
+  margin-top: var(--hx-space-4);
 }
 
 .score-percent {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--hx-color-text-secondary);
   margin-left: 4px;
 }
 
 .stats-container {
-  background: #fff;
-  padding: 24px;
+  background: var(--hx-color-bg-container);
+  padding: var(--hx-space-5);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  border: 1px solid var(--hx-color-border-muted);
 }
 
 .stats-container h2 {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .stats-cards {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .stats-cards .ant-card {
@@ -466,12 +428,12 @@ onMounted(() => {
 .stat-value {
   font-size: 24px;
   font-weight: bold;
-  color: #1890ff;
-  margin-bottom: 8px;
+  color: var(--hx-color-primary);
+  margin-bottom: var(--hx-space-2);
 }
 
 .stat-desc {
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--hx-color-text-secondary);
   font-size: 14px;
 }
 
@@ -485,10 +447,10 @@ onMounted(() => {
   .stats-cards .ant-card {
     width: 100%;
   }
-  
+
   .filter-section {
     flex-direction: column;
-    gap: 16px;
+    align-items: stretch;
   }
 }
 </style> 

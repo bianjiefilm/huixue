@@ -1,30 +1,22 @@
 <template>
-  <div class="exam-marking-container">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-left">
-        <a-button @click="goBack">
-          <template #icon><arrow-left-outlined /></template>
-          返回
-        </a-button>
-        <h2>{{ examInfo?.title || '考试阅卷' }}</h2>
+  <PageShell max-width="wide" class="exam-marking-container">
+    <PageHeaderBar
+      :title="examInfo?.title || '考试阅卷'"
+      :subtitle="`总提交: ${studentList.length} · 已批阅: ${gradedCount} · 待批阅: ${pendingCount}`"
+      show-back
+      :back-to="`/classroom/${classroomId}`"
+    >
+      <template #actions>
         <a-tag :color="getStatusColor(examInfo?.status)">
           {{ getStatusText(examInfo?.status) }}
         </a-tag>
-      </div>
-      <div class="header-right">
-        <a-statistic title="总提交数" :value="studentList.length" />
-        <a-divider type="vertical" />
-        <a-statistic title="已批阅" :value="gradedCount" />
-        <a-divider type="vertical" />
-        <a-statistic title="待批阅" :value="pendingCount" />
-      </div>
-    </div>
+      </template>
+    </PageHeaderBar>
 
     <!-- 加载中 -->
     <a-spin :spinning="loading">
       <!-- 空状态 -->
-      <a-empty 
+      <EmptyStateBlock
         v-if="!loading && studentList.length === 0"
         description="暂无学生提交"
       />
@@ -252,7 +244,7 @@
         </div>
       </template>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -260,7 +252,6 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import {
-  ArrowLeftOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   EyeOutlined,
@@ -271,6 +262,9 @@ import {
 import { useUserStore } from '@/stores/user';
 import request from '@/utils/request';
 import dayjs from 'dayjs';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -570,49 +564,18 @@ onMounted(() => {
 </script>
 
 <style scoped lang="less">
-.exam-marking-container {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: #fff;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
-    h2 {
-      margin: 0;
-    }
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-}
-
 .student-list {
-  background: #fff;
+  background: var(--hx-color-bg-container);
   border-radius: 8px;
-  padding: 24px;
+  padding: var(--hx-space-5);
+  border: 1px solid var(--hx-color-border-muted);
+  margin-top: var(--hx-space-4);
 }
 
 .student-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--hx-space-3);
 
   .student-detail {
     display: flex;
@@ -624,7 +587,7 @@ onMounted(() => {
 
     .student-username {
       font-size: 12px;
-      color: #999;
+      color: var(--hx-color-text-secondary);
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
-  <div class="exam-take-container">
-    <!-- 考试头部 -->
-    <div class="exam-header">
+  <div class="hx-exam-take">
+    <!-- 考试头部 toolbar -->
+    <header class="hx-exam-take__toolbar">
       <div class="exam-title">
         <h2>{{ examInfo?.title || '考试' }}</h2>
         <a-tag :color="getStatusColor(examInfo?.status)">
@@ -12,8 +12,9 @@
         <clock-circle-outlined />
         <span>剩余时间：{{ formatTime(remainingTime) }}</span>
       </div>
-    </div>
+    </header>
 
+    <div class="hx-exam-take__body">
     <!-- 加载中 -->
     <div v-if="loading" class="loading-container">
       <a-spin size="large" tip="正在加载试卷..." />
@@ -138,6 +139,7 @@
           提交试卷
         </a-button>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -379,40 +381,50 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="less">
-.exam-take-container {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+.hx-exam-take {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--hx-header-height));
+  background: var(--hx-color-bg-layout);
+  overflow: hidden;
 }
 
-.exam-header {
+.hx-exam-take__toolbar {
+  flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background: #fff;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  
+  padding: var(--hx-space-2) var(--hx-space-4);
+  background: var(--hx-color-bg-container);
+  border-bottom: 1px solid var(--hx-color-border-muted);
+
   .exam-title {
     display: flex;
     align-items: center;
-    gap: 12px;
-    
+    gap: var(--hx-space-3);
+
     h2 {
       margin: 0;
+      font-size: var(--hx-font-size-lg);
+      font-weight: 600;
     }
   }
-  
+
   .exam-timer {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--hx-space-2);
     font-size: 18px;
     font-weight: 600;
-    color: #ff4d4f;
+    color: var(--hx-color-error, #ff4d4f);
   }
+}
+
+.hx-exam-take__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--hx-space-4);
 }
 
 .loading-container {
@@ -423,20 +435,20 @@ onUnmounted(() => {
 }
 
 .submitted-container {
-  background: #fff;
+  background: var(--hx-color-bg-container);
   border-radius: 8px;
-  padding: 48px;
+  padding: var(--hx-space-7);
 }
 
 .exam-content {
   display: flex;
-  gap: 24px;
+  gap: var(--hx-space-5);
   
   .questions-panel {
     flex: 1;
-    background: #fff;
+    background: var(--hx-color-bg-container);
     border-radius: 8px;
-    padding: 24px;
+    padding: var(--hx-space-5);
     
     .question-item {
       padding: 24px 0;
@@ -479,11 +491,11 @@ onUnmounted(() => {
   
   .answer-card {
     width: 280px;
-    background: #fff;
+    background: var(--hx-color-bg-container);
     border-radius: 8px;
-    padding: 20px;
+    padding: var(--hx-space-5);
     position: sticky;
-    top: 24px;
+    top: 0;
     height: fit-content;
     
     .card-title {
@@ -512,13 +524,13 @@ onUnmounted(() => {
         transition: all 0.2s;
         
         &:hover {
-          border-color: #1890ff;
-          color: #1890ff;
+          border-color: var(--hx-color-primary);
+          color: var(--hx-color-primary);
         }
         
         &.answered {
-          background: #1890ff;
-          border-color: #1890ff;
+          background: var(--hx-color-primary);
+          border-color: var(--hx-color-primary);
           color: #fff;
         }
       }
@@ -544,8 +556,8 @@ onUnmounted(() => {
           border: 1px solid #d9d9d9;
           
           &.answered {
-            background: #1890ff;
-            border-color: #1890ff;
+            background: var(--hx-color-primary);
+            border-color: var(--hx-color-primary);
           }
         }
       }

@@ -1,25 +1,18 @@
 <template>
-  <div class="exam-paper-view-page">
+  <PageShell max-width="wide" class="exam-paper-view-page">
+    <PageHeaderBar
+      :title="examInfo?.title || '考试'"
+      :subtitle="`时长 ${examInfo?.duration_minutes || 60}分钟 · ${questions.length}题 · 满分 ${totalPossibleScore}分`"
+      show-back
+      :back-to="`/classroom/${classroomId}/exam/${examId}/marking`"
+    >
+      <template #actions>
+        <a-tag color="green">已批阅</a-tag>
+      </template>
+    </PageHeaderBar>
+
     <a-spin :spinning="loading" tip="加载中...">
       <div v-if="paperData" class="paper-container">
-        <!-- 顶部信息栏 -->
-        <div class="page-header">
-          <div class="header-left">
-            <a-button type="text" @click="goBack">
-              <template #icon><arrow-left-outlined /></template>
-              返回
-            </a-button>
-            <h1>{{ examInfo?.title || '考试' }}</h1>
-            <a-tag color="green">已批阅</a-tag>
-          </div>
-          <div class="header-meta">
-            <span>考试时长: {{ examInfo?.duration_minutes || 60 }}分钟</span>
-            <a-divider type="vertical" />
-            <span>试题总数: {{ questions.length }}题</span>
-            <a-divider type="vertical" />
-            <span>试卷满分: {{ totalPossibleScore }}分</span>
-          </div>
-        </div>
 
         <!-- 左侧题号导航 -->
         <div class="question-nav">
@@ -183,7 +176,7 @@
         </a-result>
       </div>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -196,6 +189,8 @@ import {
   CloseCircleFilled,
   EditFilled
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import request from '@/utils/request';
 
 const route = useRoute();
@@ -454,41 +449,15 @@ onMounted(() => {
 
 <style scoped lang="less">
 .exam-paper-view-page {
-  min-height: 100vh;
-  background: #f0f2f5;
+  /* PageShell handles outer padding */
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-  }
-
-  .header-meta {
-    color: #666;
-    font-size: 14px;
-  }
-}
 
 .paper-container {
   display: flex;
-  padding: 24px;
-  gap: 24px;
-  max-width: 1600px;
-  margin: 0 auto;
+  gap: var(--hx-space-5);
+  margin-top: var(--hx-space-4);
 }
 
 // 左侧题号导航

@@ -1,33 +1,27 @@
 <template>
-  <div class="course-exam-page">
-    <a-spin :spinning="loading" tip="加载中...">
-      <!-- 返回按钮 -->
-      <div class="back-link">
-        <router-link :to="`/classroom/${classroomId}/course/${courseId}`">
-          <a-button type="link">
-            <template #icon><arrow-left-outlined /></template>
-            返回课程
-          </a-button>
-        </router-link>
-      </div>
-
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <h1>课程考核</h1>
-        <a-button 
-          type="primary" 
-          @click="showCreateExamModal" 
+  <PageShell max-width="wide" class="course-exam-page">
+    <PageHeaderBar
+      title="课程考核"
+      show-back
+      :back-to="`/classroom/${classroomId}/course/${courseId}`"
+    >
+      <template #actions>
+        <a-button
           v-if="isTeacherView"
+          type="primary"
+          @click="showCreateExamModal"
         >
           <template #icon><plus-outlined /></template>
           创建考试
         </a-button>
-      </div>
+      </template>
+    </PageHeaderBar>
 
+    <a-spin :spinning="loading" tip="加载中...">
       <!-- 考试列表 -->
       <div class="exams-container">
-        <a-empty v-if="examList.length === 0" description="暂无考试" />
-        
+        <EmptyStateBlock v-if="examList.length === 0" description="暂无考试" />
+
         <div v-else class="exam-cards">
           <a-row :gutter="[16, 16]">
             <a-col :xs="24" :sm="12" :md="8" v-for="exam in examList" :key="exam.id">
@@ -415,7 +409,7 @@
         </div>
       </a-spin>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -425,7 +419,6 @@ import { message, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import {
-  ArrowLeftOutlined,
   PlusOutlined,
   BookOutlined,
   CalendarOutlined,
@@ -442,6 +435,9 @@ import {
 } from '@ant-design/icons-vue';
 import { useUserStore } from '@/stores/user';
 import { useClassroomStore } from '@/stores/classroom';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 import {
   getClassroomExams,
   getTestPapers,
@@ -1131,35 +1127,12 @@ function getQuestionTypeName(type: string): string {
 </script>
 
 <style scoped>
-.course-exam-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.back-link {
-  margin-bottom: 16px;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: 24px;
-  color: #1f1f1f;
-}
-
 .exams-container {
-  margin-top: 20px;
+  margin-top: 0;
 }
 
 .exam-cards {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
 }
 
 .exam-card {

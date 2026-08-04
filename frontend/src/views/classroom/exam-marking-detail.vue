@@ -1,24 +1,18 @@
 <template>
-  <div class="exam-marking-detail-page">
-    <a-spin :spinning="loading" tip="加载中...">
-      <!-- 返回按钮 -->
-      <div class="back-link">
-        <router-link :to="`/classroom/${classroomId}/course/${courseId}/exam/${examId}/marking`">
-          <a-button type="link">
-            <template #icon><arrow-left-outlined /></template>
-            返回学生列表
-          </a-button>
-        </router-link>
-      </div>
-
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <h1>{{ exam?.exam_name || '考试' }} - {{ studentPaper?.student_name || '学生' }}的试卷</h1>
+  <PageShell max-width="wide" class="exam-marking-detail-page">
+    <PageHeaderBar
+      :title="`${exam?.exam_name || '考试'} - ${studentPaper?.student_name || '学生'}的试卷`"
+      show-back
+      :back-to="`/classroom/${classroomId}/course/${courseId}/exam/${examId}/marking`"
+    >
+      <template #actions>
         <a-tag v-if="studentPaper" :color="studentPaper.is_graded ? 'green' : 'red'">
           {{ studentPaper.is_graded ? '已批阅' : '未批阅' }}
         </a-tag>
-      </div>
+      </template>
+    </PageHeaderBar>
 
+    <a-spin :spinning="loading" tip="加载中...">
       <div v-if="studentPaper" class="marking-container">
         <!-- 左侧题目导航 -->
         <div class="question-nav">
@@ -201,7 +195,7 @@
         </a-result>
       </div>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -213,6 +207,8 @@ import {
   CheckCircleOutlined, 
   CloseCircleOutlined
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { 
   getExamDetail,
   getStudentPaper,
@@ -576,39 +572,27 @@ onMounted(() => {
 
 <style scoped>
 .exam-marking-detail-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  /* PageShell handles outer padding */
 }
 
-.back-link {
-  margin-bottom: 16px;
-}
 
-.page-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.page-header h1 {
-  margin: 0 12px 0 0;
-  font-size: 24px;
-}
 
 .marking-container {
   display: flex;
-  background: #fff;
+  gap: var(--hx-space-4);
+  background: var(--hx-color-bg-container);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  border: 1px solid var(--hx-color-border-muted);
   min-height: 600px;
+  margin-top: var(--hx-space-4);
+  overflow: hidden;
 }
 
 .question-nav {
   width: 280px;
   min-width: 280px;
-  background: #f5f5f5;
-  padding: 20px;
+  background: var(--hx-color-bg-layout);
+  padding: var(--hx-space-5);
   border-right: 1px solid #e8e8e8;
   border-radius: 8px 0 0 8px;
   display: flex;

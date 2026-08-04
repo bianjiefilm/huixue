@@ -1,37 +1,23 @@
 <template>
-  <div class="exam-detail-page">
+  <PageShell max-width="wide" class="exam-detail-page">
+    <PageHeaderBar
+      :title="exam?.exam_name || '考试'"
+      :subtitle="`总人数: ${studentPapers.length} · 完成: ${completeCount} · 通过: ${passedCount}`"
+      show-back
+      :back-to="`/classroom/${classroomId}/course/${courseId}/exam`"
+    >
+      <template #actions>
+        <a-button
+          v-if="isTeacherView && hasUnmarkedPapers"
+          type="primary"
+          @click="goToMarking"
+        >
+          阅卷
+        </a-button>
+      </template>
+    </PageHeaderBar>
+
     <a-spin :spinning="loading" tip="加载中...">
-      <!-- 返回按钮 -->
-      <div class="back-link">
-        <router-link :to="`/classroom/${classroomId}/course/${courseId}/exam`">
-          <a-button type="link">
-            <template #icon><arrow-left-outlined /></template>
-            返回考试列表
-          </a-button>
-        </router-link>
-      </div>
-
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <h1>{{ exam?.exam_name || '考试' }}</h1>
-        <div class="header-actions">
-          <div class="header-info">
-            <span>总人数: {{ studentPapers.length }}</span>
-            <a-divider type="vertical" />
-            <span>完成人数: {{ completeCount }}</span>
-            <a-divider type="vertical" />
-            <span>通过人数: {{ passedCount }}</span>
-          </div>
-          <a-button 
-            v-if="isTeacherView && hasUnmarkedPapers"
-            type="primary"
-            @click="goToMarking"
-          >
-            阅卷
-          </a-button>
-        </div>
-      </div>
-
       <!-- 标签切换 -->
       <a-tabs v-model:activeKey="activeTab" class="exam-tabs">
         <a-tab-pane key="overview" tab="考试详情">
@@ -579,7 +565,7 @@
         </div>
       </div>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -588,8 +574,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import * as echarts from 'echarts';
 import type { EChartsOption } from 'echarts';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { 
-  ArrowLeftOutlined, 
   SearchOutlined,
   DownloadOutlined
 } from '@ant-design/icons-vue';
@@ -1427,42 +1414,11 @@ watch(distributionViewType, () => {
 
 <style lang="less" scoped>
 .exam-detail-page {
-  padding: 16px;
-  background: #f0f2f5;
-  min-height: 100vh;
-
-  .back-link {
-    margin-bottom: 16px;
-  }
-
-  .page-header {
-    background: #fff;
-    padding: 16px 24px;
-    margin-bottom: 16px;
-    border-radius: 8px;
-
-    h1 {
-      margin: 0 0 8px 0;
-      font-size: 24px;
-      font-weight: 600;
-    }
-
-    .header-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-info {
-      color: #666;
-      font-size: 14px;
-    }
-  }
-
   .exam-tabs {
-    background: #fff;
-    padding: 0 24px;
+    background: var(--hx-color-bg-container);
+    padding: 0 var(--hx-space-5);
     border-radius: 8px;
+    border: 1px solid var(--hx-color-border-muted);
 
     :deep(.ant-tabs-nav) {
       margin-bottom: 0;

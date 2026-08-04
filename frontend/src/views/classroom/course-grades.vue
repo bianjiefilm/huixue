@@ -1,31 +1,17 @@
 <template>
-  <div class="course-grades-page">
-    <div class="content-container">
-      <div class="back-link">
-        <a-button type="link" @click="goBack">
-          <template #icon><arrow-left-outlined /></template>
-          返回课程管理
-        </a-button>
-      </div>
-
-      <div class="classroom-header">
-        <div v-if="currentClassroom" class="classroom-info">
-          <div class="classroom-title-container">
-            <h1 class="classroom-title">{{ course?.name || '课程成绩' }}</h1>
-            <a-tag v-if="course?.type" :color="course.type === 'practice' ? 'blue' : 'green'">
-              {{ course.type === 'practice' ? '实践课程' : '实训课程' }}
-            </a-tag>
-          </div>
-          <div class="classroom-meta">
-            <span v-if="course?.startDate">
-              <calendar-outlined /> 发布时间：{{ formatDate(course.startDate) }}
-            </span>
-            <span v-if="course?.endDate">
-              <clock-circle-outlined /> 截止时间：{{ formatDate(course.endDate) }}
-            </span>
-          </div>
-        </div>
-      </div>
+  <PageShell max-width="wide" class="course-grades-page">
+    <PageHeaderBar
+      :title="course?.name || '课程成绩'"
+      :subtitle="gradesSubtitle"
+      show-back
+      :back-to="`/classroom/${classroomId}/status`"
+    >
+      <template #actions>
+        <a-tag v-if="course?.type" :color="course.type === 'practice' ? 'blue' : 'green'">
+          {{ course.type === 'practice' ? '实践课程' : '实训课程' }}
+        </a-tag>
+      </template>
+    </PageHeaderBar>
 
       <a-card class="stats-card">
         <a-row :gutter="16">
@@ -263,7 +249,6 @@
           </template>
         </a-table>
       </a-card>
-    </div>
 
     <!-- 点评模态框 -->
     <a-modal
@@ -296,7 +281,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -311,6 +296,8 @@ import {
   DownloadOutlined,
   UserOutlined
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { useClassroomStore } from '../../stores/classroom';
 import { useUserStore } from '../../stores/user';
 import { getClassroomCoursesWithStats } from '@/api/classrooms';
@@ -358,6 +345,13 @@ const classroomStore = useClassroomStore();
 const loading = ref(false);
 // 当前课堂ID和课堂课程ID
 const classroomId = computed(() => route.params.classroomId as string);
+
+const gradesSubtitle = computed(() => {
+  const parts: string[] = [];
+  if (course.value?.startDate) parts.push(`发布：${formatDate(course.value.startDate)}`);
+  if (course.value?.endDate) parts.push(`截止：${formatDate(course.value.endDate)}`);
+  return parts.join(' · ');
+});
 const classroomCourseId = computed(() =>
   (route.params.classroomCourseId || route.params.courseId) as string
 );
@@ -1078,20 +1072,10 @@ watch([currentStatus, searchKeyword, currentPage], () => {
 
 <style scoped>
 .course-grades-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  /* PageShell handles outer padding */
 }
 
-.content-container {
-  background: #fff;
-  border-radius: 2px;
-  padding: 24px;
-}
 
-.back-link {
-  margin-bottom: 16px;
-}
 
 .classroom-header {
   display: flex;
@@ -1121,7 +1105,7 @@ watch([currentStatus, searchKeyword, currentPage], () => {
 }
 
 .stats-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .comment-stats {
@@ -1148,16 +1132,17 @@ watch([currentStatus, searchKeyword, currentPage], () => {
 }
 
 .grades-card {
-  margin-bottom: 24px;
+  margin-top: var(--hx-space-4);
+  margin-bottom: var(--hx-space-4);
 }
 
 .grades-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .grades-filter {

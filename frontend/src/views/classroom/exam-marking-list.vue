@@ -1,48 +1,33 @@
 <template>
-  <div class="exam-marking-page">
-    <a-spin :spinning="loading" tip="加载中...">
-      <!-- 返回按钮 -->
-      <div class="back-link">
-        <router-link :to="`/classroom/${classroomId}/course/${courseId}/exam`">
-          <a-button type="link">
-            <template #icon><arrow-left-outlined /></template>
-            返回考试列表
-          </a-button>
-        </router-link>
-      </div>
-
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <h1>{{ exam?.exam_name || '考试' }}阅卷</h1>
-        <div class="header-info">
-          <span>总人数: {{ studentPapers.length }}</span>
-          <a-divider type="vertical" />
-          <span>已批阅: {{ markedCount }}</span>
-          <a-divider type="vertical" />
-          <span>未批阅: {{ unmarkedCount }}</span>
+  <PageShell max-width="wide" class="exam-marking-page">
+    <PageHeaderBar
+      :title="`${exam?.exam_name || '考试'}阅卷`"
+      :subtitle="`总人数: ${studentPapers.length} · 已批阅: ${markedCount} · 未批阅: ${unmarkedCount}`"
+      show-back
+      :back-to="`/classroom/${classroomId}/course/${courseId}/exam`"
+    >
+      <template #extra>
+        <div class="filter-section">
+          <a-input-search
+            v-model:value="searchText"
+            placeholder="搜索学生姓名"
+            style="width: 250px"
+            @search="handleSearch"
+          />
+          <a-radio-group v-model:value="filterType" button-style="solid" @change="handleFilterChange">
+            <a-radio-button value="all">全部</a-radio-button>
+            <a-radio-button value="unmarked">未批阅</a-radio-button>
+            <a-radio-button value="marked">已批阅</a-radio-button>
+          </a-radio-group>
         </div>
-      </div>
+      </template>
+    </PageHeaderBar>
 
-      <!-- 搜索和筛选 -->
-      <div class="filter-section">
-        <a-input-search
-          v-model:value="searchText"
-          placeholder="搜索学生姓名"
-          style="width: 250px"
-          @search="handleSearch"
-        />
-        
-        <a-radio-group v-model:value="filterType" button-style="solid" @change="handleFilterChange">
-          <a-radio-button value="all">全部</a-radio-button>
-          <a-radio-button value="unmarked">未批阅</a-radio-button>
-          <a-radio-button value="marked">已批阅</a-radio-button>
-        </a-radio-group>
-      </div>
-
+    <a-spin :spinning="loading" tip="加载中...">
       <!-- 学生列表 -->
       <div class="student-list-container">
-        <a-empty v-if="filteredStudents.length === 0" description="暂无学生数据" />
-        
+        <EmptyStateBlock v-if="filteredStudents.length === 0" description="暂无学生数据" />
+
         <a-table
           v-else
           :columns="columns"
@@ -94,7 +79,7 @@
         </a-table>
       </div>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -102,7 +87,6 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { 
-  ArrowLeftOutlined, 
   SearchOutlined
 } from '@ant-design/icons-vue';
 import { 
@@ -112,6 +96,9 @@ import {
   type StudentPaper
 } from '@/api/exam';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 // 路由相关
 const route = useRoute();
@@ -291,43 +278,18 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.exam-marking-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.back-link {
-  margin-bottom: 16px;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.header-info {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
 .filter-section {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hx-space-3);
 }
 
 .student-list-container {
-  background: #fff;
-  padding: 24px;
+  background: var(--hx-color-bg-container);
+  padding: var(--hx-space-5);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  border: 1px solid var(--hx-color-border-muted);
+  margin-top: var(--hx-space-4);
 }
 </style> 

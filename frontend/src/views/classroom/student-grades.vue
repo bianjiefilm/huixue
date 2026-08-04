@@ -1,21 +1,12 @@
 <template>
-  <div class="student-grades-page">
+  <PageShell max-width="wide" class="student-grades-page">
+    <PageHeaderBar
+      title="个人成绩单"
+      show-back
+      :back-to="`/classroom/${classroomId}/student-status`"
+    />
+
     <a-spin :spinning="loading" tip="加载中...">
-      <!-- 返回按钮 -->
-      <div class="back-link">
-        <router-link :to="`/classroom/${classroomId}/student-status`">
-          <a-button type="link">
-            <template #icon><arrow-left-outlined /></template>
-            返回学情分析
-          </a-button>
-        </router-link>
-      </div>
-
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <h1>个人成绩单</h1>
-      </div>
-
       <!-- 学生基本信息卡片 -->
       <a-card class="student-info-card" v-if="studentGrades">
         <div class="student-info-header">
@@ -201,7 +192,7 @@
         </template>
       </a-result>
     </a-spin>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -218,6 +209,8 @@ import {
   TrophyOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { useUserStore } from '../../stores/user';
 import { 
   getStudentGrades,
@@ -348,18 +341,10 @@ onMounted(() => {
 
 <style scoped>
 .student-grades-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  /* PageShell handles outer padding */
 }
 
-.back-link {
-  margin-bottom: 16px;
-}
 
-.page-header {
-  margin-bottom: 24px;
-}
 
 .page-header h1 {
   font-size: 24px;
@@ -371,7 +356,7 @@ onMounted(() => {
 .student-info-card,
 .stats-card,
 .courses-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-4);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
