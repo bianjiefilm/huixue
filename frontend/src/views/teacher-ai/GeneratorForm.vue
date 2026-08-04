@@ -1,12 +1,12 @@
 <template>
-  <div class="teacher-ai-generator-form">
-    <a-page-header
+  <PageShell max-width="default" class="teacher-ai-generator-form">
+    <PageHeaderBar
       title="AI 生成实践闯关任务"
-      sub-title="选择教学资料，AI 自动拆解知识点并生成实践关卡"
-      @back="() => $router.back()"
+      subtitle="选择教学资料，AI 自动拆解知识点并生成实践关卡"
+      show-back
     />
 
-    <div class="form-content">
+    <Stack :gap="4" class="form-content">
       <a-card title="① 资料选择" class="section-card">
         <a-tabs v-model:activeKey="resourceMode">
           <a-tab-pane key="upload" tab="上传新资料">
@@ -72,8 +72,8 @@
           开始生成
         </a-button>
       </div>
-    </div>
-  </div>
+    </Stack>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -81,6 +81,9 @@ import { ref, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { InboxOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
+import PageShell from '@/components/common/PageShell.vue'
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue'
+import Stack from '@/components/common/Stack.vue'
 import {
   createGenerationJob,
   STUDENT_LEVEL_OPTIONS,
@@ -148,48 +151,36 @@ const handleStartGenerate = async () => {
 
 <style scoped lang="less">
 .teacher-ai-generator-form {
-  background-color: #f0f2f5;
-  min-height: 100vh;
-
-  .form-content {
-    padding: 24px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .section-card {
-    margin-bottom: 24px;
-  }
-
   .student-level-group {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--hx-space-3);
     width: 100%;
   }
 
   .student-level-option {
     display: flex;
     align-items: flex-start;
-    padding: 12px 16px;
-    border: 1px solid #e8e8e8;
-    border-radius: 8px;
+    padding: var(--hx-space-3) var(--hx-space-4);
+    border: 1px solid var(--hx-color-border);
+    border-radius: var(--hx-radius-sm);
     width: 100%;
 
     .option-label {
       font-weight: 600;
+      color: var(--hx-color-text-primary);
     }
 
     .option-desc {
-      color: #666;
-      font-size: 12px;
-      margin-top: 4px;
+      color: var(--hx-color-text-secondary);
+      font-size: var(--hx-font-size-xs);
+      margin-top: var(--hx-space-1);
     }
   }
 
   .form-actions {
     text-align: center;
-    margin-top: 32px;
+    margin-top: var(--hx-space-2);
   }
 }
 </style>

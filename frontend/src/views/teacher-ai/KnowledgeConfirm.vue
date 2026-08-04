@@ -1,18 +1,17 @@
 <template>
-  <div class="knowledge-confirm">
-    <a-page-header
+  <PageShell max-width="default" class="knowledge-confirm">
+    <PageHeaderBar
       title="知识点确认"
-      sub-title="确认 AI 拆解出的知识点，删除无关项后进入关卡生成"
-      @back="() => $router.back()"
+      subtitle="确认 AI 拆解出的知识点，删除无关项后进入关卡生成"
+      show-back
     />
 
-    <div class="content">
+    <Stack :gap="4" class="content">
       <a-alert
         v-if="loadError"
         type="error"
         :message="loadError"
         show-icon
-        style="margin-bottom: 16px"
       />
 
       <a-card title="知识点列表">
@@ -73,14 +72,17 @@
           下一步：生成关卡草稿（{{ confirmedCount }} 个知识点）
         </a-button>
       </div>
-    </div>
-  </div>
+    </Stack>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
+import PageShell from '@/components/common/PageShell.vue'
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue'
+import Stack from '@/components/common/Stack.vue'
 import {
   getKnowledgePoints,
   confirmKnowledgePoints,
@@ -167,22 +169,11 @@ const handleNext = async () => {
 
 <style scoped lang="less">
 .knowledge-confirm {
-  background-color: #f0f2f5;
-  min-height: 100vh;
-
-  .content {
-    padding: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
   .actions {
-    margin-top: 24px;
-    text-align: center;
-
-    button {
-      margin: 0 8px;
-    }
+    display: flex;
+    justify-content: center;
+    gap: var(--hx-space-4);
+    flex-wrap: wrap;
   }
 }
 </style>

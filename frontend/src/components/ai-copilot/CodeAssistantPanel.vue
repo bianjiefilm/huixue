@@ -294,7 +294,7 @@ watch(() => store.messages.length, () => {
   border-left: 1px solid var(--copilot-border-default, #e8e8e8);
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: var(--hx-z-ai-float);
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
 }
 

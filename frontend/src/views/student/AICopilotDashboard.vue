@@ -1,14 +1,11 @@
 <template>
-  <div class="copilot-dashboard">
-    <!-- 主内容区 -->
-    <div class="copilot-main">
-      <!-- 头部 -->
-      <header class="copilot-header">
-        <div class="header-left">
-          <h1 class="welcome-title">{{ userName }}，欢迎回来</h1>
-          <p class="welcome-subtitle">您的AI学习副驾已准备就绪</p>
-        </div>
-        <div class="header-right">
+  <PageShell max-width="wide" class="copilot-dashboard">
+    <PageHeaderBar
+      :title="`${userName}，欢迎回来`"
+      subtitle="您的AI学习副驾已准备就绪"
+    >
+      <template #actions>
+        <div class="header-actions">
           <div class="notification-bell" @click="showNotifications">
             <BellOutlined />
             <span v-if="criticalCount > 0" class="notification-badge">{{ criticalCount }}</span>
@@ -20,44 +17,41 @@
             @search="handleSearch"
           />
         </div>
-      </header>
+      </template>
+    </PageHeaderBar>
 
-      <!-- 内容网格 -->
-      <div class="content-grid">
-        <!-- 活跃学习路径 -->
-        <section class="section-paths">
-          <div class="section-header">
-            <h2 class="section-title">活跃学习路径</h2>
-            <a href="#/classroom" class="view-all">
-              查看全部 <RightOutlined />
-            </a>
-          </div>
-          <ActiveLearningPaths :paths="displayPaths" :loading="loading.dashboard" />
+    <div class="content-grid">
+      <!-- 活跃学习路径 -->
+      <section class="section-paths">
+        <div class="section-header">
+          <h2 class="section-title">活跃学习路径</h2>
+          <a href="#/classroom" class="view-all">
+            查看全部 <RightOutlined />
+          </a>
+        </div>
+        <ActiveLearningPaths :paths="displayPaths" :loading="loading.dashboard" />
+      </section>
+
+      <!-- 底部网格：认知档案 + 优先情报 -->
+      <div class="bottom-grid">
+        <section class="section-profile">
+          <CognitiveProfile
+            :skills="skillNodes"
+            :loading="loading.dashboard"
+            :ai-summary="aiSkillSummary"
+          />
         </section>
 
-        <!-- 底部网格：认知档案 + 优先情报 -->
-        <div class="bottom-grid">
-          <!-- 认知档案 -->
-          <section class="section-profile">
-            <CognitiveProfile
-              :skills="skillNodes"
-              :loading="loading.dashboard"
-              :ai-summary="aiSkillSummary"
-            />
-          </section>
-
-          <!-- 优先情报 -->
-          <section class="section-intel">
-            <PriorityIntel
-              :deadlines="upcomingDeadlines"
-              :recommendations="pathRecommendations"
-              :loading="loading.dashboard"
-            />
-          </section>
-        </div>
+        <section class="section-intel">
+          <PriorityIntel
+            :deadlines="upcomingDeadlines"
+            :recommendations="pathRecommendations"
+            :loading="loading.dashboard"
+          />
+        </section>
       </div>
     </div>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -67,6 +61,8 @@ import {
   BellOutlined,
   RightOutlined
 } from '@ant-design/icons-vue'
+import PageShell from '@/components/common/PageShell.vue'
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue'
 import { useUserStore } from '@/stores/user'
 import { useAICopilotStore } from '@/stores/aiCopilot'
 import ActiveLearningPaths from '@/components/ai-copilot/ActiveLearningPaths.vue'
@@ -119,72 +115,16 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* 亮色主题 CSS 变量定义 */
+/* 浅色布局：依赖 layout 背景，禁止满屏深色 */
 .copilot-dashboard {
-  --copilot-bg-primary: #f5f5f5;
-  --copilot-bg-secondary: #ffffff;
-  --copilot-bg-tertiary: #fafafa;
-  --copilot-text-primary: rgba(0, 0, 0, 0.85);
-  --copilot-text-secondary: rgba(0, 0, 0, 0.65);
-  --copilot-text-tertiary: rgba(0, 0, 0, 0.45);
-  --copilot-border-default: #d9d9d9;
-  --copilot-border-accent: #1890ff;
-  --copilot-accent-cyan: #1890ff;
-  --copilot-accent-pink: #eb2f96;
-  --copilot-accent-green: #52c41a;
-  --copilot-gradient-primary: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
-  --copilot-font-size-xs: 12px;
-  --copilot-font-size-sm: 13px;
-  --copilot-font-size-base: 14px;
-  --copilot-font-size-lg: 18px;
-  --copilot-font-size-2xl: 32px;
-  --copilot-radius-md: 8px;
-  --copilot-transition-fast: 150ms ease;
-  --copilot-transition-normal: 250ms ease;
-
-  min-height: 100%;
-  background: var(--copilot-bg-primary);
-  color: var(--copilot-text-primary);
+  background: transparent;
+  color: var(--hx-color-text-primary);
 }
 
-/* 主内容区 */
-.copilot-main {
-  padding: 24px;
-  overflow-y: auto;
-}
-
-/* 头部 */
-.copilot-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-}
-
-.header-left {
-  flex: 1;
-}
-
-.welcome-title {
-  font-size: var(--copilot-font-size-2xl);
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  background: var(--copilot-gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.welcome-subtitle {
-  font-size: var(--copilot-font-size-base);
-  color: var(--copilot-text-secondary);
-  margin: 0;
-}
-
-.header-right {
+.header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .notification-bell {
@@ -194,17 +134,17 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--copilot-bg-secondary);
-  border: 1px solid var(--copilot-border-default);
-  border-radius: var(--copilot-radius-md);
-  color: var(--copilot-text-secondary);
+  background: var(--hx-color-bg-container);
+  border: 1px solid var(--hx-color-border);
+  border-radius: var(--hx-radius-sm);
+  color: var(--hx-color-text-secondary);
   cursor: pointer;
-  transition: all var(--copilot-transition-normal);
+  transition: all var(--hx-transition-normal);
 }
 
 .notification-bell:hover {
-  border-color: var(--copilot-border-accent);
-  color: var(--copilot-accent-cyan);
+  border-color: var(--hx-color-primary);
+  color: var(--hx-color-primary);
 }
 
 .notification-badge {
@@ -214,7 +154,7 @@ onMounted(async () => {
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  background: var(--copilot-accent-pink);
+  background: #eb2f96;
   border-radius: 9px;
   font-size: 11px;
   font-weight: 600;
@@ -224,11 +164,10 @@ onMounted(async () => {
   color: white;
 }
 
-/* 内容网格 */
 .content-grid {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--hx-space-4);
 }
 
 .section-paths {
@@ -239,35 +178,34 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .section-title {
-  font-size: var(--copilot-font-size-lg);
+  font-size: var(--hx-font-size-md);
   font-weight: 600;
   margin: 0;
-  color: var(--copilot-text-primary);
+  color: var(--hx-color-text-primary);
 }
 
 .view-all {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: var(--copilot-font-size-sm);
-  color: var(--copilot-accent-cyan);
+  gap: var(--hx-space-1);
+  font-size: var(--hx-font-size-sm);
+  color: var(--hx-color-primary);
   text-decoration: none;
-  transition: opacity var(--copilot-transition-fast);
+  transition: opacity var(--hx-transition-fast);
 }
 
 .view-all:hover {
   opacity: 0.8;
 }
 
-/* 底部网格 */
 .bottom-grid {
   display: grid;
   grid-template-columns: 1fr 380px;
-  gap: 24px;
+  gap: var(--hx-space-4);
 }
 
 .section-profile,
@@ -275,7 +213,6 @@ onMounted(async () => {
   min-height: 400px;
 }
 
-/* 响应式 */
 @media (max-width: 1200px) {
   .bottom-grid {
     grid-template-columns: 1fr;
@@ -283,16 +220,7 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .copilot-main {
-    padding: 16px;
-  }
-
-  .copilot-header {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .header-right {
+  .header-actions {
     width: 100%;
   }
 }

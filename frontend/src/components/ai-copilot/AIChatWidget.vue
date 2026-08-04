@@ -198,9 +198,11 @@ watch(() => props.messages.length, () => {
 <style scoped>
 .ai-chat-widget {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: var(--copilot-z-chat);
+  bottom: var(--hx-space-5);
+  right: var(--hx-space-5);
+  /* Modal 可点确认优先：--hx-z-ai-float 与 --hx-z-modal 同阶 1000，助手不得盖死 Modal */
+  z-index: var(--hx-z-ai-float);
+  pointer-events: auto;
 }
 
 /* 切换按钮 */

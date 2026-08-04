@@ -1,18 +1,17 @@
 <template>
-  <div class="drafts-review">
-    <a-page-header
+  <PageShell max-width="default" class="drafts-review">
+    <PageHeaderBar
       title="关卡草稿审核"
-      sub-title="AI 生成的实践关卡草稿，老师审核后可保存为实践课程"
-      @back="() => $router.back()"
+      subtitle="AI 生成的实践关卡草稿，老师审核后可保存为实践课程"
+      show-back
     />
 
-    <div class="content">
+    <Stack :gap="4" class="content">
       <a-alert
         v-if="loadError"
         type="error"
         :message="loadError"
         show-icon
-        style="margin-bottom: 16px"
       />
 
       <a-spin :spinning="loading">
@@ -58,7 +57,6 @@
       </a-spin>
 
       <a-alert
-        style="margin-top: 24px"
         type="info"
         show-icon
         message="「保存为实践课程」尚未实现"
@@ -68,13 +66,16 @@
       <div class="actions">
         <a-button @click="() => $router.back()">上一步</a-button>
       </div>
-    </div>
-  </div>
+    </Stack>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import PageShell from '@/components/common/PageShell.vue'
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue'
+import Stack from '@/components/common/Stack.vue'
 import { getChallengeDrafts, type ChallengeDraft } from '@/api/teacher-ai'
 
 const route = useRoute()
@@ -108,17 +109,9 @@ onMounted(async () => {
 
 <style scoped lang="less">
 .drafts-review {
-  background-color: #f0f2f5;
-  min-height: 100vh;
-
-  .content {
-    padding: 24px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-
   .draft-title {
     font-weight: 600;
+    color: var(--hx-color-text-primary);
   }
 
   .markdown-block {
@@ -126,11 +119,11 @@ onMounted(async () => {
   }
 
   .code-block {
-    background: #f6f8fa;
-    padding: 12px;
-    border-radius: 4px;
-    font-family: 'SFMono-Regular', Consolas, monospace;
-    font-size: 13px;
+    background: var(--hx-color-bg-layout);
+    padding: var(--hx-space-3);
+    border-radius: var(--hx-radius-sm);
+    font-family: var(--hx-font-mono);
+    font-size: var(--hx-font-size-sm);
     white-space: pre-wrap;
     margin: 0;
 
@@ -141,8 +134,8 @@ onMounted(async () => {
   }
 
   .actions {
-    margin-top: 24px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
   }
 }
 </style>

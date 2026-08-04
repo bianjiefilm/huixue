@@ -65,12 +65,14 @@
   --hx-header-height: 64px;
   --hx-footer-height: 64px;
 
-  /* z-index scale (D7) */
+  /* z-index scale (D7)
+   * AI 浮层与 Modal 同阶 1000：以「Modal 可点确认」优先，避免 1100 盖死 AntD Modal。
+   * 浮层仍保持 pointer-events 正常；Modal 后挂载时同 z 下覆盖助手。 */
   --hx-z-header: 100;
   --hx-z-dropdown: 1050;
   --hx-z-drawer: 1000;
   --hx-z-modal: 1000;
-  --hx-z-ai-float: 1100;
+  --hx-z-ai-float: 1000;
 
   /* ---------- copilot aliases (P1 compat) ---------- */
   --copilot-bg-primary: var(--hx-color-bg-layout);

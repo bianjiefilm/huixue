@@ -137,7 +137,7 @@ const navigateToPath = (path: LearningPath) => {
 .paths-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  gap: var(--hx-space-4);
 }
 
 /* 路径卡片 */
