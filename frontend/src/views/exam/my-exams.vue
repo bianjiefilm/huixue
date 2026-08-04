@@ -1,47 +1,49 @@
 <template>
-  <div class="my-exams-container">
-    <!-- 顶部操作区 -->
-    <div class="operation-bar">
-      <a-input-search
-        v-model:value="searchKeyword"
-        placeholder="搜索考试名称"
-        style="width: 300px"
-        @search="handleSearch"
-        allow-clear
-      />
-      <div class="filter-section">
-        <a-select
-          v-model:value="filterStatus"
-          placeholder="考试状态"
-          style="width: 120px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option value="unpublished">未发布</a-select-option>
-          <a-select-option value="upcoming">未开始</a-select-option>
-          <a-select-option value="ongoing">进行中</a-select-option>
-          <a-select-option value="finished">已结束</a-select-option>
-        </a-select>
-        <a-select
-          v-model:value="filterClassroom"
-          placeholder="课堂"
-          style="width: 200px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option v-for="classroom in classroomList" :key="classroom.id" :value="classroom.id">
-            {{ classroom.name }}
-          </a-select-option>
-        </a-select>
-      </div>
-    </div>
+  <!-- 嵌套在 exam/index PageShell 内，本页不再套 PageShell，避免双 padding -->
+  <div class="my-exams">
+    <PageHeaderBar title="我的考试">
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="searchKeyword"
+            placeholder="搜索考试名称"
+            style="width: 300px"
+            @search="handleSearch"
+            allow-clear
+          />
+          <a-select
+            v-model:value="filterStatus"
+            placeholder="考试状态"
+            style="width: 120px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option value="unpublished">未发布</a-select-option>
+            <a-select-option value="upcoming">未开始</a-select-option>
+            <a-select-option value="ongoing">进行中</a-select-option>
+            <a-select-option value="finished">已结束</a-select-option>
+          </a-select>
+          <a-select
+            v-model:value="filterClassroom"
+            placeholder="课堂"
+            style="width: 200px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option v-for="classroom in classroomList" :key="classroom.id" :value="classroom.id">
+              {{ classroom.name }}
+            </a-select-option>
+          </a-select>
+        </Stack>
+      </template>
+    </PageHeaderBar>
 
     <!-- 考试列表 -->
     <div class="exam-list">
       <a-spin :spinning="loading">
-        <a-empty v-if="examList.length === 0" description="暂无考试" />
+        <EmptyStateBlock v-if="!loading && examList.length === 0" description="暂无考试" />
         <a-table
-          v-else
+          v-else-if="examList.length > 0"
           :columns="columns"
           :data-source="examList"
           :pagination="false"
@@ -146,6 +148,9 @@
 import { ref, reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
+import Stack from '@/components/common/Stack.vue';
 import { 
   EyeOutlined, 
   EditOutlined, 
@@ -391,49 +396,25 @@ const getStatusColor = (status: string) => {
 </script>
 
 <style scoped>
-.my-exams-container {
-  padding: 0 8px;
-}
-
-.operation-bar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.filter-section {
-  display: flex;
-  margin-left: auto;
-  flex-wrap: wrap;
+.my-exams {
+  width: 100%;
 }
 
 .exam-list {
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .action-buttons {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--hx-space-1);
 }
 
 .pagination-container {
   display: flex;
   justify-content: flex-end;
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
-@media (max-width: 768px) {
-  .operation-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .filter-section {
-    margin-left: 0;
-    margin-top: 16px;
-    width: 100%;
-  }
+  margin-top: var(--hx-space-4);
+  margin-bottom: var(--hx-space-4);
 }
 </style> 

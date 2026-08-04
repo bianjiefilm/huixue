@@ -1,12 +1,15 @@
 <template>
-  <div class="template-paper-container">
-    <div class="page-header">
-      <h1 class="page-title">模板组卷</h1>
-      <a-space>
+  <PageShell max-width="wide" class="template-paper">
+    <PageHeaderBar
+      title="模板组卷"
+      show-back
+      back-to="/exam/paper-bank"
+    >
+      <template #actions>
         <a-button @click="goBack">取消</a-button>
         <a-button type="primary" :loading="generating" @click="handleGenerate">生成试卷</a-button>
-      </a-space>
-    </div>
+      </template>
+    </PageHeaderBar>
 
     <a-card class="paper-form">
       <a-form :model="paperForm" layout="vertical">
@@ -122,7 +125,7 @@
         </a-collapse>
       </div>
 
-      <a-empty v-else description="暂无规则，请添加模板规则" />
+      <EmptyStateBlock v-else description="暂无规则，请添加模板规则" />
     </a-card>
 
     <a-card class="preview-section" title="匹配试题预览" v-if="previewQuestions.length > 0">
@@ -150,7 +153,7 @@
         </template>
       </a-table>
     </a-card>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -160,6 +163,9 @@ import { useRouter } from 'vue-router';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { v4 as uuidv4 } from 'uuid';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 import { 
   getQuestionList,
   createPaper,
@@ -354,9 +360,9 @@ watch(templateRules, () => {
   generatePreview();
 }, { deep: true });
 
-// 返回上一页
+// 返回试卷库
 const goBack = () => {
-  router.back();
+  router.push('/exam/paper-bank');
 };
 
 // 生成试卷
@@ -405,41 +411,29 @@ const handleGenerate = async () => {
 </script>
 
 <style scoped>
-.template-paper-container {
-  padding: 24px;
-  background-color: #f0f2f5;
+.template-paper {
+  width: 100%;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 500;
-}
-
-.paper-form, .template-rules, .preview-section {
-  margin-bottom: 24px;
+.paper-form,
+.template-rules,
+.preview-section {
+  margin-bottom: var(--hx-space-5);
 }
 
 .rule-buttons {
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
   display: flex;
   justify-content: flex-end;
 }
 
 .rule-list {
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .rule-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
 }
 </style> 

@@ -1,85 +1,87 @@
 <template>
-  <div class="question-bank-container">
-    <!-- 顶部操作区 -->
-    <div class="operation-bar">
-      <a-button type="primary" @click="createQuestion">
-        <template #icon><PlusOutlined /></template>
-        新建试题
-      </a-button>
-      <a-button style="margin-left: 16px" @click="showImportModal">
-        <template #icon><ImportOutlined /></template>
-        导入试题
-      </a-button>
-      <a-button 
-        danger 
-        style="margin-left: 16px" 
-        :disabled="selectedRowKeys.length === 0" 
-        @click="showBatchDeleteConfirm"
-      >
-        <template #icon><DeleteOutlined /></template>
-        删除试题 ({{ selectedRowKeys.length }})
-      </a-button>
-      
-      <div class="filter-section">
-        <a-input-search
-          v-model:value="searchKeyword"
-          placeholder="搜索试题内容"
-          style="width: 200px"
-          @search="handleSearch"
-          allow-clear
-        />
-        <a-select
-          v-model:value="filterType"
-          placeholder="题目类型"
-          style="width: 120px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
+  <!-- 嵌套在 exam/index PageShell 内，本页不再套 PageShell，避免双 padding -->
+  <div class="question-bank">
+    <PageHeaderBar title="题库">
+      <template #actions>
+        <a-button type="primary" @click="createQuestion">
+          <template #icon><PlusOutlined /></template>
+          新建试题
+        </a-button>
+        <a-button @click="showImportModal">
+          <template #icon><ImportOutlined /></template>
+          导入试题
+        </a-button>
+        <a-button
+          danger
+          :disabled="selectedRowKeys.length === 0"
+          @click="showBatchDeleteConfirm"
         >
-          <a-select-option value="SINGLE_CHOICE">单选题</a-select-option>
-          <a-select-option value="MULTIPLE_CHOICE">多选题</a-select-option>
-          <a-select-option value="TRUE_FALSE">判断题</a-select-option>
-          <a-select-option value="SHORT_ANSWER">简答题</a-select-option>
-        </a-select>
-        <a-select
-          v-model:value="filterDirection"
-          placeholder="方向分类"
-          style="width: 120px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option v-for="tag in filterTags.directions" :key="tag" :value="tag">
-            {{ tag }}
-          </a-select-option>
-        </a-select>
-        <a-select
-          v-model:value="filterDifficulty"
-          placeholder="难易度"
-          style="width: 100px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option value="BEGINNER">初级</a-select-option>
-          <a-select-option value="INTERMEDIATE">中级</a-select-option>
-          <a-select-option value="ADVANCED">高级</a-select-option>
-        </a-select>
-        <a-select
-          v-model:value="filterSource"
-          placeholder="来源"
-          style="width: 100px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option value="平台">平台</a-select-option>
-          <a-select-option value="个人">个人</a-select-option>
-        </a-select>
-      </div>
-    </div>
+          <template #icon><DeleteOutlined /></template>
+          删除试题 ({{ selectedRowKeys.length }})
+        </a-button>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="searchKeyword"
+            placeholder="搜索试题内容"
+            style="width: 200px"
+            @search="handleSearch"
+            allow-clear
+          />
+          <a-select
+            v-model:value="filterType"
+            placeholder="题目类型"
+            style="width: 120px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option value="SINGLE_CHOICE">单选题</a-select-option>
+            <a-select-option value="MULTIPLE_CHOICE">多选题</a-select-option>
+            <a-select-option value="TRUE_FALSE">判断题</a-select-option>
+            <a-select-option value="SHORT_ANSWER">简答题</a-select-option>
+          </a-select>
+          <a-select
+            v-model:value="filterDirection"
+            placeholder="方向分类"
+            style="width: 120px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option v-for="tag in filterTags.directions" :key="tag" :value="tag">
+              {{ tag }}
+            </a-select-option>
+          </a-select>
+          <a-select
+            v-model:value="filterDifficulty"
+            placeholder="难易度"
+            style="width: 100px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option value="BEGINNER">初级</a-select-option>
+            <a-select-option value="INTERMEDIATE">中级</a-select-option>
+            <a-select-option value="ADVANCED">高级</a-select-option>
+          </a-select>
+          <a-select
+            v-model:value="filterSource"
+            placeholder="来源"
+            style="width: 100px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option value="平台">平台</a-select-option>
+            <a-select-option value="个人">个人</a-select-option>
+          </a-select>
+        </Stack>
+      </template>
+    </PageHeaderBar>
 
     <!-- 试题列表 -->
     <div class="question-list">
       <a-spin :spinning="loading">
-        <a-empty v-if="questionList.length === 0 && !loading" description="暂无试题" />
-        <div v-else class="question-items">
+        <EmptyStateBlock v-if="!loading && questionList.length === 0" description="暂无试题" />
+        <div v-else-if="questionList.length > 0" class="question-items">
           <a-card 
             v-for="question in questionList" 
             :key="question.id"
@@ -221,6 +223,9 @@ import {
 } from '@ant-design/icons-vue';
 import dayjs from 'dayjs';
 import { useUserStore } from '@/stores/user';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
+import Stack from '@/components/common/Stack.vue';
 import {
   getQuestionList,
   createQuestion,
@@ -596,36 +601,18 @@ const getDifficultyColor = (difficulty: string) => {
 </script>
 
 <style scoped>
-.question-bank-container {
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: calc(100vh - 64px);
-}
-
-.operation-bar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.filter-section {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
+.question-bank {
+  width: 100%;
 }
 
 .question-list {
-  min-height: 400px;
+  min-height: 200px;
 }
 
 .question-items {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .question-card {
@@ -637,20 +624,21 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 .question-card.selected {
-  border-color: #1890ff;
+  border-color: var(--hx-color-primary);
 }
 
 .question-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--hx-space-3);
 }
 
 .question-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--hx-space-2);
+  flex-wrap: wrap;
 }
 
 .question-actions {
@@ -659,31 +647,31 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 .question-content {
-  margin-left: 32px;
+  margin-left: var(--hx-space-6);
 }
 
 .question-text {
-  font-size: 14px;
+  font-size: var(--hx-font-size-base);
   line-height: 1.6;
-  color: rgba(0, 0, 0, 0.85);
-  margin-bottom: 8px;
+  color: var(--hx-color-text-primary);
+  margin-bottom: var(--hx-space-2);
 }
 
 .question-info {
   display: flex;
-  gap: 24px;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  gap: var(--hx-space-5);
+  font-size: var(--hx-font-size-sm);
+  color: var(--hx-color-text-secondary);
 }
 
 .pagination-container {
-  margin-top: 24px;
+  margin-top: var(--hx-space-5);
   text-align: center;
 }
 
 .import-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 </style> 

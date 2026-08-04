@@ -66,15 +66,18 @@
       </div>
     </div>
 
-    <!-- 主要内容区域 -->
+    <!-- 主要内容区域（仅外壳：PageHeaderBar + spacing token；内部画布不动） -->
     <div class="main-content">
-      <div class="page-header">
-        <h1 class="page-title">{{ isEdit ? '编辑试卷' : '新建试卷' }}</h1>
-        <a-space>
+      <PageHeaderBar
+        :title="isEdit ? '编辑试卷' : '新建试卷'"
+        show-back
+        back-to="/exam/paper-bank"
+      >
+        <template #actions>
           <a-button @click="goBack">取消</a-button>
           <a-button type="primary" :loading="saving" @click="handleComplete">完成编辑</a-button>
-        </a-space>
-      </div>
+        </template>
+      </PageHeaderBar>
 
       <!-- 试卷基本信息 -->
       <a-card class="paper-info" title="试卷基本信息">
@@ -365,6 +368,7 @@ import { EditOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons-vu
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import draggable from 'vuedraggable';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import {
   getPaperDetail,
   getQuestionList,
@@ -824,9 +828,9 @@ const handleCreateQuestionSuccess = (questionId: number) => {
   loadPaperDetail();
 };
 
-// 返回上一页
+// 返回试卷库（域内明确路径）
 const goBack = () => {
-  router.back();
+  router.push('/exam/paper-bank');
 };
 
 // 完成编辑
@@ -999,24 +1003,12 @@ const formatQuestionContent = (content: string) => {
 .main-content {
   flex: 1;
   margin-left: 280px;
-  padding: 24px;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.page-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 500;
+  padding: var(--hx-space-5);
+  box-sizing: border-box;
 }
 
 .paper-info {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .question-section {

@@ -1,11 +1,11 @@
 <template>
-  <div class="edit-question-container">
-    <a-page-header
+  <PageShell max-width="default" class="edit-question">
+    <PageHeaderBar
       title="编辑试题"
-      :back-icon="true"
-      @back="goBack"
+      show-back
+      :back-to="backTo"
     />
-    
+
     <div class="question-form">
       <a-card :loading="loading">
         <!-- 试题类型选择（编辑时禁用） -->
@@ -159,7 +159,7 @@
         </a-form>
       </a-card>
     </div>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -173,6 +173,8 @@ import {
 } from '@ant-design/icons-vue';
 import type { FormInstance } from 'ant-design-vue';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { 
   getQuestionDetail, 
   updateQuestion, 
@@ -184,6 +186,14 @@ const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
 const formRef = ref<FormInstance>();
+
+// 返回路径：试卷编辑入口优先回到试卷编辑
+const backTo = computed(() => {
+  if (route.query.from === 'paper' && route.query.paperId) {
+    return `/exam/edit-paper?id=${route.query.paperId}&type=edit`;
+  }
+  return '/exam/question-bank';
+});
 
 // 加载状态
 const loading = ref(false);
@@ -408,20 +418,9 @@ const saveQuestion = async () => {
   }
 };
 
-// 返回上一页
+// 返回（取消按钮 / 域内明确路径）
 const goBack = () => {
-  // 如果是从试卷编辑页面跳转过来的，返回试卷编辑页面
-  if (route.query.from === 'paper' && route.query.paperId) {
-    router.push({
-      path: '/exam/edit-paper',
-      query: {
-        id: route.query.paperId,
-        type: 'edit'
-      }
-    });
-  } else {
-    router.push('/exam/question-bank');
-  }
+  router.push(backTo.value);
 };
 
 // 初始化
@@ -439,55 +438,51 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.edit-question-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: 100vh;
+.edit-question {
+  width: 100%;
 }
 
 .type-select-container {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .type-tip {
-  margin-top: 8px;
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 14px;
+  margin-top: var(--hx-space-2);
+  color: var(--hx-color-text-secondary);
+  font-size: var(--hx-font-size-base);
 }
 
 .question-form {
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 .option-item {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .option-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--hx-space-2);
   min-width: 120px;
 }
 
 .option-tip {
-  margin-top: 8px;
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 14px;
+  margin-top: var(--hx-space-2);
+  color: var(--hx-color-text-secondary);
+  font-size: var(--hx-font-size-base);
 }
 
 .form-actions {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
-  gap: 16px;
+  margin-top: var(--hx-space-6);
+  gap: var(--hx-space-4);
 }
 
 :deep(.ant-form-item-label) {

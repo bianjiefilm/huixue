@@ -1,11 +1,11 @@
 <template>
-  <div class="create-question-container">
-    <a-page-header
+  <PageShell max-width="default" class="create-question">
+    <PageHeaderBar
       title="新建试题"
-      :back-icon="true"
-      @back="goBack"
+      show-back
+      back-to="/exam/question-bank"
     />
-    
+
     <div class="question-form">
       <a-card :loading="loading">
         <!-- 试题类型选择 -->
@@ -159,7 +159,7 @@
         </a-form>
       </a-card>
     </div>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -173,6 +173,8 @@ import {
 } from '@ant-design/icons-vue';
 import type { FormInstance } from 'ant-design-vue';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { createQuestion, type CreateQuestionRequest, type QuestionType } from '@/api/exam';
 
 const router = useRouter();
@@ -390,55 +392,51 @@ const saveQuestion = async () => {
   }
 };
 
-// 返回上一页
+// 返回（取消按钮）
 const goBack = () => {
-  router.back();
+  router.push('/exam/question-bank');
 };
 </script>
 
 <style scoped>
-.create-question-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: 100vh;
+.create-question {
+  width: 100%;
 }
 
 .type-select-container {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
   display: flex;
   justify-content: center;
 }
 
 .question-form {
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 .option-item {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .option-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--hx-space-2);
   min-width: 120px;
 }
 
 .option-tip {
-  margin-top: 8px;
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 14px;
+  margin-top: var(--hx-space-2);
+  color: var(--hx-color-text-secondary);
+  font-size: var(--hx-font-size-base);
 }
 
 .form-actions {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
-  gap: 16px;
+  margin-top: var(--hx-space-6);
+  gap: var(--hx-space-4);
 }
 
 :deep(.ant-form-item-label) {

@@ -1,59 +1,63 @@
 <template>
-  <div class="paper-bank-container">
-    <!-- 顶部操作区 -->
-    <div class="operation-bar">
-      <a-button type="primary" @click="showCreatePaperModal">
-        <template #icon><PlusOutlined /></template>
-        新建试卷
-      </a-button>
-      <a-input-search
-        v-model:value="searchKeyword"
-        placeholder="搜索试卷名称"
-        style="width: 300px; margin-left: 16px"
-        @search="handleSearch"
-        allow-clear
-      />
-      <div class="filter-section">
-        <a-select
-          v-model:value="filterDirection"
-          placeholder="方向分类"
-          style="width: 120px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option v-for="tag in filterTags.directions" :key="tag" :value="tag">
-            {{ tag }}
-          </a-select-option>
-        </a-select>
-        <a-select
-          v-model:value="filterDifficulty"
-          placeholder="难易度"
-          style="width: 100px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option value="BEGINNER">初级</a-select-option>
-          <a-select-option value="INTERMEDIATE">中级</a-select-option>
-          <a-select-option value="ADVANCED">高级</a-select-option>
-        </a-select>
-        <a-select
-          v-model:value="filterSource"
-          placeholder="来源"
-          style="width: 100px; margin-left: 8px"
-          @change="handleFilterChange"
-          allow-clear
-        >
-          <a-select-option value="platform">平台</a-select-option>
-          <a-select-option value="personal">个人</a-select-option>
-        </a-select>
-      </div>
-    </div>
+  <!-- 嵌套在 exam/index PageShell 内，本页不再套 PageShell，避免双 padding -->
+  <div class="paper-bank">
+    <PageHeaderBar title="试卷库">
+      <template #actions>
+        <a-button type="primary" @click="showCreatePaperModal">
+          <template #icon><PlusOutlined /></template>
+          新建试卷
+        </a-button>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="searchKeyword"
+            placeholder="搜索试卷名称"
+            style="width: 300px"
+            @search="handleSearch"
+            allow-clear
+          />
+          <a-select
+            v-model:value="filterDirection"
+            placeholder="方向分类"
+            style="width: 120px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option v-for="tag in filterTags.directions" :key="tag" :value="tag">
+              {{ tag }}
+            </a-select-option>
+          </a-select>
+          <a-select
+            v-model:value="filterDifficulty"
+            placeholder="难易度"
+            style="width: 100px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option value="BEGINNER">初级</a-select-option>
+            <a-select-option value="INTERMEDIATE">中级</a-select-option>
+            <a-select-option value="ADVANCED">高级</a-select-option>
+          </a-select>
+          <a-select
+            v-model:value="filterSource"
+            placeholder="来源"
+            style="width: 100px"
+            @change="handleFilterChange"
+            allow-clear
+          >
+            <a-select-option value="platform">平台</a-select-option>
+            <a-select-option value="personal">个人</a-select-option>
+          </a-select>
+        </Stack>
+      </template>
+    </PageHeaderBar>
 
     <!-- 试卷列表 -->
     <div class="paper-list">
       <a-spin :spinning="loading">
-        <a-empty v-if="paperList.length === 0 && !loading" description="暂无试卷" />
-        <a-row :gutter="[16, 16]" v-else>
+        <EmptyStateBlock v-if="!loading && paperList.length === 0" description="暂无试卷" />
+        <a-row :gutter="[16, 16]" v-else-if="paperList.length > 0">
           <a-col :xs="24" :sm="12" :md="8" :xl="6" v-for="paper in paperList" :key="paper.id">
             <a-card class="paper-card" :class="{ 'system-paper': paper.source === 'platform' }">
               <template #title>
@@ -212,6 +216,9 @@ import {
 import dayjs from 'dayjs';
 import { useUserStore } from '@/stores/user';
 import { useClassroomStore } from '@/stores/classroom';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
+import Stack from '@/components/common/Stack.vue';
 import { 
   getPaperList,
   createPaper,
@@ -526,30 +533,12 @@ const getDifficultyColor = (difficulty: string) => {
 </script>
 
 <style scoped>
-.paper-bank-container {
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: calc(100vh - 64px);
-}
-
-.operation-bar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.filter-section {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
+.paper-bank {
+  width: 100%;
 }
 
 .paper-list {
-  min-height: 400px;
+  min-height: 200px;
 }
 
 .paper-card {
@@ -567,7 +556,7 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 .paper-title {
-  font-size: 16px;
+  font-size: var(--hx-font-size-md);
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -575,30 +564,30 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 .paper-info {
-  margin-top: 12px;
+  margin-top: var(--hx-space-3);
 }
 
 .paper-tags {
-  margin-bottom: 12px;
+  margin-bottom: var(--hx-space-3);
 }
 
 .paper-tags .ant-tag {
-  margin-bottom: 8px;
+  margin-bottom: var(--hx-space-2);
 }
 
 .paper-detail {
-  font-size: 14px;
+  font-size: var(--hx-font-size-base);
 }
 
 .paper-detail-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
-  color: rgba(0, 0, 0, 0.65);
+  margin-bottom: var(--hx-space-2);
+  color: var(--hx-color-text-secondary);
 }
 
 .detail-label {
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--hx-color-text-tertiary, var(--hx-color-text-secondary));
 }
 
 .detail-value {
@@ -606,10 +595,10 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 .paper-actions {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .paper-actions .ant-btn {
@@ -618,7 +607,7 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 .pagination-container {
-  margin-top: 24px;
+  margin-top: var(--hx-space-5);
   text-align: center;
 }
 </style> 
