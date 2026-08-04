@@ -440,7 +440,8 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: 'BI 作业评阅',
           requiresAuth: true,
-          requiresTeacher: true
+          requiresTeacher: true,
+          hideFooter: true
         }
       },
       {
@@ -715,7 +716,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/ml/AiEmbed.vue'),
         meta: {
           title: '机器学习实训',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
