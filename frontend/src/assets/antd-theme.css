@@ -1,4 +1,5 @@
-/* 全局 Ant Design Vue 样式覆盖 */
+/* legacy test-only; prefer tokens.css */
+/* 全局 Ant Design Vue 样式覆盖 — only imported by main-test.ts (not main.ts) */
 
 /* ===== 布局相关样式 ===== */
 .ant-layout {
