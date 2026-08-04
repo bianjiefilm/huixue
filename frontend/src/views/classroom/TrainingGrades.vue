@@ -1,190 +1,177 @@
 <template>
-  <div class="training-grades-page">
-    <div class="content-container">
-      <div class="back-link">
-        <a-button type="link" @click="goBack">
-          <template #icon><arrow-left-outlined /></template>
-          返回实训详情
+  <PageShell max-width="wide" class="training-grades-page">
+    <PageHeaderBar
+      :title="trainingTitle || '实训成绩'"
+      subtitle="成绩总览与导出"
+      show-back
+      :back-to="`/classroom/${classroomId}/training/${trainingId}`"
+    >
+      <template #actions>
+        <a-button type="primary" @click="handleExport">
+          <template #icon><DownloadOutlined /></template>
+          导出成绩
         </a-button>
-      </div>
+      </template>
+    </PageHeaderBar>
 
-      <div class="training-header">
-        <div class="training-info">
-          <h1 class="training-title">{{ trainingTitle || '实训成绩' }}</h1>
-        </div>
-      </div>
-
-      <a-spin :spinning="loading">
-        <!-- 统计卡片 -->
-        <a-card class="stats-card">
-          <a-row :gutter="16">
-            <a-col :span="6">
-              <div class="stat-item">
-                <div class="stat-value">{{ stats.total_students || 0 }}</div>
-                <div class="stat-label">总学生数</div>
-              </div>
-            </a-col>
-            <a-col :span="6">
-              <div class="stat-item">
-                <div class="stat-value">{{ stats.submitted || 0 }}</div>
-                <div class="stat-label">已提交</div>
-              </div>
-            </a-col>
-            <a-col :span="6">
-              <div class="stat-item">
-                <div class="stat-value">{{ stats.late_submitted || 0 }}</div>
-                <div class="stat-label">补交</div>
-              </div>
-            </a-col>
-            <a-col :span="6">
-              <div class="stat-item">
-                <div class="stat-value">{{ stats.graded || 0 }}</div>
-                <div class="stat-label">已评分</div>
-              </div>
-            </a-col>
-          </a-row>
-          <a-row :gutter="16" style="margin-top: 16px;">
-            <a-col :span="6">
-              <div class="stat-item">
-                <div class="stat-value">{{ stats.not_submitted || 0 }}</div>
-                <div class="stat-label">未提交</div>
-              </div>
-            </a-col>
-            <a-col :span="6">
-              <div class="stat-item">
-                <div class="stat-value">{{ stats.not_graded || 0 }}</div>
-                <div class="stat-label">未评分</div>
-              </div>
-            </a-col>
-          </a-row>
-        </a-card>
-
-        <!-- 成绩表格 -->
-        <a-card class="grades-card">
-          <div class="grades-header">
-            <div class="grades-filter">
-              <a-input-search
-                v-model:value="searchText"
-                placeholder="搜索学生姓名或学号"
-                style="width: 250px"
-                @search="onSearch"
-                allow-clear
-              />
+    <a-spin :spinning="loading">
+      <!-- 统计卡片 -->
+      <a-card class="stats-card">
+        <a-row :gutter="16">
+          <a-col :span="6">
+            <div class="stat-item">
+              <div class="stat-value">{{ stats.total_students || 0 }}</div>
+              <div class="stat-label">总学生数</div>
             </div>
-            <div class="grades-export">
-              <a-button type="primary" @click="handleExport">
-                <template #icon><download-outlined /></template>
-                导出成绩
-              </a-button>
+          </a-col>
+          <a-col :span="6">
+            <div class="stat-item">
+              <div class="stat-value">{{ stats.submitted || 0 }}</div>
+              <div class="stat-label">已提交</div>
             </div>
+          </a-col>
+          <a-col :span="6">
+            <div class="stat-item">
+              <div class="stat-value">{{ stats.late_submitted || 0 }}</div>
+              <div class="stat-label">补交</div>
+            </div>
+          </a-col>
+          <a-col :span="6">
+            <div class="stat-item">
+              <div class="stat-value">{{ stats.graded || 0 }}</div>
+              <div class="stat-label">已评分</div>
+            </div>
+          </a-col>
+        </a-row>
+        <a-row :gutter="16" class="stats-row-second">
+          <a-col :span="6">
+            <div class="stat-item">
+              <div class="stat-value">{{ stats.not_submitted || 0 }}</div>
+              <div class="stat-label">未提交</div>
+            </div>
+          </a-col>
+          <a-col :span="6">
+            <div class="stat-item">
+              <div class="stat-value">{{ stats.not_graded || 0 }}</div>
+              <div class="stat-label">未评分</div>
+            </div>
+          </a-col>
+        </a-row>
+      </a-card>
+
+      <!-- 成绩表格 -->
+      <a-card class="grades-card">
+        <div class="grades-header">
+          <div class="grades-filter">
+            <a-input-search
+              v-model:value="searchText"
+              placeholder="搜索学生姓名或学号"
+              style="width: 250px"
+              @search="onSearch"
+              allow-clear
+            />
           </div>
+        </div>
 
-          <a-table
-            :columns="columns"
-            :data-source="filteredStudents"
-            :loading="loading"
-            :pagination="{
-              current: currentPage,
-              pageSize: 10,
-              total: totalCount,
-              showTotal: (total: number) => `共 ${total} 条记录`,
-              onChange: (page: number) => {
-                currentPage = page;
-                fetchGrades();
-              }
-            }"
-            row-key="id"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.key === 'name'">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <a-avatar :size="28" :src="record.avatar">
-                    <template #icon><UserOutlined /></template>
-                  </a-avatar>
-                  <div>
-                    <div>{{ record.student_name }}</div>
-                    <div style="font-size: 12px; color: #999;">{{ record.student_no }}</div>
-                  </div>
+        <a-table
+          :columns="columns"
+          :data-source="filteredStudents"
+          :loading="loading"
+          :pagination="{
+            current: currentPage,
+            pageSize: 10,
+            total: totalCount,
+            showTotal: (total: number) => `共 ${total} 条记录`,
+            onChange: (page: number) => {
+              currentPage = page;
+              fetchGrades();
+            }
+          }"
+          row-key="id"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'name'">
+              <div class="student-cell">
+                <a-avatar :size="28" :src="record.avatar">
+                  <template #icon><UserOutlined /></template>
+                </a-avatar>
+                <div>
+                  <div>{{ record.student_name }}</div>
+                  <div class="student-no">{{ record.student_no }}</div>
                 </div>
-              </template>
-              <template v-if="column.key === 'submission_status'">
-                <a-tag :color="getStatusColor(record.submission_status)">
-                  {{ getStatusText(record.submission_status) }}
-                </a-tag>
-              </template>
-              <template v-if="column.key === 'overall_score'">
-                <span v-if="record.overall_score !== null && record.overall_score > 0" :class="{'score-highlight': record.overall_score >= 90}">
-                  {{ record.overall_score }}
-                </span>
-                <span v-else style="color: #999;">-</span>
-              </template>
-              <template v-if="column.key === 'action'">
-                <a-space>
-                  <a-button
-                    type="link"
-                    :disabled="record.submission_status !== 'submitted' && record.submission_status !== 'late_submitted'"
-                    @click="viewHomework(record)"
-                  >
-                    查看作业
-                  </a-button>
-                  <a-button
-                    type="link"
-                    @click="openCommentModal(record)"
-                  >
-                    {{ record.overall_score && record.overall_score > 0 ? '修改评分' : '评分' }}
-                  </a-button>
-                </a-space>
-              </template>
+              </div>
             </template>
-          </a-table>
-        </a-card>
-      </a-spin>
+            <template v-if="column.key === 'submission_status'">
+              <a-tag :color="getStatusColor(record.submission_status)">
+                {{ getStatusText(record.submission_status) }}
+              </a-tag>
+            </template>
+            <template v-if="column.key === 'overall_score'">
+              <span
+                v-if="record.overall_score !== null && record.overall_score > 0"
+                :class="{ 'score-highlight': record.overall_score >= 90 }"
+              >
+                {{ record.overall_score }}
+              </span>
+              <span v-else class="muted">-</span>
+            </template>
+            <template v-if="column.key === 'action'">
+              <a-space>
+                <a-button
+                  type="link"
+                  :disabled="
+                    record.submission_status !== 'submitted' &&
+                    record.submission_status !== 'late_submitted'
+                  "
+                  @click="viewHomework(record)"
+                >
+                  查看作业
+                </a-button>
+                <a-button type="link" @click="openCommentModal(record)">
+                  {{ record.overall_score && record.overall_score > 0 ? '修改评分' : '评分' }}
+                </a-button>
+              </a-space>
+            </template>
+          </template>
+        </a-table>
+      </a-card>
+    </a-spin>
 
-      <!-- 评分模态框 -->
-      <a-modal
-        v-model:open="commentModalVisible"
-        :title="`为 ${currentStudent?.student_name || ''} 评分`"
-        @ok="submitComment"
-        :confirm-loading="submittingComment"
-        width="500px"
-      >
-        <a-form layout="vertical">
-          <a-form-item label="分数">
-            <a-input-number
-              v-model:value="commentForm.score"
-              :min="0"
-              :max="100"
-              style="width: 100%"
-            />
-          </a-form-item>
-          <a-form-item label="点评意见">
-            <a-textarea
-              v-model:value="commentForm.comment"
-              :rows="4"
-              placeholder="请输入点评意见"
-            />
-          </a-form-item>
-          <a-form-item>
-            <a-checkbox v-model:checked="commentForm.isExcellent">
-              设为优秀作业
-            </a-checkbox>
-          </a-form-item>
-        </a-form>
-      </a-modal>
-    </div>
-  </div>
+    <!-- 评分模态框 -->
+    <a-modal
+      v-model:open="commentModalVisible"
+      :title="`为 ${currentStudent?.student_name || ''} 评分`"
+      @ok="submitComment"
+      :confirm-loading="submittingComment"
+      width="500px"
+    >
+      <a-form layout="vertical">
+        <a-form-item label="分数">
+          <a-input-number v-model:value="commentForm.score" :min="0" :max="100" style="width: 100%" />
+        </a-form-item>
+        <a-form-item label="点评意见">
+          <a-textarea
+            v-model:value="commentForm.comment"
+            :rows="4"
+            placeholder="请输入点评意见"
+          />
+        </a-form-item>
+        <a-form-item>
+          <a-checkbox v-model:checked="commentForm.isExcellent"> 设为优秀作业 </a-checkbox>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
-import {
-  ArrowLeftOutlined,
-  DownloadOutlined,
-  UserOutlined
-} from '@ant-design/icons-vue';
+import { DownloadOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -217,30 +204,31 @@ const columns = [
 const filteredStudents = computed(() => {
   if (!searchText.value) return students.value;
   const kw = searchText.value.toLowerCase();
-  return students.value.filter(s =>
-    (s.student_name || '').toLowerCase().includes(kw) ||
-    (s.student_no || '').toLowerCase().includes(kw)
+  return students.value.filter(
+    (s) =>
+      (s.student_name || '').toLowerCase().includes(kw) ||
+      (s.student_no || '').toLowerCase().includes(kw)
   );
 });
 
 function getStatusColor(status: string) {
   const map: Record<string, string> = {
-    'submitted': 'green',
-    'late_submitted': 'orange',
-    'in_progress': 'blue',
-    'not_started': 'default',
-    'not_submitted': 'red'
+    submitted: 'green',
+    late_submitted: 'orange',
+    in_progress: 'blue',
+    not_started: 'default',
+    not_submitted: 'red'
   };
   return map[status] || 'default';
 }
 
 function getStatusText(status: string) {
   const map: Record<string, string> = {
-    'submitted': '已提交',
-    'late_submitted': '补交',
-    'in_progress': '进行中',
-    'not_started': '未开始',
-    'not_submitted': '未提交'
+    submitted: '已提交',
+    late_submitted: '补交',
+    in_progress: '进行中',
+    not_started: '未开始',
+    not_submitted: '未提交'
   };
   return map[status] || status;
 }
@@ -343,10 +331,6 @@ function handleExport() {
   message.info('导出功能开发中');
 }
 
-function goBack() {
-  router.push(`/classroom/${classroomId.value}/training/${trainingId.value}`);
-}
-
 function onSearch() {
   currentPage.value = 1;
   fetchGrades();
@@ -358,53 +342,58 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.training-grades-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-.content-container {
-  background: #fff;
-  border-radius: 2px;
-  padding: 24px;
-}
-.back-link {
-  margin-bottom: 16px;
-}
-.training-header {
-  margin-bottom: 24px;
-}
-.training-title {
-  font-size: 24px;
-  margin: 0;
-}
 .stats-card {
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
+
+.stats-row-second {
+  margin-top: var(--hx-space-4);
+}
+
 .stat-item {
   text-align: center;
 }
+
 .stat-value {
   font-size: 28px;
   font-weight: bold;
-  color: #1890ff;
+  color: var(--hx-color-primary);
 }
+
 .stat-label {
-  font-size: 14px;
-  color: #666;
-  margin-top: 4px;
+  font-size: var(--hx-font-size-base);
+  color: var(--hx-color-text-secondary);
+  margin-top: var(--hx-space-1);
 }
+
 .grades-card {
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
+
 .grades-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
+
+.student-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--hx-space-2);
+}
+
+.student-no {
+  font-size: var(--hx-font-size-xs);
+  color: var(--hx-color-text-tertiary);
+}
+
+.muted {
+  color: var(--hx-color-text-tertiary);
+}
+
 .score-highlight {
-  color: #52c41a;
+  color: var(--hx-color-success);
   font-weight: bold;
 }
 </style>
