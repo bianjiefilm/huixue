@@ -1,48 +1,31 @@
 <template>
-  <div class="classroom-list-container">
-    <!-- 顶部横幅 -->
-    <div class="hero-banner">
-      <div class="banner-content">
-        <div class="banner-text">
-          <h1 class="banner-title">成就未来 数字人才</h1>
-          <p class="banner-subtitle">探索数据世界，开启学习之旅</p>
-        </div>
-        <div class="banner-stats">
-          <div class="stat-item">
-            <span class="stat-value">{{ totalClassrooms }}</span>
-            <span class="stat-label">课堂总数</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">{{ learnings.length }}</span>
-            <span class="stat-label">正在进行</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-value">{{ totalStudents }}</span>
-            <span class="stat-label">学生总数</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-wrapper">
-      <div class="header" v-if="isTeacherOrAdmin">
-        <a-button type="primary" @click="showCreateModal">
+  <PageShell max-width="wide">
+    <PageHeaderBar
+      title="我的课堂"
+      :subtitle="`${totalClassrooms} 个课堂 · ${learnings.length} 进行中 · ${totalStudents} 名学生`"
+    >
+      <template #actions>
+        <a-button v-if="isTeacherOrAdmin" type="primary" @click="showCreateModal">
           <template #icon><PlusOutlined /></template>
           新建课堂
         </a-button>
-      </div>
+      </template>
+    </PageHeaderBar>
 
     <a-tabs v-model:activeKey="activeTabKey" class="classroom-tabs">
       <a-tab-pane key="learning" tab="正在上课">
         <a-spin :spinning="loading">
-          <div v-if="learnings.length === 0" class="empty-list">
-            <a-empty description="暂无正在上课的课堂" />
-          </div>
-          <div v-else class="classroom-card-list">
-            <a-card v-for="(classroom, index) in learnings"
-                  :key="classroom.id"
-                  class="classroom-card"
-                  @click="enterClassroom(classroom.id)">
+          <EmptyStateBlock
+            v-if="learnings.length === 0 && !loading"
+            description="暂无正在上课的课堂"
+          />
+          <div v-else-if="learnings.length > 0" class="classroom-card-list">
+            <a-card
+              v-for="(classroom, index) in learnings"
+              :key="classroom.id"
+              class="classroom-card"
+              @click="enterClassroom(classroom.id)"
+            >
               <template #cover>
                 <div class="classroom-cover-gradient" :style="{ background: getGradientByIndex(index) }">
                   <div class="cover-overlay">
@@ -77,7 +60,7 @@
                   </div>
                   <a-progress
                     :percent="getProgressPercent(classroom)"
-                    :stroke-color="{ '0%': '#1890ff', '100%': '#52c41a' }"
+                    :stroke-color="{ '0%': 'var(--hx-color-primary)', '100%': 'var(--hx-color-success)' }"
                     :show-info="false"
                     size="small"
                   />
@@ -108,14 +91,17 @@
 
       <a-tab-pane key="upcoming" tab="未开始">
         <a-spin :spinning="loading">
-          <div v-if="upcomings.length === 0" class="empty-list">
-            <a-empty description="暂无未开始的课堂" />
-          </div>
-          <div v-else class="classroom-card-list">
-            <a-card v-for="(classroom, index) in upcomings"
-                  :key="classroom.id"
-                  class="classroom-card"
-                  @click="enterClassroom(classroom.id)">
+          <EmptyStateBlock
+            v-if="upcomings.length === 0 && !loading"
+            description="暂无未开始的课堂"
+          />
+          <div v-else-if="upcomings.length > 0" class="classroom-card-list">
+            <a-card
+              v-for="(classroom, index) in upcomings"
+              :key="classroom.id"
+              class="classroom-card"
+              @click="enterClassroom(classroom.id)"
+            >
               <template #cover>
                 <div class="classroom-cover-gradient" :style="{ background: getGradientByIndex(index) }">
                   <div class="cover-overlay">
@@ -148,7 +134,7 @@
                   </div>
                   <a-progress
                     :percent="getProgressPercent(classroom)"
-                    :stroke-color="{ '0%': '#1890ff', '100%': '#52c41a' }"
+                    :stroke-color="{ '0%': 'var(--hx-color-primary)', '100%': 'var(--hx-color-success)' }"
                     :show-info="false"
                     size="small"
                   />
@@ -179,14 +165,17 @@
 
       <a-tab-pane key="completed" tab="历史课堂">
         <a-spin :spinning="loading">
-          <div v-if="completeds.length === 0" class="empty-list">
-            <a-empty description="暂无已结课的课堂" />
-          </div>
-          <div v-else class="classroom-card-list">
-            <a-card v-for="(classroom, index) in completeds"
-                  :key="classroom.id"
-                  class="classroom-card completed-card"
-                  @click="enterClassroom(classroom.id)">
+          <EmptyStateBlock
+            v-if="completeds.length === 0 && !loading"
+            description="暂无已结课的课堂"
+          />
+          <div v-else-if="completeds.length > 0" class="classroom-card-list">
+            <a-card
+              v-for="(classroom, index) in completeds"
+              :key="classroom.id"
+              class="classroom-card completed-card"
+              @click="enterClassroom(classroom.id)"
+            >
               <template #cover>
                 <div class="classroom-cover-gradient" :style="{ background: getGradientByIndex(index) }">
                   <div class="cover-overlay">
@@ -215,7 +204,7 @@
                   </div>
                   <a-progress
                     :percent="getProgressPercent(classroom)"
-                    :stroke-color="{ '0%': '#1890ff', '100%': '#52c41a' }"
+                    :stroke-color="{ '0%': 'var(--hx-color-primary)', '100%': 'var(--hx-color-success)' }"
                     :show-info="false"
                     size="small"
                   />
@@ -224,7 +213,7 @@
               <div class="classroom-actions">
                 <a-button type="link" @click.stop="enterClassroom(classroom.id)">查看详情</a-button>
                 <a-tooltip title="历史课堂为只读状态，不可编辑">
-                  <InfoCircleOutlined style="color: #8c8c8c; margin-left: 8px;" />
+                  <InfoCircleOutlined class="readonly-hint" />
                 </a-tooltip>
               </div>
             </a-card>
@@ -233,13 +222,11 @@
       </a-tab-pane>
     </a-tabs>
 
-    <!-- 创建课堂模态框 -->
     <create-classroom-modal
       v-model:open="createModalVisible"
       @success="handleCreateSuccess"
     />
 
-    <!-- 删除课堂确认模态框 -->
     <a-modal
       v-model:open="deleteModalVisible"
       title="确认删除"
@@ -250,8 +237,7 @@
       <p>确定要删除课堂 "{{ classroomToDelete?.name }}" 吗？</p>
       <p>此操作不可恢复，请谨慎操作。</p>
     </a-modal>
-    </div><!-- 结束 content-wrapper -->
-  </div>
+  </PageShell>
 </template>
 
 <script lang="ts" setup>
@@ -264,6 +250,9 @@ import { useClassroomStore } from '@/stores/classroom';
 import { useUserStore } from '@/stores/user';
 import { getToken } from '@/utils/auth';
 import CreateClassroomModal from '@/components/classroom/CreateClassroomModal.vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 import type { Classroom } from '@/types/course';
 import dayjs from 'dayjs';
 import { techerClassRooms } from '@/api/classrooms';
@@ -545,140 +534,42 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ==================== 亮色主题 ==================== */
-.classroom-list-container {
-  background-color: #f5f5f5;
-  color: rgba(0, 0, 0, 0.85);
-  min-height: 100%;
-}
-
-/* 顶部横幅 */
-.hero-banner {
-  background: linear-gradient(135deg, #1890ff 0%, #0050c8 100%);
-  color: white;
-  padding: 40px 24px;
-}
-
-.banner-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.banner-text {
-  flex: 1;
-}
-
-.banner-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  color: white;
-  letter-spacing: 2px;
-}
-
-.banner-subtitle {
-  font-size: 16px;
-  opacity: 0.9;
-  margin: 0;
-}
-
-.banner-stats {
-  display: flex;
-  gap: 40px;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  display: block;
-  font-size: 36px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.stat-label {
-  display: block;
-  font-size: 14px;
-  opacity: 0.85;
-  margin-top: 4px;
-}
-
-/* 内容包装器 */
-.content-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.header {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.header h1 {
-  margin: 0;
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 24px;
-  font-weight: 600;
-}
-
 .classroom-tabs {
-  margin-top: 20px;
-}
-
-.empty-list {
-  padding: 48px 0;
-  background: #fff;
-  border-radius: 8px;
+  margin-top: 0;
 }
 
 .classroom-card-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  gap: var(--hx-space-4);
 }
 
-/* ==================== 课堂卡片亮色主题 ==================== */
 .classroom-card {
   width: 100%;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all var(--hx-transition-normal);
   overflow: hidden;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
+  background: var(--hx-color-bg-container);
+  border: 1px solid var(--hx-color-border-muted);
+  border-radius: var(--hx-radius-sm);
 }
 
 .classroom-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--hx-shadow-md);
   transform: translateY(-2px);
-  border-color: #1890ff;
+  border-color: var(--hx-color-primary);
 }
 
 .classroom-card :deep(.ant-card-body) {
   padding: 0;
 }
 
-.classroom-cover {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-}
-
-/* 高质感渐变色封面 */
 .classroom-cover-gradient {
   width: 100%;
   height: 140px;
   display: flex;
   align-items: flex-end;
-  padding: 16px;
+  padding: var(--hx-space-4);
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -691,7 +582,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
   z-index: 1;
 }
 
@@ -700,132 +591,114 @@ onMounted(() => {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--hx-space-1);
   width: 100%;
 }
 
 .cover-title {
-  font-size: 18px;
+  font-size: var(--hx-font-size-md);
   font-weight: 600;
   color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cover-date {
-  font-size: 12px;
-  color: rgba(255,255,255,0.9);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  font-size: var(--hx-font-size-xs);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .classroom-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 16px 8px;
+  padding: var(--hx-space-4) var(--hx-space-4) var(--hx-space-2);
 }
 
 .classroom-title {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--hx-font-size-md);
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--hx-color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
-  margin-right: 8px;
+  margin-right: var(--hx-space-2);
 }
 
 .classroom-info {
-  padding: 0 16px;
-  margin-bottom: 16px;
+  padding: 0 var(--hx-space-4);
+  margin-bottom: var(--hx-space-4);
 }
 
 .classroom-info p {
   margin-bottom: 6px;
-  font-size: 13px;
-  color: rgba(0, 0, 0, 0.65);
+  font-size: var(--hx-font-size-sm);
+  color: var(--hx-color-text-secondary);
 }
 
 .label {
   font-weight: 500;
-  margin-right: 8px;
-  color: rgba(0, 0, 0, 0.85);
+  margin-right: var(--hx-space-2);
+  color: var(--hx-color-text-primary);
 }
 
-/* 剩余时间 */
 .remaining-time {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 8px;
+  margin-top: var(--hx-space-2);
   padding: 6px 10px;
   background: linear-gradient(135deg, #fff7e6 0%, #ffe7ba 100%);
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: var(--hx-radius-sm);
+  font-size: var(--hx-font-size-sm);
   color: #d46b08;
   font-weight: 500;
 }
 
 .remaining-time :deep(svg) {
-  font-size: 14px;
+  font-size: var(--hx-font-size-base);
 }
 
-/* 进度条区域 */
 .progress-section {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
+  margin-top: var(--hx-space-3);
+  padding-top: var(--hx-space-3);
+  border-top: 1px solid var(--hx-color-border-muted);
 }
 
 .progress-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: var(--hx-space-2);
 }
 
 .progress-header .label {
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--hx-color-text-primary);
 }
 
 .progress-text {
-  font-size: 13px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-/* 响应式 */
-@media (max-width: 768px) {
-  .banner-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 24px;
-  }
-
-  .banner-title {
-    font-size: 24px;
-  }
-
-  .banner-stats {
-    gap: 24px;
-  }
-
-  .stat-value {
-    font-size: 28px;
-  }
+  font-size: var(--hx-font-size-sm);
+  color: var(--hx-color-text-secondary);
 }
 
 .classroom-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-top: 1px solid #f0f0f0;
-  background: #fafafa;
+  padding: var(--hx-space-3) var(--hx-space-4);
+  border-top: 1px solid var(--hx-color-border-muted);
+  background: var(--hx-color-bg-layout);
+}
+
+.readonly-hint {
+  color: var(--hx-color-text-tertiary);
+  margin-left: var(--hx-space-2);
 }
 
 .completed-card {

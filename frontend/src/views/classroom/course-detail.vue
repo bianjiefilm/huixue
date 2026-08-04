@@ -1,28 +1,22 @@
 <template>
-  <div class="course-detail-page">
+  <PageShell max-width="wide" class="course-detail-page">
     <a-spin :spinning="loading" tip="加载中...">
       <div v-if="courseDetail" class="content-container">
-        <!-- 返回按钮 -->
-        <div class="back-link">
-          <router-link :to="`/classroom/${classroomId}`">
-            <a-button type="link">
-              <template #icon><arrow-left-outlined /></template>
-              返回课堂
-            </a-button>
-          </router-link>
-        </div>
-
-        <!-- 课程标题和状态区域 -->
-        <div class="course-header">
-          <div class="status-badge" :class="getCourseStatusClass(courseDetail.status)">
-            {{ getCourseStatusText(courseDetail.status) }}
-          </div>
-          <h1 class="course-title">{{ courseDetail.name }}</h1>
-          <div class="course-coins">
-            <gift-outlined />
-            <span>{{ courseDetail.coins }} 金币</span>
-          </div>
-        </div>
+        <PageHeaderBar
+          :title="courseDetail.name"
+          :subtitle="courseHeaderSubtitle"
+          show-back
+        >
+          <template #actions>
+            <div class="status-badge" :class="getCourseStatusClass(courseDetail.status)">
+              {{ getCourseStatusText(courseDetail.status) }}
+            </div>
+            <div class="course-coins">
+              <gift-outlined />
+              <span>{{ courseDetail.coins }} 金币</span>
+            </div>
+          </template>
+        </PageHeaderBar>
 
         <!-- 教师状态管理区域 -->
         <a-card v-if="isTeacher && courseDetail.statusSuggestions && courseDetail.statusSuggestions.length > 0" class="status-management-card">
@@ -155,7 +149,7 @@
                     <div class="sidebar-content">
                       <a-progress 
                         :percent="courseDetail.studentProgress?.completionRate || 0" 
-                        strokeColor="#1890ff"
+                        strokeColor="var(--hx-color-primary)"
                         :status="courseDetail.studentProgress?.completionRate === 100 ? 'success' : 'active'"
                       />
                     </div>
@@ -205,7 +199,7 @@
               <a-statistic 
                 title="已完成关卡" 
                 :value="`${courseDetail.studentProgress.completedTaskCount}/${courseDetail.studentProgress.totalTaskCount}`" 
-                :valueStyle="{ color: '#1890ff' }"
+                :valueStyle="{ color: 'var(--hx-color-primary)' }"
               >
                 <template #prefix>
                   <check-circle-outlined />
@@ -320,7 +314,7 @@
                 
                 <div class="task-content">
                   <div class="task-info">
-                    <div class="task-meta" style="color: #666; font-size: 13px; margin-bottom: 8px;">
+                    <div class="task-meta" style="color: var(--hx-color-text-secondary); font-size: 13px; margin-bottom: 8px;">
                       <span>通关: {{ task.completed ? 1 : 0 }} | 未通关: {{ task.completed ? 0 : 1 }} | 可获金币: {{ task.coins || 0 }} | 类型: {{ getTaskTypeText(task.type) }}</span>
                     </div>
                     <div class="task-description">
@@ -586,7 +580,7 @@
         </a-tabs>
       </div>
     </a-modal>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -599,6 +593,8 @@ import type { ClassroomCourseDetail } from '../../types/course';
 import { message } from 'ant-design-vue';
 import { useUserStore } from '../../stores/user';
 import { useCourseStore } from '../../stores/course';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import {
   calculateCourseStatus,
   getCourseStatusChangeSuggestions,
@@ -693,6 +689,12 @@ const safeClassroom = computed(() => {
     id: courseDetail.value.classroom.id || classroomId,
     name: courseDetail.value.classroom.name || '未知课堂'
   };
+});
+
+const courseHeaderSubtitle = computed(() => {
+  const c = courseDetail.value;
+  if (!c) return '';
+  return `所属课堂: ${safeClassroom.value.name} · ${formatDate(c.startDate)} 至 ${formatDate(c.endDate)}`;
 });
 
 // 格式化日期函数
@@ -1287,61 +1289,43 @@ onUnmounted(() => {
 
 <style scoped>
 .content-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.back-link {
-  margin-bottom: 16px;
-}
-
-.course-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .status-badge {
-  padding: 4px 12px;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: var(--hx-space-1) var(--hx-space-3);
+  border-radius: var(--hx-radius-sm);
+  font-size: var(--hx-font-size-base);
   font-weight: 500;
-  margin-right: 12px;
 }
 
 .status-unpublished {
-  background-color: #d9d9d9;
-  color: #666;
+  background-color: var(--hx-color-border);
+  color: var(--hx-color-text-secondary);
 }
 
 .status-learning {
-  background-color: #e6f7ff;
-  color: #1890ff;
+  background-color: var(--hx-color-primary-dim);
+  color: var(--hx-color-primary);
 }
 
 .status-makeup {
   background-color: #fff7e6;
-  color: #fa8c16;
+  color: var(--hx-color-warning);
 }
 
 .status-completed {
   background-color: #f6ffed;
-  color: #52c41a;
-}
-
-.course-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-  flex: 1;
+  color: var(--hx-color-success);
 }
 
 .course-coins {
   display: flex;
   align-items: center;
-  font-size: 16px;
-  color: #722ed1;
+  font-size: var(--hx-font-size-md);
+  color: var(--hx-color-accent-purple);
 }
 
 .course-coins .anticon {
@@ -1352,7 +1336,7 @@ onUnmounted(() => {
 .tasks-card,
 .progress-card,
 .skills-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .card-title {
@@ -1368,7 +1352,7 @@ onUnmounted(() => {
 .basic-info {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--hx-space-3);
 }
 
 .info-item {
@@ -1378,17 +1362,17 @@ onUnmounted(() => {
 
 .info-item .anticon {
   margin-right: 8px;
-  color: #1890ff;
+  color: var(--hx-color-primary);
 }
 
 .student-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--hx-space-3);
 }
 
 .student-learning {
-  color: #1890ff;
+  color: var(--hx-color-primary);
 }
 
 .completed-count {
@@ -1477,7 +1461,7 @@ onUnmounted(() => {
 
 .task-skills .label {
   font-weight: 500;
-  color: #666;
+  color: var(--hx-color-text-secondary);
 }
 
 .skills-container {
@@ -1487,7 +1471,7 @@ onUnmounted(() => {
 .skills-header {
   margin-bottom: 12px;
   font-size: 14px;
-  color: #666;
+  color: var(--hx-color-text-secondary);
   text-align: right;
 }
 
@@ -1526,7 +1510,7 @@ onUnmounted(() => {
   .course-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--hx-space-3);
   }
 
   .course-header .ant-card-body {
@@ -1557,7 +1541,7 @@ onUnmounted(() => {
 
   .task-content {
     flex-direction: column;
-    gap: 16px;
+    gap: var(--hx-space-4);
   }
 
   .task-actions {
@@ -1577,7 +1561,7 @@ onUnmounted(() => {
 .homework-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .homework-item {
@@ -1611,7 +1595,7 @@ onUnmounted(() => {
 .homework-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--hx-space-3);
   flex-wrap: wrap;
 }
 
@@ -1645,7 +1629,7 @@ onUnmounted(() => {
 
 .design-file-view {
   display: flex;
-  gap: 16px;
+  gap: var(--hx-space-4);
   align-items: flex-start;
 }
 
@@ -1694,7 +1678,7 @@ onUnmounted(() => {
 .recommendations-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--hx-space-3);
 }
 
 .recommendation-item {
@@ -1711,7 +1695,7 @@ onUnmounted(() => {
 
 .recommendation-item:hover {
   background-color: #f0f8ff;
-  border-color: #1890ff;
+  border-color: var(--hx-color-primary);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(24, 144, 255, 0.1);
 }
@@ -1760,7 +1744,7 @@ onUnmounted(() => {
 }
 
 .recommendation-item:hover .recommendation-arrow {
-  color: #1890ff;
+  color: var(--hx-color-primary);
 }
 
 /* 学习统计样式 */
@@ -1771,7 +1755,7 @@ onUnmounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  gap: var(--hx-space-5);
 }
 
 .stat-section {
@@ -1795,7 +1779,7 @@ onUnmounted(() => {
 .stat-items {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .stat-item {
@@ -1805,7 +1789,7 @@ onUnmounted(() => {
 .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: #1890ff;
+  color: var(--hx-color-primary);
   line-height: 1.2;
 }
 
@@ -1819,13 +1803,13 @@ onUnmounted(() => {
 .recent-activities {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--hx-space-3);
 }
 
 .activity-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--hx-space-3);
   padding: 12px;
   background: white;
   border-radius: 6px;
@@ -1855,7 +1839,7 @@ onUnmounted(() => {
 
 .activity-skill_unlocked {
   background: #f0f9ff;
-  color: #1890ff;
+  color: var(--hx-color-primary);
 }
 
 .activity-session_start,
@@ -1882,7 +1866,7 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--hx-space-4);
   }
 
   .stat-items {

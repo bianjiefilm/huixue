@@ -83,30 +83,27 @@
     </div>
 
     <!-- Standard Classroom Detail View -->
-    <a-spin v-else :spinning="classroomStore.loading.detail" tip="加载中...">
+    <PageShell v-else max-width="wide">
+    <a-spin :spinning="classroomStore.loading.detail" tip="加载中...">
       <div v-if="currentClassroom">
-		<!-- 蓝色背景头部区域 -->
-		<div class="blue-header">
-		  <div class="header-content">
-		    <div class="logo-title">
-		      <h1>{{currentClassroom?.name}}</h1>
-		      <span class="status-tag" :class="classroomStatusClass">{{ classroomStatusText }}</span>
-		      <span class="tool-icon" v-if="!isHistoricalClassroom && showTeacherView" @click="handleEdit" style="cursor: pointer;"><EditOutlined /></span>
-		    </div>
-		    <div class="time-info">
-		      <span v-if="currentClassroom?.teacher_name">授课教师: {{currentClassroom.teacher_name}} | </span>起止时间: {{formatDate(currentClassroom?.start_date)}} 至 {{formatDate(currentClassroom?.end_date)}}
-		    </div>
-		    <div class="header-status">
-		      <div class="progress-container">
-		        <span class="status-text">已学习</span>
-		        <div class="progress-bar">
-		          <div class="progress-inner" style="width: 0%;"></div>
-		        </div>
-		        <span class="progress-text">0 / {{coursesCount}} 实验</span>
-		      </div>
-		    </div>
-		  </div>
-		</div>
+		<PageHeaderBar
+		  :title="currentClassroom?.name || '课堂详情'"
+		  :subtitle="headerSubtitle"
+		  show-back
+		>
+		  <template #actions>
+		    <span class="status-tag" :class="classroomStatusClass">{{ classroomStatusText }}</span>
+		    <a-button
+		      v-if="!isHistoricalClassroom && showTeacherView"
+		      type="text"
+		      @click="handleEdit"
+		    >
+		      <template #icon><EditOutlined /></template>
+		      编辑
+		    </a-button>
+		    <a-button v-if="showTeacherView" type="primary" @click="openStuList">学生列表</a-button>
+		  </template>
+		</PageHeaderBar>
 		<!-- 内容 -->
 		<div class="content-container">
 			<!-- 统计卡片区域 -->
@@ -135,9 +132,6 @@
 			    <div class="stats-item">
 			      <div class="stats-title">学生</div>
 			      <div class="stats-value">{{ currentClassroom.student_count || 0 }}</div>
-			    </div>
-			    <div class="student-button" v-if="showTeacherView">
-			      <a-button type="primary" @click="openStuList">学生列表</a-button>
 			    </div>
 			  </div>
 			</div>
@@ -227,6 +221,7 @@
        <!-- Keep the main loading spinner covering potentially empty state before fetch completes -->
        <div v-else style="min-height: 300px;"></div>
     </a-spin>
+    </PageShell>
 
     <!-- BI环境iframe模态框 -->
     <a-modal
@@ -348,6 +343,8 @@ import CloudDisk from './CloudDisk.vue';
 import ClassroomExamList from './ClassroomExamList.vue';
 import BiDesigner from '@/components/BiDesigner.vue';
 import EnvironmentConflictDialog from '@/components/common/EnvironmentConflictDialog.vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 import { techerClRoomsDetail, getClassroomCourses, getRoomProjectList, getClassRoomChapter } from '@/api/classrooms';
 import { checkActiveEnvironment, stopEnvironment } from '@/api/practice';
 import type { ActiveEnvironment } from '@/api/practice';
@@ -529,6 +526,13 @@ const classroomStatusClass = computed(() => {
     case 'ONGOING':
     default: return 'status-ongoing';
   }
+});
+
+const headerSubtitle = computed(() => {
+  const c = currentClassroom.value;
+  if (!c) return '';
+  const teacher = c.teacher_name ? `授课教师: ${c.teacher_name} · ` : '';
+  return `${teacher}起止时间: ${formatDate(c.start_date)} 至 ${formatDate(c.end_date)}`;
 });
 
 const coursesCount = computed(() => {
@@ -1367,7 +1371,7 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 
 .status-tag.graded {
   background: #e6f7ff;
-  color: #1890ff;
+  color: var(--hx-color-primary);
   border: 1px solid #91d5ff;
 }
 
@@ -1545,103 +1549,44 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 <style scoped>
 .classroom-detail-page {
   width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-.blue-header {
-  background: linear-gradient(135deg, #1890ff, #0050c8);
-  color: white;
-  padding: 20px 0;
-}
-
-.header-content {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 0;
-}
-.logo-title {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.logo-title h1 {
-  font-size: 24px;
-  margin: 0;
-  color: white;
+  font-family: var(--hx-font-family);
 }
 
 .status-tag {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  margin-left: 15px;
+  padding: 2px var(--hx-space-2);
+  border-radius: var(--hx-radius-sm);
+  font-size: var(--hx-font-size-xs);
+  color: #fff;
+  line-height: 1.5;
 }
 
 .status-tag.status-ongoing {
-  background-color: #ff4d4f;
+  background-color: var(--hx-color-error);
 }
 
 .status-tag.status-ended {
-  background-color: #8c8c8c;
+  background-color: var(--hx-color-text-tertiary);
 }
 
 .status-tag.status-upcoming {
-  background-color: #faad14;
+  background-color: var(--hx-color-warning);
 }
 
-.tool-icon {
-  margin-left: 10px;
-  cursor: pointer;
+.content-container {
+  width: 100%;
+  margin: 0;
 }
 
-.header-status {
-  margin-top: 10px;
-}
-.progress-container {
-  display: flex;
-  align-items: center;
-}
-
-.status-text {
-  margin-right: 10px;
-}
-
-.progress-bar {
-  flex-grow: 1;
-  height: 10px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 5px;
-  margin: 0 10px;
-  position: relative;
-}
-
-.progress-inner {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  background-color: #52c41a;
-  border-radius: 5px;
-}
-
-.progress-text {
-  font-size: 14px;
-}
-.content-container{
-	width: 90%;
-	max-width: 1200px;
-	margin: -20px auto 20px;
-}
 /* Ensure Spin takes up space while loading */
 .ant-spin-nested-loading {
-    min-height: 200px;
+  min-height: 200px;
 }
+
 .stats-card {
-  background-color: var(--copilot-bg-secondary, #ffffff);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--copilot-border-default, #e8e8e8);
+  background-color: var(--hx-color-bg-container);
+  border-radius: var(--hx-radius-sm);
+  box-shadow: var(--hx-shadow-md);
+  border: 1px solid var(--hx-color-border-muted);
   width: 100%;
 }
 
@@ -1649,89 +1594,91 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: var(--hx-space-4) var(--hx-space-5);
+  flex-wrap: wrap;
+  gap: var(--hx-space-2);
 }
 
 .stats-item {
   text-align: center;
-  padding: 10px 15px;
+  padding: var(--hx-space-2) var(--hx-space-3);
 }
 
 .stats-title {
-  font-size: 14px;
-  color: var(--copilot-text-secondary, #a0a0a0);
-  margin-bottom: 8px;
+  font-size: var(--hx-font-size-base);
+  color: var(--hx-color-text-secondary);
+  margin-bottom: var(--hx-space-2);
 }
 
 .stats-value {
-  font-size: 18px;
+  font-size: var(--hx-font-size-md);
   font-weight: bold;
-  color: var(--copilot-brand-primary, #00c6ff);
+  color: var(--hx-color-primary);
 }
 
 .stats-divider {
   width: 1px;
   height: 30px;
-  background-color: var(--copilot-border-default, #e8e8e8);
+  background-color: var(--hx-color-border-muted);
 }
-.student-button {
-  margin-left: 20px;
-}
+
 .main-content {
   display: flex;
   width: 100%;
-  max-width: 1200px;
-  margin: 10px auto;
-  background-color: var(--copilot-bg-secondary, #ffffff);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--copilot-border-default, #e8e8e8);
+  margin-top: var(--hx-space-4);
+  background-color: var(--hx-color-bg-container);
+  border-radius: var(--hx-radius-sm);
+  box-shadow: var(--hx-shadow-md);
+  border: 1px solid var(--hx-color-border-muted);
   min-height: 600px;
 }
+
 .sidebar {
   width: 200px;
-  padding: 20px 0;
-  border-right: 1px solid var(--copilot-border-default, #e8e8e8);
+  padding: var(--hx-space-5) 0;
+  border-right: 1px solid var(--hx-color-border-muted);
+  flex-shrink: 0;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: var(--hx-space-3) var(--hx-space-5);
   cursor: pointer;
 }
 
 .menu-item.active {
-  background-color: var(--copilot-brand-primary-alpha-20, rgba(0, 198, 255, 0.15));
-  border-left: 3px solid var(--copilot-brand-primary, #00c6ff);
+  background-color: var(--hx-color-primary-dim);
+  border-left: 3px solid var(--hx-color-primary);
 }
 
 .menu-icon {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: var(--hx-space-2);
 }
 
-.blue-icon { background-color: #1890ff; }
-.red-icon { background-color: #ff4d4f; }
-.orange-icon { background-color: #fa8c16; }
-.green-icon { background-color: #52c41a; }
-.purple-icon { background-color: #722ed1; }
-.yellow-icon { background-color: #faad14; }
+.blue-icon { background-color: var(--hx-color-primary); }
+.red-icon { background-color: var(--hx-color-error); }
+.orange-icon { background-color: var(--hx-color-warning); }
+.green-icon { background-color: var(--hx-color-success); }
+.purple-icon { background-color: var(--hx-color-accent-purple); }
+.yellow-icon { background-color: var(--hx-color-warning); }
 
 .menu-count {
   margin-left: auto;
-  background-color: var(--copilot-bg-tertiary, #fafafa);
-  color: var(--copilot-text-secondary, #a0a0a0);
+  background-color: var(--hx-color-bg-layout);
+  color: var(--hx-color-text-secondary);
   border-radius: 10px;
-  font-size: 12px;
+  font-size: var(--hx-font-size-xs);
   padding: 0 6px;
 }
 
 .content-area {
   flex-grow: 1;
-  padding: 20px;
+  padding: var(--hx-space-5);
+  min-width: 0;
 }
 
 /* 课程列表相关样式 */
@@ -1741,10 +1688,10 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 
 .filter-tabs {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--copilot-border-default, #e8e8e8);
-  padding-bottom: 10px;
+  gap: var(--hx-space-5);
+  margin-bottom: var(--hx-space-5);
+  border-bottom: 1px solid var(--hx-color-border-muted);
+  padding-bottom: var(--hx-space-2);
 }
 
 .filter-tab {
@@ -1764,7 +1711,7 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 .course-items {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--hx-space-3);
 }
 
 /* 实践类课程样式 - 简洁显示 */
@@ -1851,8 +1798,8 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 
 .empty-state {
   text-align: center;
-  padding: 40px;
-  color: var(--copilot-text-secondary, #a0a0a0);
+  padding: var(--hx-space-6);
+  color: var(--hx-color-text-secondary);
 }
 
 /* BI 仪表盘模态框优化样式 - 已移动到全局样式块中 */
@@ -1897,7 +1844,7 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #1890ff;
+  border-top: 4px solid var(--hx-color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
