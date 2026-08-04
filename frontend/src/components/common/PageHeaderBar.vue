@@ -24,11 +24,17 @@
 import { useRouter } from 'vue-router'
 
 const props = withDefaults(
-  defineProps<{ title: string; subtitle?: string; showBack?: boolean }>(),
+  defineProps<{ title: string; subtitle?: string; showBack?: boolean; backTo?: string }>(),
   { showBack: false }
 )
 const router = useRouter()
-const onBack = () => router.back()
+const onBack = () => {
+  if (props.backTo) {
+    router.push(props.backTo)
+  } else {
+    router.back()
+  }
+}
 </script>
 
 <style scoped>

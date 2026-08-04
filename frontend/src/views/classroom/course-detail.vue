@@ -6,6 +6,7 @@
           :title="courseDetail.name"
           :subtitle="courseHeaderSubtitle"
           show-back
+          :back-to="`/classroom/${classroomId}`"
         >
           <template #actions>
             <div class="status-badge" :class="getCourseStatusClass(courseDetail.status)">
@@ -1503,20 +1504,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .course-detail-container {
-    padding: 16px;
-  }
-
-  .course-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--hx-space-3);
-  }
-
-  .course-header .ant-card-body {
-    padding: 16px;
-  }
-
   .info-card .ant-card-body {
     padding: 16px;
   }
