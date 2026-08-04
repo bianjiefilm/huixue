@@ -15,7 +15,8 @@ import router from './router'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/reset.css'
 
-// 导入亮色主题覆盖（覆盖所有 --copilot-* 深色变量）
+// Design tokens 真源，再加载亮色布局覆盖
+import './assets/styles/tokens.css'
 import './assets/styles/theme-light.css'
 
 // 忽略 React 库在开发模式下的 defaultProps 警告

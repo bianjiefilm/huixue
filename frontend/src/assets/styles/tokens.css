@@ -1,0 +1,141 @@
+/* frontend/src/assets/styles/tokens.css — 慧学 Design Token 真源 */
+:root {
+  /* Spacing (4px base) */
+  --hx-space-0: 0;
+  --hx-space-1: 4px;
+  --hx-space-2: 8px;
+  --hx-space-3: 12px;
+  --hx-space-4: 16px;
+  --hx-space-5: 24px;
+  --hx-space-6: 32px;
+  --hx-space-7: 48px;
+
+  /* Color */
+  --hx-color-primary: #1677ff;
+  --hx-color-primary-hover: #4096ff;
+  --hx-color-primary-active: #0958d9;
+  --hx-color-success: #52c41a;
+  --hx-color-warning: #faad14;
+  --hx-color-error: #ff4d4f;
+  --hx-color-info: #1677ff;
+
+  --hx-color-text-primary: rgba(0, 0, 0, 0.88);
+  --hx-color-text-secondary: rgba(0, 0, 0, 0.65);
+  --hx-color-text-tertiary: rgba(0, 0, 0, 0.45);
+  --hx-color-text-disabled: rgba(0, 0, 0, 0.25);
+
+  --hx-color-border: #d9d9d9;
+  --hx-color-border-muted: #f0f0f0;
+  --hx-color-bg-layout: #f5f5f5;
+  --hx-color-bg-container: #ffffff;
+  --hx-color-bg-elevated: #ffffff;
+  --hx-color-bg-hover: rgba(0, 0, 0, 0.04);
+
+  --hx-color-accent-purple: #722ed1;
+  --hx-color-accent-purple-dim: rgba(114, 46, 209, 0.1);
+  --hx-color-primary-dim: rgba(22, 119, 255, 0.12);
+
+  /* Radius */
+  --hx-radius-sm: 6px;
+  --hx-radius-md: 10px;
+  --hx-radius-lg: 14px;
+  --hx-radius-full: 9999px;
+
+  /* Shadow */
+  --hx-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --hx-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --hx-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* Typography */
+  --hx-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --hx-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --hx-font-size-xs: 12px;
+  --hx-font-size-sm: 13px;
+  --hx-font-size-base: 14px;
+  --hx-font-size-md: 16px;
+  --hx-font-size-lg: 20px;
+  --hx-font-size-xl: 24px;
+  --hx-font-size-2xl: 32px;
+
+  /* Motion */
+  --hx-transition-fast: 150ms ease;
+  --hx-transition-normal: 250ms ease;
+
+  /* Layout chrome */
+  --hx-header-height: 64px;
+  --hx-footer-height: 64px;
+
+  /* z-index scale (D7) */
+  --hx-z-header: 100;
+  --hx-z-dropdown: 1050;
+  --hx-z-drawer: 1000;
+  --hx-z-modal: 1000;
+  --hx-z-ai-float: 1100;
+
+  /* ---------- copilot aliases (P1 compat) ---------- */
+  --copilot-bg-primary: var(--hx-color-bg-layout);
+  --copilot-bg-secondary: var(--hx-color-bg-container);
+  --copilot-bg-tertiary: #fafafa;
+  --copilot-bg-elevated: var(--hx-color-bg-elevated);
+  --copilot-bg-hover: var(--hx-color-bg-hover);
+  --copilot-text-primary: var(--hx-color-text-primary);
+  --copilot-text-secondary: var(--hx-color-text-secondary);
+  --copilot-text-tertiary: var(--hx-color-text-tertiary);
+  --copilot-text-muted: var(--hx-color-text-disabled);
+  --copilot-border-default: var(--hx-color-border);
+  --copilot-border-muted: var(--hx-color-border-muted);
+  --copilot-border-accent: var(--hx-color-primary);
+  --copilot-border-highlight: rgba(22, 119, 255, 0.5);
+  --copilot-brand-primary: var(--hx-color-primary);
+  --copilot-brand-hover: var(--hx-color-primary-hover);
+  --copilot-brand-active: var(--hx-color-primary-active);
+  --copilot-brand-primary-alpha-20: var(--hx-color-primary-dim);
+  --copilot-accent-cyan: var(--hx-color-primary);
+  --copilot-accent-cyan-dim: var(--hx-color-primary-dim);
+  --copilot-accent-green: var(--hx-color-success);
+  --copilot-accent-green-dim: rgba(82, 196, 26, 0.1);
+  --copilot-accent-yellow: var(--hx-color-warning);
+  --copilot-accent-yellow-dim: rgba(250, 173, 20, 0.1);
+  --copilot-accent-pink: #eb2f96;
+  --copilot-accent-pink-dim: rgba(235, 47, 150, 0.1);
+  --copilot-accent-purple: var(--hx-color-accent-purple);
+  --copilot-accent-purple-dim: var(--hx-color-accent-purple-dim);
+  --copilot-semantic-success: var(--hx-color-success);
+  --copilot-semantic-warning: var(--hx-color-warning);
+  --copilot-semantic-error: var(--hx-color-error);
+  --copilot-semantic-info: var(--hx-color-info);
+  --copilot-sidebar-bg: var(--hx-color-bg-container);
+  --copilot-sidebar-border: var(--hx-color-border-muted);
+  --copilot-sidebar-width-collapsed: 64px;
+  --copilot-sidebar-width-expanded: 240px;
+  --copilot-sidebar-padding: var(--hx-space-3);
+  --copilot-font-size-xs: var(--hx-font-size-xs);
+  --copilot-font-size-sm: var(--hx-font-size-sm);
+  --copilot-font-size-base: var(--hx-font-size-base);
+  --copilot-font-size-lg: var(--hx-font-size-lg);
+  --copilot-font-size-xl: var(--hx-font-size-xl);
+  --copilot-font-size-2xl: var(--hx-font-size-2xl);
+  --copilot-font-family: var(--hx-font-family);
+  --copilot-font-mono: var(--hx-font-mono);
+  --copilot-spacing-xs: var(--hx-space-1);
+  --copilot-spacing-sm: var(--hx-space-2);
+  --copilot-spacing-md: var(--hx-space-3);
+  --copilot-spacing-lg: var(--hx-space-4);
+  --copilot-spacing-xl: var(--hx-space-5);
+  --copilot-radius-sm: var(--hx-radius-sm);
+  --copilot-radius-md: var(--hx-radius-md);
+  --copilot-radius-lg: var(--hx-radius-lg);
+  --copilot-radius-full: var(--hx-radius-full);
+  --copilot-shadow-sm: var(--hx-shadow-sm);
+  --copilot-shadow-md: var(--hx-shadow-md);
+  --copilot-shadow-lg: var(--hx-shadow-lg);
+  --copilot-shadow-glow-cyan: 0 0 20px rgba(22, 119, 255, 0.15);
+  --copilot-gradient-primary: linear-gradient(135deg, #1677ff 0%, #722ed1 100%);
+  --copilot-gradient-card: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  --copilot-gradient-progress: linear-gradient(90deg, #1677ff 0%, #52c41a 100%);
+  --copilot-transition-fast: var(--hx-transition-fast);
+  --copilot-transition-normal: var(--hx-transition-normal);
+  --copilot-breakpoint-mobile: 768px;
+  --copilot-breakpoint-tablet: 1024px;
+  --copilot-breakpoint-desktop: 1280px;
+}

@@ -6,17 +6,26 @@ type DeepPartial<T> = T extends object ? {
   [P in keyof T]?: DeepPartial<T[P]>;
 } : T;
 
-// 亮色主题（唯一主题）
+// 亮色主题（唯一主题）— 数值对齐 tokens.css / Ant Design 5 默认语义
 export const lightTheme: DeepPartial<ThemeConfig> = {
   token: {
-    colorPrimary: '#1890ff',
+    colorPrimary: '#1677ff',
     colorSuccess: '#52c41a',
     colorWarning: '#faad14',
-    colorError: '#f5222d',
-    colorInfo: '#1890ff',
-    borderRadius: 4,
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  }
+    colorError: '#ff4d4f',
+    colorInfo: '#1677ff',
+    colorText: 'rgba(0, 0, 0, 0.88)',
+    colorTextSecondary: 'rgba(0, 0, 0, 0.65)',
+    colorTextTertiary: 'rgba(0, 0, 0, 0.45)',
+    colorBorder: '#d9d9d9',
+    colorBorderSecondary: '#f0f0f0',
+    colorBgLayout: '#f5f5f5',
+    colorBgContainer: '#ffffff',
+    borderRadius: 6,
+    fontSize: 14,
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  },
 };
 
 // 全局组件默认配置
