@@ -1,76 +1,61 @@
 <template>
-  <div class="teacher-management-page">
-    <div class="page-header">
-      <div class="header-left">
-        <h2>教师管理</h2>
-        <p class="teacher-count">共 {{ totalCount }} 位教师</p>
-      </div>
-      <div class="header-right">
-        <a-space>
-          <a-button type="primary" @click="showAddModal = true">
-            <UserAddOutlined />
-            添加教师
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar title="教师管理" :subtitle="`共 ${totalCount} 位教师`">
+      <template #actions>
+        <a-button type="primary" @click="showAddModal = true">
+          <UserAddOutlined />
+          添加教师
+        </a-button>
+        <a-button @click="handleImport">
+          <ImportOutlined />
+          人员导入
+        </a-button>
+        <a-dropdown>
+          <a-button>
+            更多操作
+            <DownOutlined />
           </a-button>
-          <a-button @click="handleImport">
-            <ImportOutlined />
-            人员导入
-          </a-button>
-          <a-dropdown>
-            <a-button>
-              更多操作
-              <DownOutlined />
-            </a-button>
-            <template #overlay>
-              <a-menu @click="handleMenuClick">
-                <a-menu-item key="template">下载导入模板</a-menu-item>
-                <a-menu-item key="export">导出数据</a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-        </a-space>
-      </div>
-    </div>
+          <template #overlay>
+            <a-menu @click="handleMenuClick">
+              <a-menu-item key="template">下载导入模板</a-menu-item>
+              <a-menu-item key="export">导出数据</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="searchKeyword"
+            placeholder="请输入姓名或工号"
+            style="width: 220px"
+            @search="handleSearch"
+            allow-clear
+          />
+          <a-select
+            v-model:value="filterCollege"
+            placeholder="选择学院"
+            allow-clear
+            style="width: 160px"
+          >
+            <a-select-option value="">全部学院</a-select-option>
+          </a-select>
+          <a-select
+            v-model:value="filterStatus"
+            placeholder="选择状态"
+            style="width: 120px"
+          >
+            <a-select-option value="">全部状态</a-select-option>
+            <a-select-option value="true">启用</a-select-option>
+            <a-select-option value="false">停用</a-select-option>
+          </a-select>
+          <a-button type="primary" @click="handleSearch">搜索</a-button>
+        </Stack>
+      </template>
+    </PageHeaderBar>
 
-    <a-card>
-      <!-- 搜索筛选区域 -->
-      <div class="search-section">
-        <a-row :gutter="16">
-          <a-col :span="8">
-            <a-input-search
-              v-model:value="searchKeyword"
-              placeholder="请输入姓名或工号"
-              @search="handleSearch"
-              allow-clear
-            />
-          </a-col>
-          <a-col :span="6">
-            <a-select
-              v-model:value="filterCollege"
-              placeholder="选择学院"
-              allow-clear
-              style="width: 100%"
-            >
-              <a-select-option value="">全部学院</a-select-option>
-              <!-- 这里应该动态加载学院数据 -->
-            </a-select>
-          </a-col>
-          <a-col :span="6">
-            <a-select
-              v-model:value="filterStatus"
-              placeholder="选择状态"
-              style="width: 100%"
-            >
-              <a-select-option value="">全部状态</a-select-option>
-              <a-select-option value="true">启用</a-select-option>
-              <a-select-option value="false">停用</a-select-option>
-            </a-select>
-          </a-col>
-          <a-col :span="4">
-            <a-button type="primary" @click="handleSearch">搜索</a-button>
-          </a-col>
-        </a-row>
-      </div>
-
+    <a-card :bordered="false">
       <!-- 批量操作区域 -->
       <div v-if="selectedRowKeys.length > 0" class="batch-actions">
         <a-space>
@@ -91,6 +76,9 @@
         @change="handleTableChange"
         row-key="id"
       >
+        <template #emptyText>
+          <EmptyStateBlock description="暂无教师数据" />
+        </template>
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'is_active'">
             <a-tag :color="record.is_active ? 'green' : 'red'">
@@ -210,6 +198,9 @@ import {
   downloadTeacherTemplate,
   type Teacher 
 } from '@/api/system';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 // 响应式数据
 const loading = ref(false);
@@ -510,39 +501,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.teacher-management-page {
-  padding: 24px;
-  background: #f0f2f5;
-  min-height: 100vh;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.header-left h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.teacher-count {
-  margin: 4px 0 0 0;
-  color: rgba(0, 0, 0, 0.45);
-  font-size: 14px;
-}
-
-.search-section {
-  margin-bottom: 16px;
+.admin-page {
+  width: 100%;
 }
 
 .batch-actions {
-  margin-bottom: 16px;
-  padding: 12px 16px;
-  background: #f6f8fa;
-  border-radius: 6px;
+  margin-bottom: var(--hx-space-4);
+  padding: var(--hx-space-3) var(--hx-space-4);
+  background: var(--hx-color-bg-hover);
+  border-radius: var(--hx-radius-sm);
 }
 </style> 

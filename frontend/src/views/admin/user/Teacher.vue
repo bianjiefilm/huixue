@@ -1,7 +1,23 @@
 <template>
-  <div class="teacher-container">
-    <a-page-header title="教师管理" subtitle="管理学校教师用户信息" />
-    
+  <!-- Nested under admin layout (padding owned by layout); no PageShell. Routed teacher list is system/teacher-management.vue -->
+  <div class="admin-page">
+    <PageHeaderBar title="教师管理" subtitle="管理学校教师用户信息">
+      <template #actions>
+        <a-button type="primary" @click="handleAdd">添加</a-button>
+        <a-button @click="showImportModal">人员导入</a-button>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="searchValue"
+            placeholder="搜索姓名/工号"
+            style="width: 250px"
+            @search="onSearch"
+          />
+        </Stack>
+      </template>
+    </PageHeaderBar>
+
     <div class="teacher-content">
       <a-row :gutter="16">
         <!-- 左侧组织树 -->
@@ -19,31 +35,6 @@
         <!-- 右侧列表和操作 -->
         <a-col :span="18">
           <a-card :bordered="false">
-            <!-- 操作按钮区域 -->
-            <div class="operation-area">
-              <div class="left-operations">
-                <a-button 
-                  type="primary" 
-                  @click="handleAdd"
-                >
-                  添加
-                </a-button>
-                <a-button 
-                  @click="showImportModal"
-                >
-                  人员导入
-                </a-button>
-              </div>
-              <div class="right-operations">
-                <a-input-search
-                  v-model:value="searchValue"
-                  placeholder="搜索姓名/工号"
-                  style="width: 250px"
-                  @search="onSearch"
-                />
-              </div>
-            </div>
-            
             <!-- 表格 -->
             <a-table
               :columns="columns"
@@ -55,6 +46,9 @@
               row-key="id"
               :scroll="{ x: 1100 }"
             >
+              <template #emptyText>
+                <EmptyStateBlock description="暂无教师数据" />
+              </template>
               <!-- 操作列 -->
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
@@ -204,6 +198,9 @@ import { useRouter } from 'vue-router';
 import type { TablePaginationConfig } from 'ant-design-vue';
 import { useDepartmentStore } from '@/stores/department';
 import { useTeacherStore } from '@/stores/teacher';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 const router = useRouter();
 const departmentStore = useDepartmentStore();
@@ -609,45 +606,28 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.teacher-container {
-  background-color: #f0f2f5;
-  padding: 0;
+.admin-page {
+  width: 100%;
 }
 
 .teacher-content {
-  margin-top: 24px;
-}
-
-.operation-area {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.left-operations {
-  display: flex;
-  gap: 8px;
-}
-
-.right-operations {
-  display: flex;
-  gap: 8px;
+  margin-top: 0;
 }
 
 .batch-operations {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
   display: flex;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .danger-text {
-  color: #ff4d4f;
+  color: var(--hx-color-error);
 }
 
 .import-modal-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 
 .transfer-modal-content {

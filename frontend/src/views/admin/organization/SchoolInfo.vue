@@ -1,6 +1,7 @@
 <template>
-  <div class="school-info-container">
-    <a-page-header title="学校信息" subtitle="查看和编辑学校基础信息" />
+  <!-- Nested under admin layout (padding owned by layout); no PageShell. Routed school info is system/school-info.vue -->
+  <div class="admin-page">
+    <PageHeaderBar title="学校信息" subtitle="查看和编辑学校基础信息" />
 
     <a-card title="基础信息" :bordered="false" class="info-card">
       <a-descriptions :column="1" bordered>
@@ -107,6 +108,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import { getSchoolInfo, updateSchoolInfo } from '@/api/system';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const SCHOOL_ID = 1; // 默认学校ID
 
@@ -333,13 +335,12 @@ const saveCrop = () => {
 </script>
 
 <style scoped>
-.school-info-container {
-  background-color: #f0f2f5;
-  padding: 0;
+.admin-page {
+  width: 100%;
 }
 
 .info-card {
-  margin-top: 24px;
+  margin-top: 0;
 }
 
 .edit-input {

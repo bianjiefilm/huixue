@@ -1,29 +1,24 @@
 <template>
-  <div class="role-container">
-    <a-page-header title="角色授权" subtitle="授予教师用户管理员角色" />
-    
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar title="角色授权" subtitle="授予教师用户管理员角色">
+      <template #actions>
+        <a-button type="primary" @click="showAddModal">添加</a-button>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="searchValue"
+            placeholder="搜索姓名/工号"
+            style="width: 250px"
+            @search="onSearch"
+          />
+        </Stack>
+      </template>
+    </PageHeaderBar>
+
     <div class="role-content">
       <a-card :bordered="false">
-        <!-- 操作按钮区域 -->
-        <div class="operation-area">
-          <div class="left-operations">
-            <a-button 
-              type="primary" 
-              @click="showAddModal"
-            >
-              添加
-            </a-button>
-          </div>
-          <div class="right-operations">
-            <a-input-search
-              v-model:value="searchValue"
-              placeholder="搜索姓名/工号"
-              style="width: 250px"
-              @search="onSearch"
-            />
-          </div>
-        </div>
-        
         <!-- 表格 -->
         <a-table
           :columns="columns"
@@ -34,6 +29,9 @@
           :loading="loading"
           row-key="id"
         >
+          <template #emptyText>
+            <EmptyStateBlock description="暂无管理员授权" />
+          </template>
           <!-- 操作列 -->
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'action'">
@@ -152,6 +150,9 @@ import type { TablePaginationConfig } from 'ant-design-vue';
 import { useDepartmentStore } from '@/stores/department';
 import { useTeacherStore } from '@/stores/teacher';
 import { useRoleStore } from '@/stores/role';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 const departmentStore = useDepartmentStore();
 const teacherStore = useTeacherStore();
@@ -484,39 +485,22 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.role-container {
-  background-color: #f0f2f5;
-  padding: 0;
+.admin-page {
+  width: 100%;
 }
 
 .role-content {
-  margin-top: 24px;
-}
-
-.operation-area {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.left-operations {
-  display: flex;
-  gap: 8px;
-}
-
-.right-operations {
-  display: flex;
-  gap: 8px;
+  margin-top: 0;
 }
 
 .batch-operations {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
   display: flex;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .danger-text {
-  color: #ff4d4f;
+  color: var(--hx-color-error);
 }
 
 .add-modal-content {
@@ -524,14 +508,14 @@ onMounted(async () => {
 }
 
 .org-tree-container {
-  border-right: 1px solid #f0f0f0;
-  padding-right: 16px;
+  border-right: 1px solid var(--hx-color-border-muted);
+  padding-right: var(--hx-space-4);
   height: 400px;
   overflow: auto;
 }
 
 .teacher-list-container {
-  padding-left: 8px;
+  padding-left: var(--hx-space-2);
   height: 400px;
   display: flex;
   flex-direction: column;

@@ -1,19 +1,20 @@
 <template>
-  <div class="resource-import-container">
-    <a-page-header
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar
       title="资源批量导入管理"
-      sub-title="系统化导入实训、实践、题库等教学资源"
-      @back="() => $router.go(-1)"
+      subtitle="系统化导入实训、实践、题库等教学资源"
+      show-back
     >
-      <template #extra>
+      <template #actions>
         <a-button @click="showHelp = true">
           <QuestionCircleOutlined />
           使用帮助
         </a-button>
       </template>
-    </a-page-header>
+    </PageHeaderBar>
 
-    <a-card class="import-card">
+    <a-card class="import-card" :bordered="false">
       <a-tabs v-model:activeKey="activeTab">
         <!-- 实训资源导入 -->
         <a-tab-pane key="training" tab="实训资源导入">
@@ -28,17 +29,19 @@
             <div class="step-content">
               <!-- Step 1: 资源扫描 -->
               <div v-if="trainingStep === 0">
-                <a-space direction="vertical" style="width: 100%">
+                <Stack :gap="4">
                   <a-alert
                     message="扫描路径"
                     :description="`将扫描 backend/ziyuan/实训资源/ 目录下的所有实训项目`"
                     type="info"
                     show-icon
                   />
-                  <a-button type="primary" @click="scanTrainingResources" :loading="scanning">
-                    <ScanOutlined /> 开始扫描
-                  </a-button>
-                </a-space>
+                  <div>
+                    <a-button type="primary" @click="scanTrainingResources" :loading="scanning">
+                      <ScanOutlined /> 开始扫描
+                    </a-button>
+                  </div>
+                </Stack>
 
                 <div v-if="scanResult.length > 0" class="scan-result">
                   <a-divider>扫描结果</a-divider>
@@ -380,6 +383,8 @@ import {
 import { request } from '@/utils/request'
 import ResourceMappingManager from '@/components/admin/ResourceMappingManager.vue'
 import PracticeImportFlow from '@/components/admin/PracticeImportFlow.vue'
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue'
+import Stack from '@/components/common/Stack.vue'
 
 const router = useRouter()
 const activeTab = ref('training')
@@ -653,16 +658,14 @@ function onPracticeImportComplete(result) {
 </script>
 
 <style scoped lang="less">
-.resource-import-container {
-  padding: 24px;
-  background: #f0f2f5;
-  min-height: 100vh;
+.admin-page {
+  width: 100%;
 
   .import-card {
-    margin-top: 24px;
+    margin-top: 0;
 
     .import-steps {
-      margin-bottom: 32px;
+      margin-bottom: var(--hx-space-6);
     }
 
     .step-content {
@@ -670,54 +673,55 @@ function onPracticeImportComplete(result) {
     }
 
     .scan-result {
-      margin-top: 24px;
+      margin-top: var(--hx-space-5);
     }
 
     .step-actions {
-      margin-top: 24px;
+      margin-top: var(--hx-space-5);
       display: flex;
       justify-content: flex-end;
+      gap: var(--hx-space-2);
     }
 
     .training-title {
       font-weight: 500;
-      margin-bottom: 4px;
+      margin-bottom: var(--hx-space-1);
     }
 
     .training-meta {
-      margin-top: 8px;
+      margin-top: var(--hx-space-2);
     }
 
     .import-progress {
-      margin-top: 24px;
+      margin-top: var(--hx-space-5);
 
       .progress-info {
         text-align: center;
-        margin-top: 8px;
-        color: #666;
+        margin-top: var(--hx-space-2);
+        color: var(--hx-color-text-secondary);
       }
     }
 
     .practice-list {
-      margin-top: 24px;
+      margin-top: var(--hx-space-5);
     }
 
     .practice-title {
       font-weight: 500;
-      margin-bottom: 8px;
+      margin-bottom: var(--hx-space-2);
     }
 
     .practice-info {
-      color: #666;
+      color: var(--hx-color-text-secondary);
       font-size: 12px;
     }
 
     .import-result {
-      margin-top: 32px;
+      margin-top: var(--hx-space-6);
     }
 
     .error-list {
-      margin-top: 16px;
+      margin-top: var(--hx-space-4);
     }
   }
 

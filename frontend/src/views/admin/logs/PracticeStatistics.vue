@@ -1,85 +1,86 @@
 <template>
-  <div class="statistics-container">
-    <div class="page-header">
-      <h2 class="page-title">实践统计分析 <span v-if="timeRangeLabel">({{ timeRangeLabel }})</span></h2>
-    </div>
-
-    <!-- 筛选栏 -->
-    <div class="filter-bar">
-      <!-- 时间筛选 -->
-      <a-radio-group v-model:value="timeRange" button-style="solid" @change="handleTimeRangeChange">
-        <a-radio-button value="today">今天</a-radio-button>
-        <a-radio-button value="yesterday">昨天</a-radio-button>
-        <a-radio-button value="last_7_days">最近7天</a-radio-button>
-        <a-radio-button value="last_30_days">最近30天</a-radio-button>
-        <a-radio-button value="custom">自定义</a-radio-button>
-      </a-radio-group>
-
-      <a-range-picker
-        v-model:value="customDateRange"
-        v-show="timeRange === 'custom'"
-        :disabledDate="disabledDate"
-        @change="handleDateRangeChange"
-        format="YYYY-MM-DD"
-        :allowClear="false"
-        class="custom-date-picker"
-      />
-
-      <!-- 用户组筛选 -->
-      <div class="user-group-filter">
-        <span class="filter-label">用户组：</span>
-        <a-select
-          v-model:value="userGroup"
-          style="width: 120px"
-          @change="handleUserGroupChange"
-          allowClear
-          placeholder="全部"
-        >
-          <a-select-option value="teacher">教师</a-select-option>
-          <a-select-option value="student">学生</a-select-option>
-        </a-select>
-      </div>
-
-      <!-- 搜索框 -->
-      <div class="search-filter">
-        <a-input
-          v-model:value="searchKeyword"
-          placeholder="搜索实践名称"
-          style="width: 200px"
-          @pressEnter="handleSearch"
-          allowClear
-        >
-          <template #suffix>
-            <search-outlined @click="handleSearch" />
-          </template>
-        </a-input>
-      </div>
-    </div>
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar :title="`实践统计分析${timeRangeLabel ? ' (' + timeRangeLabel + ')' : ''}`">
+      <template #actions>
+        <a-button type="primary" @click="exportData" :loading="exportLoading">
+          <template #icon><export-outlined /></template>
+          导出
+        </a-button>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-radio-group v-model:value="timeRange" button-style="solid" @change="handleTimeRangeChange">
+            <a-radio-button value="today">今天</a-radio-button>
+            <a-radio-button value="yesterday">昨天</a-radio-button>
+            <a-radio-button value="last_7_days">最近7天</a-radio-button>
+            <a-radio-button value="last_30_days">最近30天</a-radio-button>
+            <a-radio-button value="custom">自定义</a-radio-button>
+          </a-radio-group>
+          <a-range-picker
+            v-model:value="customDateRange"
+            v-show="timeRange === 'custom'"
+            :disabledDate="disabledDate"
+            @change="handleDateRangeChange"
+            format="YYYY-MM-DD"
+            :allowClear="false"
+            class="custom-date-picker"
+          />
+          <a-select
+            v-model:value="userGroup"
+            style="width: 120px"
+            @change="handleUserGroupChange"
+            allowClear
+            placeholder="用户组"
+          >
+            <a-select-option value="teacher">教师</a-select-option>
+            <a-select-option value="student">学生</a-select-option>
+          </a-select>
+          <a-input
+            v-model:value="searchKeyword"
+            placeholder="搜索实践名称"
+            style="width: 200px"
+            @pressEnter="handleSearch"
+            allowClear
+          >
+            <template #suffix>
+              <search-outlined @click="handleSearch" />
+            </template>
+          </a-input>
+        </Stack>
+      </template>
+    </PageHeaderBar>
 
     <!-- 统计卡片 -->
-    <div class="statistics-cards">
-      <a-card class="statistic-card" :bordered="false">
-        <a-statistic title="实践总数" :value="statisticsData.totalPractices" :valueStyle="{ color: '#3f8600' }">
-          <template #prefix>
-            <experiment-outlined />
-          </template>
-        </a-statistic>
-      </a-card>
-      <a-card class="statistic-card" :bordered="false">
-        <a-statistic title="总访问次数" :value="statisticsData.totalAccesses" :valueStyle="{ color: '#0096FF' }">
-          <template #prefix>
-            <eye-outlined />
-          </template>
-        </a-statistic>
-      </a-card>
-      <a-card class="statistic-card" :bordered="false">
-        <a-statistic title="总学习次数" :value="statisticsData.totalLearning" :valueStyle="{ color: '#722ED1' }">
-          <template #prefix>
-            <book-outlined />
-          </template>
-        </a-statistic>
-      </a-card>
-    </div>
+    <a-row :gutter="16" class="statistics-cards">
+      <a-col :span="8">
+        <a-card class="statistic-card" :bordered="false">
+          <a-statistic title="实践总数" :value="statisticsData.totalPractices" :valueStyle="{ color: 'var(--hx-color-success)' }">
+            <template #prefix>
+              <experiment-outlined />
+            </template>
+          </a-statistic>
+        </a-card>
+      </a-col>
+      <a-col :span="8">
+        <a-card class="statistic-card" :bordered="false">
+          <a-statistic title="总访问次数" :value="statisticsData.totalAccesses" :valueStyle="{ color: 'var(--hx-color-primary)' }">
+            <template #prefix>
+              <eye-outlined />
+            </template>
+          </a-statistic>
+        </a-card>
+      </a-col>
+      <a-col :span="8">
+        <a-card class="statistic-card" :bordered="false">
+          <a-statistic title="总学习次数" :value="statisticsData.totalLearning" :valueStyle="{ color: 'var(--hx-color-accent-purple)' }">
+            <template #prefix>
+              <book-outlined />
+            </template>
+          </a-statistic>
+        </a-card>
+      </a-col>
+    </a-row>
 
     <!-- 表格数据 -->
     <a-table
@@ -91,6 +92,9 @@
       row-key="practice_id"
       class="data-table"
     >
+      <template #emptyText>
+        <EmptyStateBlock description="暂无实践统计数据" />
+      </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'practice_name'">
           <a @click="showPracticeDetail(record)">{{ record.practice_name }}</a>
@@ -100,14 +104,6 @@
         </template>
       </template>
     </a-table>
-
-    <!-- 导出按钮 -->
-    <div class="action-bar">
-      <a-button type="primary" @click="exportData" :loading="exportLoading">
-        <template #icon><export-outlined /></template>
-        导出
-      </a-button>
-    </div>
   </div>
 </template>
 
@@ -133,6 +129,9 @@ import {
   type PracticeStatisticsParams,
   type PracticeStatisticsItem
 } from '@/api/usage-statistics';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 // 基础列定义
 const baseColumns = [
@@ -402,65 +401,20 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.statistics-container {
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: 100%;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.page-title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.filter-bar {
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.custom-date-picker {
-  margin-left: 16px;
-}
-
-.user-group-filter,
-.search-filter {
-  display: flex;
-  align-items: center;
-}
-
-.filter-label {
-  margin-right: 8px;
-  font-weight: 500;
+.admin-page {
+  width: 100%;
 }
 
 .statistics-cards {
-  display: flex;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
+  margin-bottom: var(--hx-space-5);
 }
 
 .statistic-card {
-  flex: 1;
-  min-width: 220px;
+  min-width: 0;
 }
 
 .data-table {
-  background-color: #fff;
-  border-radius: 4px;
-}
-
-.action-bar {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
+  background-color: var(--hx-color-bg-container);
+  border-radius: var(--hx-radius-sm);
 }
 </style> 

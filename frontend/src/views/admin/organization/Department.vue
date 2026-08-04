@@ -1,7 +1,34 @@
 <template>
-  <div class="department-container">
-    <a-page-header title="院系设置" subtitle="管理学校组织架构" />
-    
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar title="院系设置" subtitle="管理学校组织架构">
+      <template #actions>
+        <a-button
+          type="primary"
+          @click="showCreateModal"
+          v-if="!selectedNode || selectedNode.nodeType !== 'class'"
+        >
+          {{ getCreateButtonText() }}
+        </a-button>
+        <a-button
+          v-if="selectedNode && selectedNode.nodeType === 'school'"
+          @click="showImportModal"
+        >
+          组织导入
+        </a-button>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="searchValue"
+            placeholder="搜索名称或编码"
+            style="width: 250px"
+            @search="onSearch"
+          />
+        </Stack>
+      </template>
+    </PageHeaderBar>
+
     <div class="department-content">
       <a-row :gutter="16">
         <!-- 左侧组织树 -->
@@ -18,42 +45,16 @@
                 <span>{{ title }}</span>
               </template>
             </a-tree>
-            <div v-if="treeData.length === 0 && !loading" style="padding: 20px; text-align: center; color: #999;">
-              暂无组织架构数据
-            </div>
+            <EmptyStateBlock
+              v-if="treeData.length === 0 && !loading"
+              description="暂无组织架构数据"
+            />
           </a-card>
         </a-col>
         
         <!-- 右侧列表和操作 -->
         <a-col :span="18">
           <a-card :bordered="false">
-            <!-- 操作按钮区域 -->
-            <div class="operation-area">
-              <div class="left-operations">
-                <a-button 
-                  type="primary" 
-                  @click="showCreateModal" 
-                  v-if="!selectedNode || selectedNode.nodeType !== 'class'"
-                >
-                  {{ getCreateButtonText() }}
-                </a-button>
-                <a-button 
-                  v-if="selectedNode && selectedNode.nodeType === 'school'"
-                  @click="showImportModal"
-                >
-                  组织导入
-                </a-button>
-              </div>
-              <div class="right-operations">
-                <a-input-search
-                  v-model:value="searchValue"
-                  placeholder="搜索名称或编码"
-                  style="width: 250px"
-                  @search="onSearch"
-                />
-              </div>
-            </div>
-            
             <!-- 表格 -->
             <a-table
               :columns="columns"
@@ -65,6 +66,9 @@
               row-key="id"
               :scroll="{ x: 1100 }"
             >
+              <template #emptyText>
+                <EmptyStateBlock description="暂无院系数据" />
+              </template>
               <!-- 操作列 -->
               <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'action'">
@@ -231,6 +235,9 @@ import { message } from 'ant-design-vue';
 import { UploadOutlined } from '@ant-design/icons-vue';
 import type { TablePaginationConfig } from 'ant-design-vue';
 import { useDepartmentStore } from '@/stores/department';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 // 树形数据
 const treeData = ref<any[]>([]);
@@ -846,44 +853,27 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.department-container {
-  background-color: #f0f2f5;
-  padding: 0;
+.admin-page {
+  width: 100%;
 }
 
 .department-content {
-  margin-top: 24px;
-}
-
-.operation-area {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.left-operations {
-  display: flex;
-  gap: 8px;
-}
-
-.right-operations {
-  display: flex;
-  gap: 8px;
+  margin-top: 0;
 }
 
 .batch-operations {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
   display: flex;
-  gap: 8px;
+  gap: var(--hx-space-2);
 }
 
 .danger-text {
-  color: #ff4d4f;
+  color: var(--hx-color-error);
 }
 
 .import-modal-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--hx-space-4);
 }
 </style> 

@@ -1,8 +1,9 @@
 <template>
-  <div class="dashboard-container">
-    <a-page-header title="系统仪表盘" subtitle="数据概览与统计" />
-    
-    <div class="dashboard-content">
+  <!-- Nested under admin layout (layout owns padding); no PageShell -->
+  <div class="admin-page dashboard-page">
+    <PageHeaderBar title="系统仪表盘" subtitle="数据概览与统计" />
+
+    <Stack :gap="5">
       <!-- 数据统计卡片 -->
       <a-row :gutter="16" class="stat-cards">
         <a-col :span="6">
@@ -26,7 +27,7 @@
             </div>
           </a-card>
         </a-col>
-        
+
         <a-col :span="6">
           <a-card :bordered="false">
             <template #title>
@@ -48,7 +49,7 @@
             </div>
           </a-card>
         </a-col>
-        
+
         <a-col :span="6">
           <a-card :bordered="false">
             <template #title>
@@ -70,7 +71,7 @@
             </div>
           </a-card>
         </a-col>
-        
+
         <a-col :span="6">
           <a-card :bordered="false">
             <template #title>
@@ -93,22 +94,22 @@
           </a-card>
         </a-col>
       </a-row>
-      
+
       <!-- 系统使用情况图表 -->
       <a-row :gutter="16" class="charts-row">
         <a-col :span="16">
           <a-card title="系统访问趋势" :bordered="false">
-            <div ref="visitsTrendChart" style="width: 100%; height: 350px;"></div>
+            <div ref="visitsTrendChart" class="chart-box"></div>
           </a-card>
         </a-col>
-        
+
         <a-col :span="8">
           <a-card title="用户分布" :bordered="false">
-            <div ref="userDistributionChart" style="width: 100%; height: 350px;"></div>
+            <div ref="userDistributionChart" class="chart-box"></div>
           </a-card>
         </a-col>
       </a-row>
-      
+
       <!-- 近期活动 -->
       <a-row :gutter="16" class="activity-row">
         <a-col :span="12">
@@ -143,7 +144,7 @@
             </a-list>
           </a-card>
         </a-col>
-        
+
         <a-col :span="12">
           <a-card title="系统公告" :bordered="false">
             <a-list
@@ -172,24 +173,24 @@
           </a-card>
         </a-col>
       </a-row>
-    </div>
+    </Stack>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { 
-  TeamOutlined, 
-  BookOutlined, 
-  TrophyOutlined, 
+import {
+  TeamOutlined,
+  BookOutlined,
+  TrophyOutlined,
   SolutionOutlined,
   RiseOutlined,
   FallOutlined,
   UserOutlined
 } from '@ant-design/icons-vue';
 import * as echarts from 'echarts/core';
-import { 
-  LineChart, 
+import {
+  LineChart,
   PieChart,
   BarChart
 } from 'echarts/charts';
@@ -201,14 +202,16 @@ import {
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { useDashboardStore } from '../../../stores/dashboard';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
 
 // 注册必须的组件
 echarts.use([
-  TitleComponent, 
-  TooltipComponent, 
-  LegendComponent, 
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
   GridComponent,
-  LineChart, 
+  LineChart,
   PieChart,
   BarChart,
   CanvasRenderer
@@ -224,11 +227,15 @@ let userDistChartInstance: echarts.ECharts | null = null;
 const dashboardStore = useDashboardStore();
 const dashboardData = dashboardStore.dashboardData;
 
+// Token colors for charts (avoid hard-coded #1890ff)
+const PRIMARY = '#1677ff';
+const SUCCESS = '#52c41a';
+
 // 初始化图表
 onMounted(async () => {
   // 加载仪表盘数据
   await dashboardStore.fetchDashboardData();
-  
+
   // 初始化访问趋势图表
   if (visitsTrendChart.value) {
     visitsChartInstance = echarts.init(visitsTrendChart.value);
@@ -269,7 +276,7 @@ onMounted(async () => {
             shadowOffsetY: 8
           },
           itemStyle: {
-            color: '#1890ff'
+            color: PRIMARY
           },
           areaStyle: {
             color: {
@@ -279,8 +286,8 @@ onMounted(async () => {
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: 'rgba(24,144,255,0.5)' },
-                { offset: 1, color: 'rgba(24,144,255,0.1)' }
+                { offset: 0, color: 'rgba(22,119,255,0.5)' },
+                { offset: 1, color: 'rgba(22,119,255,0.1)' }
               ]
             }
           }
@@ -297,7 +304,7 @@ onMounted(async () => {
             shadowOffsetY: 8
           },
           itemStyle: {
-            color: '#52c41a'
+            color: SUCCESS
           },
           areaStyle: {
             color: {
@@ -317,7 +324,7 @@ onMounted(async () => {
     };
     visitsChartInstance.setOption(visitsTrendOption);
   }
-  
+
   // 初始化用户分布图表
   if (userDistributionChart.value) {
     userDistChartInstance = echarts.init(userDistributionChart.value);
@@ -370,14 +377,14 @@ onMounted(async () => {
     };
     userDistChartInstance.setOption(userDistOption);
   }
-  
+
   // 窗口大小变化时重新调整图表大小
   const handleResize = () => {
     visitsChartInstance?.resize();
     userDistChartInstance?.resize();
   };
   window.addEventListener('resize', handleResize);
-  
+
   // 组件卸载时清理
   onUnmounted(() => {
     visitsChartInstance?.dispose();
@@ -388,17 +395,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.dashboard-container {
-  background-color: #f0f2f5;
-  padding: 0;
-}
-
-.dashboard-content {
-  padding: 24px 0;
-}
-
-.stat-cards {
-  margin-bottom: 24px;
+.admin-page {
+  width: 100%;
 }
 
 .card-title {
@@ -408,8 +406,8 @@ onMounted(async () => {
 
 .card-icon {
   font-size: 16px;
-  margin-right: 8px;
-  color: #1890ff;
+  margin-right: var(--hx-space-2);
+  color: var(--hx-color-primary);
 }
 
 .card-content {
@@ -420,33 +418,32 @@ onMounted(async () => {
 .card-value {
   font-size: 28px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: var(--hx-space-2);
+  color: var(--hx-color-text-primary);
 }
 
 .card-footer {
   display: flex;
   justify-content: space-between;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--hx-color-text-tertiary);
 }
 
 .increase {
-  color: #52c41a;
+  color: var(--hx-color-success);
 }
 
 .decrease {
-  color: #f5222d;
+  color: var(--hx-color-error);
 }
 
-.charts-row {
-  margin-bottom: 24px;
+.chart-box {
+  width: 100%;
+  height: 350px;
 }
 
-.activity-row {
-  margin-bottom: 24px;
-}
-
-.activity-time, .announcement-time {
-  color: rgba(0, 0, 0, 0.45);
+.activity-time,
+.announcement-time {
+  color: var(--hx-color-text-tertiary);
   font-size: 12px;
 }
-</style> 
+</style>

@@ -1,6 +1,9 @@
 <template>
-  <div class="school-info-page">
-    <a-card title="学校信息管理" :loading="loading">
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar title="学校信息管理" subtitle="查看和编辑学校基础信息" />
+
+    <a-card :title="undefined" :bordered="false" :loading="loading">
       <a-form 
         :model="formData" 
         :label-col="{ span: 4 }" 
@@ -117,6 +120,7 @@ import { PictureOutlined, UploadOutlined } from '@ant-design/icons-vue';
 import { getSchoolInfo, updateSchoolInfo, uploadSchoolLogo } from '@/api/system';
 import type { SchoolInfo } from '@/api/system';
 import Cropper from 'cropperjs';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 // 响应式数据
 const loading = ref(false);
@@ -372,10 +376,8 @@ watch(cropModalVisible, watchCropModal);
 </script>
 
 <style scoped>
-.school-info-page {
-  padding: 24px;
-  background: #f0f2f5;
-  min-height: 100vh;
+.admin-page {
+  width: 100%;
 }
 
 .editable-field {

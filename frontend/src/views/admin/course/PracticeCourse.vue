@@ -1,7 +1,24 @@
 <template>
-  <div class="practice-course-management">
-    <a-page-header title="实践课程管理" :ghost="false" />
-    
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar title="实践课程管理">
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-input-search
+            v-model:value="keyword"
+            placeholder="搜索课程名称、教师或院校"
+            style="width: 300px"
+            @search="onSearch"
+            enter-button
+          />
+          <a-button @click="resetFilters">
+            <template #icon><ReloadOutlined /></template>
+            重置筛选
+          </a-button>
+        </Stack>
+      </template>
+    </PageHeaderBar>
+
     <div class="practice-course-container">
       <a-row :gutter="16">
         <!-- 左侧分类树 -->
@@ -21,23 +38,6 @@
         <!-- 右侧课程列表 -->
         <a-col :span="18">
           <a-card :bordered="false" class="course-list-card">
-            <!-- 顶部搜索和筛选 -->
-            <div class="search-bar">
-              <a-input-search
-                v-model:value="keyword"
-                placeholder="搜索课程名称、教师或院校"
-                style="width: 300px"
-                @search="onSearch"
-                enter-button
-              />
-              <a-space>
-                <a-button @click="resetFilters">
-                  <template #icon><ReloadOutlined /></template>
-                  重置筛选
-                </a-button>
-              </a-space>
-            </div>
-            
             <!-- 课程列表 -->
             <a-table
               :loading="loading.practiceCourses"
@@ -46,6 +46,9 @@
               :pagination="{ pageSize: 10, showTotal: total => `共 ${total} 条` }"
               :rowKey="record => record.id"
             >
+              <template #emptyText>
+                <EmptyStateBlock description="暂无实践课程" />
+              </template>
               <!-- 封面列 -->
               <template #bodyCell="{ column, record }">
                 <template v-if="column.dataIndex === 'cover'">
@@ -97,6 +100,9 @@ import { ReloadOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
 import { useAdminCourseStore } from '@/stores/admin-course';
 import { CourseStatus, type PracticeCourse } from '@/types/admin';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 const router = useRouter();
 const adminCourseStore = useAdminCourseStore();
@@ -247,15 +253,13 @@ const showPublishConfirm = (course: PracticeCourse) => {
 </script>
 
 <style scoped>
-.practice-course-management {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.admin-page {
+  width: 100%;
 }
 
 .practice-course-container {
   flex: 1;
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 .category-tree-card {
@@ -267,16 +271,10 @@ const showPublishConfirm = (course: PracticeCourse) => {
   height: 100%;
 }
 
-.search-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
 .course-cover {
   width: 80px;
   height: 45px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: var(--hx-radius-sm);
 }
 </style> 

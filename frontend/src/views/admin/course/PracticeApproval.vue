@@ -1,36 +1,25 @@
 <template>
-  <div class="practice-approval">
-    <a-page-header title="实践课程审批" :ghost="false" />
-    
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar title="实践课程审批" />
+
     <div class="approval-container">
       <a-card :bordered="false">
         <a-tabs v-model:activeKey="activeTabKey">
           <!-- 待审批标签页 -->
           <a-tab-pane key="pending" tab="待审批">
             <div class="filter-bar">
-              <a-form layout="inline" :model="filters.pending">
-                <a-form-item label="课程名称">
-                  <a-input v-model:value="filters.pending.keyword" placeholder="课程名称" />
-                </a-form-item>
-                <a-form-item label="申请人">
-                  <a-input v-model:value="filters.pending.applicant" placeholder="申请人" />
-                </a-form-item>
-                <a-form-item label="申请类型">
-                  <a-select v-model:value="filters.pending.type" style="width: 120px" allowClear>
-                    <a-select-option value="publish">发布申请</a-select-option>
-                    <a-select-option value="unpublish">撤销发布</a-select-option>
-                  </a-select>
-                </a-form-item>
-                <a-form-item label="申请时间">
-                  <a-range-picker v-model:value="filters.pending.appliedTimeRange" />
-                </a-form-item>
-                <a-form-item>
-                  <a-space>
-                    <a-button type="primary" @click="applyPendingFilters">查询</a-button>
-                    <a-button @click="resetPendingFilters">重置</a-button>
-                  </a-space>
-                </a-form-item>
-              </a-form>
+              <Stack direction="horizontal" :gap="3" align="center">
+                <a-input v-model:value="filters.pending.keyword" placeholder="课程名称" style="width: 160px" />
+                <a-input v-model:value="filters.pending.applicant" placeholder="申请人" style="width: 140px" />
+                <a-select v-model:value="filters.pending.type" style="width: 120px" allowClear placeholder="申请类型">
+                  <a-select-option value="publish">发布申请</a-select-option>
+                  <a-select-option value="unpublish">撤销发布</a-select-option>
+                </a-select>
+                <a-range-picker v-model:value="filters.pending.appliedTimeRange" />
+                <a-button type="primary" @click="applyPendingFilters">查询</a-button>
+                <a-button @click="resetPendingFilters">重置</a-button>
+              </Stack>
             </div>
             
             <a-table
@@ -40,6 +29,9 @@
               :pagination="{ pageSize: 10, showTotal: (total: number) => `共 ${total} 条` }"
               :rowKey="(record: any) => record.id"
             >
+              <template #emptyText>
+                <EmptyStateBlock description="暂无待审批申请" />
+              </template>
               <!-- 自定义列 -->
               <template #bodyCell="{ column, record }">
                 <!-- 申请类型列 -->
@@ -64,36 +56,22 @@
           <!-- 已审批标签页 -->
           <a-tab-pane key="approved" tab="已审批">
             <div class="filter-bar">
-              <a-form layout="inline" :model="filters.approved">
-                <a-form-item label="课程名称">
-                  <a-input v-model:value="filters.approved.keyword" placeholder="课程名称" />
-                </a-form-item>
-                <a-form-item label="申请人">
-                  <a-input v-model:value="filters.approved.applicant" placeholder="申请人" />
-                </a-form-item>
-                <a-form-item label="申请类型">
-                  <a-select v-model:value="filters.approved.type" style="width: 120px" allowClear>
-                    <a-select-option value="publish">发布申请</a-select-option>
-                    <a-select-option value="unpublish">撤销发布</a-select-option>
-                  </a-select>
-                </a-form-item>
-                <a-form-item label="申请时间">
-                  <a-range-picker v-model:value="filters.approved.appliedTimeRange" />
-                </a-form-item>
-                <a-form-item label="审批状态">
-                  <a-select v-model:value="filters.approved.status" style="width: 120px" allowClear>
-                    <a-select-option value="approved">已同意</a-select-option>
-                    <a-select-option value="rejected">已驳回</a-select-option>
-                    <a-select-option value="cancelled">用户撤销</a-select-option>
-                  </a-select>
-                </a-form-item>
-                <a-form-item>
-                  <a-space>
-                    <a-button type="primary" @click="applyApprovedFilters">查询</a-button>
-                    <a-button @click="resetApprovedFilters">重置</a-button>
-                  </a-space>
-                </a-form-item>
-              </a-form>
+              <Stack direction="horizontal" :gap="3" align="center">
+                <a-input v-model:value="filters.approved.keyword" placeholder="课程名称" style="width: 160px" />
+                <a-input v-model:value="filters.approved.applicant" placeholder="申请人" style="width: 140px" />
+                <a-select v-model:value="filters.approved.type" style="width: 120px" allowClear placeholder="申请类型">
+                  <a-select-option value="publish">发布申请</a-select-option>
+                  <a-select-option value="unpublish">撤销发布</a-select-option>
+                </a-select>
+                <a-range-picker v-model:value="filters.approved.appliedTimeRange" />
+                <a-select v-model:value="filters.approved.status" style="width: 120px" allowClear placeholder="审批状态">
+                  <a-select-option value="approved">已同意</a-select-option>
+                  <a-select-option value="rejected">已驳回</a-select-option>
+                  <a-select-option value="cancelled">用户撤销</a-select-option>
+                </a-select>
+                <a-button type="primary" @click="applyApprovedFilters">查询</a-button>
+                <a-button @click="resetApprovedFilters">重置</a-button>
+              </Stack>
             </div>
             
             <a-table
@@ -103,6 +81,9 @@
               :pagination="{ pageSize: 10, showTotal: (total: number) => `共 ${total} 条` }"
               :rowKey="(record: any) => record.id"
             >
+              <template #emptyText>
+                <EmptyStateBlock description="暂无已审批记录" />
+              </template>
               <!-- 自定义列 -->
               <template #bodyCell="{ column, record }">
                 <!-- 课程名称列 -->
@@ -221,6 +202,9 @@ import { useRouter } from 'vue-router';
 import { message, Modal } from 'ant-design-vue';
 import { useAdminCourseStore } from '@/stores/admin-course';
 import { ApprovalStatus, type CourseApproval } from '@/types/admin';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 const router = useRouter();
 const adminCourseStore = useAdminCourseStore();
@@ -516,21 +500,19 @@ const showFeedbackModal = (record: CourseApproval) => {
 </script>
 
 <style scoped>
-.practice-approval {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.admin-page {
+  width: 100%;
 }
 
 .approval-container {
   flex: 1;
-  margin-top: 16px;
+  margin-top: 0;
 }
 
 .filter-bar {
-  margin-bottom: 16px;
-  background-color: #f9f9f9;
-  padding: 16px;
-  border-radius: 4px;
+  margin-bottom: var(--hx-space-4);
+  background-color: var(--hx-color-bg-hover);
+  padding: var(--hx-space-4);
+  border-radius: var(--hx-radius-sm);
 }
 </style> 

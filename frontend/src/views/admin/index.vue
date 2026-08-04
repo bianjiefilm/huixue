@@ -1,3 +1,9 @@
+<!--
+  P2: content padding owned by layout
+  - Sole page inset: .admin-content padding (24px / --hx-space-5)
+  - .admin-content-wrapper has NO padding (was double 24 with content)
+  - Child pages: use .admin-page { width: 100% } only — no PageShell default padding, no page-level padding: 24px
+-->
 <template>
   <a-layout style="min-height: 100vh">
     <a-layout-sider v-model:collapsed="collapsed" collapsible width="200" class="admin-sider">
@@ -184,23 +190,25 @@ watch(() => route.path, (path) => {
 
 <style scoped>
 .admin-sider {
-  background: #fff;
+  background: var(--hx-color-bg-container);
 }
 
 .admin-sider-menu {
   height: 100%;
 }
 
+/* Layout-owned sole content padding — do not re-add 24px on child pages */
 .admin-content {
-  padding: 24px;
-  background: #f0f2f5;
+  padding: var(--hx-space-5);
+  background: var(--hx-color-bg-layout);
   min-height: calc(100vh - 64px);
 }
 
 .admin-content-wrapper {
-  padding: 24px;
-  background: #fff;
-  border-radius: 4px;
+  width: 100%;
+  /* no padding: avoids double 24px with .admin-content */
+  background: transparent;
+  border-radius: var(--hx-radius-sm);
 }
 </style>
 

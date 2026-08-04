@@ -1,54 +1,65 @@
 <template>
-  <div class="statistics-container">
-    <div class="page-header">
-      <h2 class="page-title">课程统计分析 <span v-if="timeRangeLabel">({{ timeRangeLabel }})</span></h2>
-    </div>
-
-    <!-- 时间筛选 -->
-    <div class="filter-bar">
-      <a-radio-group v-model:value="timeRange" button-style="solid" @change="handleTimeRangeChange">
-        <a-radio-button value="today">今天</a-radio-button>
-        <a-radio-button value="yesterday">昨天</a-radio-button>
-        <a-radio-button value="last_7_days">最近7天</a-radio-button>
-        <a-radio-button value="last_30_days">最近30天</a-radio-button>
-        <a-radio-button value="custom">自定义</a-radio-button>
-      </a-radio-group>
-
-      <a-range-picker
-        v-model:value="customDateRange"
-        v-show="timeRange === 'custom'"
-        :disabledDate="disabledDate"
-        @change="handleDateRangeChange"
-        format="YYYY-MM-DD"
-        :allowClear="false"
-        class="custom-date-picker"
-      />
-    </div>
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar :title="`课程统计分析${timeRangeLabel ? ' (' + timeRangeLabel + ')' : ''}`">
+      <template #actions>
+        <a-button type="primary" @click="exportData" :loading="exportLoading">
+          <template #icon><export-outlined /></template>
+          导出
+        </a-button>
+      </template>
+      <template #extra>
+        <Stack direction="horizontal" :gap="3" align="center">
+          <a-radio-group v-model:value="timeRange" button-style="solid" @change="handleTimeRangeChange">
+            <a-radio-button value="today">今天</a-radio-button>
+            <a-radio-button value="yesterday">昨天</a-radio-button>
+            <a-radio-button value="last_7_days">最近7天</a-radio-button>
+            <a-radio-button value="last_30_days">最近30天</a-radio-button>
+            <a-radio-button value="custom">自定义</a-radio-button>
+          </a-radio-group>
+          <a-range-picker
+            v-model:value="customDateRange"
+            v-show="timeRange === 'custom'"
+            :disabledDate="disabledDate"
+            @change="handleDateRangeChange"
+            format="YYYY-MM-DD"
+            :allowClear="false"
+            class="custom-date-picker"
+          />
+        </Stack>
+      </template>
+    </PageHeaderBar>
 
     <!-- 统计卡片 -->
-    <div class="statistics-cards">
-      <a-card class="statistic-card" :bordered="false">
-        <a-statistic title="课程总数" :value="statisticsData.totalCourses" :valueStyle="{ color: '#3f8600' }">
-          <template #prefix>
-            <read-outlined />
-          </template>
-        </a-statistic>
-      </a-card>
-      <a-card class="statistic-card" :bordered="false">
-        <a-statistic title="内置课程数" :value="statisticsData.systemCourses" :valueStyle="{ color: '#0096FF' }">
-          <template #prefix>
-            <database-outlined />
-          </template>
-        </a-statistic>
-      </a-card>
-      <a-card class="statistic-card" :bordered="false">
-        <a-statistic title="教师公开课程数" :value="statisticsData.teacherPublicCourses" :valueStyle="{ color: '#722ED1' }">
-          <template #prefix>
-            <team-outlined />
-          </template>
-        </a-statistic>
-      </a-card>
-    </div>
+    <a-row :gutter="16" class="statistics-cards">
+      <a-col :span="8">
+        <a-card class="statistic-card" :bordered="false">
+          <a-statistic title="课程总数" :value="statisticsData.totalCourses" :valueStyle="{ color: 'var(--hx-color-success)' }">
+            <template #prefix>
+              <read-outlined />
+            </template>
+          </a-statistic>
+        </a-card>
+      </a-col>
+      <a-col :span="8">
+        <a-card class="statistic-card" :bordered="false">
+          <a-statistic title="内置课程数" :value="statisticsData.systemCourses" :valueStyle="{ color: 'var(--hx-color-primary)' }">
+            <template #prefix>
+              <database-outlined />
+            </template>
+          </a-statistic>
+        </a-card>
+      </a-col>
+      <a-col :span="8">
+        <a-card class="statistic-card" :bordered="false">
+          <a-statistic title="教师公开课程数" :value="statisticsData.teacherPublicCourses" :valueStyle="{ color: 'var(--hx-color-accent-purple)' }">
+            <template #prefix>
+              <team-outlined />
+            </template>
+          </a-statistic>
+        </a-card>
+      </a-col>
+    </a-row>
 
     <!-- 表格数据 -->
     <a-table
@@ -60,6 +71,9 @@
       row-key="course_id"
       class="data-table"
     >
+      <template #emptyText>
+        <EmptyStateBlock description="暂无课程统计数据" />
+      </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'course_name'">
           <a @click="showCourseDetail(record)">{{ record.course_name }}</a>
@@ -69,14 +83,6 @@
         </template>
       </template>
     </a-table>
-
-    <!-- 导出按钮 -->
-    <div class="action-bar">
-      <a-button type="primary" @click="exportData" :loading="exportLoading">
-        <template #icon><export-outlined /></template>
-        导出
-      </a-button>
-    </div>
   </div>
 </template>
 
@@ -99,6 +105,9 @@ import {
   type CourseStatisticsParams,
   type CourseStatisticsItem
 } from '@/api/usage-statistics';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import Stack from '@/components/common/Stack.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 // 列定义
 const columns = [
@@ -335,53 +344,20 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.statistics-container {
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: 100%;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.page-title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.filter-bar {
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.custom-date-picker {
-  margin-left: 16px;
+.admin-page {
+  width: 100%;
 }
 
 .statistics-cards {
-  display: flex;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
+  margin-bottom: var(--hx-space-5);
 }
 
 .statistic-card {
-  flex: 1;
-  min-width: 220px;
+  min-width: 0;
 }
 
 .data-table {
-  background-color: #fff;
-  border-radius: 4px;
-}
-
-.action-bar {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
+  background-color: var(--hx-color-bg-container);
+  border-radius: var(--hx-radius-sm);
 }
 </style> 

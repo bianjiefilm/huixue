@@ -1,14 +1,15 @@
 <template>
-  <div class="course-detail">
-    <a-page-header
+  <!-- Nested under admin layout (padding owned by layout); no PageShell -->
+  <div class="admin-page">
+    <PageHeaderBar
       :title="(courseData?.type === 'practice' ? '实践课程' : '实训课程') + '详情'"
-      :ghost="false"
-      @back="goBack"
+      show-back
+      back-to="/admin/course/practice"
     />
-    
+
     <a-spin :spinning="loading">
       <a-card :bordered="false" v-if="courseData">
-        <a-row :gutter="24" class="course-header">
+        <a-row :gutter="16" class="course-header">
           <a-col :span="6">
             <div class="course-cover">
               <img :src="courseData.cover" alt="课程封面" />
@@ -76,6 +77,7 @@ import { message, Modal } from 'ant-design-vue';
 import { useAdminCourseStore } from '@/stores/admin-course';
 import type { BaseCourse, PracticeCourse, TrainingCourse } from '@/types/admin';
 import { CourseStatus, CourseType } from '@/types/admin';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -216,12 +218,12 @@ const showPublishConfirm = () => {
 </script>
 
 <style scoped>
-.course-detail {
-  padding-bottom: 24px;
+.admin-page {
+  width: 100%;
 }
 
 .course-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .course-cover {
