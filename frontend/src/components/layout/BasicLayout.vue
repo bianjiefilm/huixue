@@ -1,5 +1,5 @@
 <template>
-  <a-layout class="global-layout">
+  <a-layout class="global-layout" :class="{ 'global-layout--workspace': hideFooter }">
     <!-- 顶部导航 -->
     <a-layout-header class="page-header">
       <div class="header-content">
@@ -162,9 +162,9 @@
     </a-layout-content>
 
     <!-- 页脚 -->
-    <a-layout-footer class="page-footer">
+    <a-layout-footer v-if="!hideFooter" class="page-footer">
       <div class="footer-content">
-        <p>© 2023 慧学. All Rights Reserved.</p>
+        <p>© {{ new Date().getFullYear() }} 慧学. All Rights Reserved.</p>
       </div>
     </a-layout-footer>
     
@@ -231,6 +231,8 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const loginformRef = ref();
+
+const hideFooter = computed(() => Boolean(route.meta.hideFooter));
 
 // 计算属性：判断是否为教师
 const isTeacher = computed(() => {
@@ -371,22 +373,24 @@ const activeKey = computed(() => {
 <style scoped>
 .global-layout {
   min-height: 100vh;
+  background: var(--hx-color-bg-layout);
 }
 
 .page-header {
-  background: #fff;
-  padding: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--hx-z-header);
+  height: var(--hx-header-height);
+  line-height: var(--hx-header-height);
+  padding: 0 var(--hx-space-5);
+  background: var(--hx-color-bg-container);
+  border-bottom: 1px solid var(--hx-color-border-muted);
 }
 
 .header-content {
-  height: 64px;
+  height: var(--hx-header-height);
   display: flex;
   align-items: center;
-  padding: 0 24px;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -395,18 +399,18 @@ const activeKey = computed(() => {
   height: 32px;
   display: flex;
   align-items: center;
-  margin-right: 48px;
+  margin-right: var(--hx-space-7);
 }
 
 .logo img {
   height: 24px;
-  margin-right: 8px;
+  margin-right: var(--hx-space-2);
 }
 
 .logo span {
   font-size: 18px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--hx-color-text-primary);
 }
 
 .logo-link {
@@ -417,7 +421,7 @@ const activeKey = computed(() => {
 }
 
 .logo-link:hover {
-  color: #1890ff;
+  color: var(--hx-color-primary);
 }
 
 .nav {
@@ -427,30 +431,31 @@ const activeKey = computed(() => {
 .top-nav-menu {
   display: flex;
   align-items: center;
-  gap: 4px;
-  height: 64px;
+  gap: var(--hx-space-1);
+  height: var(--hx-header-height);
 }
 
 .top-nav-item {
   display: inline-flex;
   align-items: center;
-  height: 64px;
-  padding: 0 20px;
+  height: var(--hx-header-height);
+  padding: 0 var(--hx-space-4);
+  gap: var(--hx-space-2);
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
-  color: rgba(0, 0, 0, 0.88);
+  color: var(--hx-color-text-primary);
   cursor: pointer;
-  font-size: 14px;
-  line-height: 64px;
+  font-size: var(--hx-font-size-base);
+  line-height: var(--hx-header-height);
   text-decoration: none;
   transition: color 0.2s, border-color 0.2s;
 }
 
 .top-nav-item:hover,
 .top-nav-item.active {
-  color: #1677ff;
-  border-bottom-color: #1677ff;
+  color: var(--hx-color-primary);
+  border-bottom-color: var(--hx-color-primary);
 }
 
 .top-nav-item.admin-menu-item {
@@ -465,7 +470,7 @@ const activeKey = computed(() => {
 }
 
 .create-dropdown {
-  margin-right: 16px;
+  margin-right: var(--hx-space-4);
 }
 
 .create-btn {
@@ -473,16 +478,16 @@ const activeKey = computed(() => {
   align-items: center;
   justify-content: center;
   transition: all 0.3s;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--hx-color-text-secondary);
 }
 
 .create-btn:hover {
-  color: #1890ff;
-  background-color: rgba(24, 144, 255, 0.1);
+  color: var(--hx-color-primary);
+  background-color: var(--hx-color-primary-dim);
 }
 
 .role-switch-dropdown {
-  margin-right: 16px;
+  margin-right: var(--hx-space-4);
 }
 
 .user-dropdown-link {
@@ -495,15 +500,15 @@ const activeKey = computed(() => {
 
 .user-avatar {
   flex-shrink: 0;
-  border: 1px solid #f0f0f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  background-color: #fff;
+  border: 1px solid var(--hx-color-border-muted);
+  box-shadow: var(--hx-shadow-sm);
+  background-color: var(--hx-color-bg-container);
 }
 
 .username {
-  margin-left: 8px;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
+  margin-left: var(--hx-space-2);
+  font-size: var(--hx-font-size-base);
+  color: var(--hx-color-text-secondary);
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -512,20 +517,25 @@ const activeKey = computed(() => {
 }
 
 .page-content {
-  min-height: calc(100vh - 64px - 70px);
+  min-height: calc(100vh - var(--hx-header-height) - var(--hx-footer-height));
   padding: 0;
-  background-color: #f0f2f5;
+  background-color: var(--hx-color-bg-layout);
+}
+
+.global-layout--workspace .page-content {
+  min-height: calc(100vh - var(--hx-header-height));
 }
 
 .page-footer {
   text-align: center;
-  padding: 24px 0;
-  background: #f0f2f5;
+  padding: var(--hx-space-5) 0;
+  background: var(--hx-color-bg-layout);
+  color: var(--hx-color-text-tertiary);
 }
 
 .footer-content {
   max-width: 1440px;
   margin: 0 auto;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--hx-color-text-tertiary);
 }
 </style>

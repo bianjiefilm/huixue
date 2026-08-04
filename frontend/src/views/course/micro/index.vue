@@ -462,7 +462,7 @@ onMounted(async () => {
   max-width: 100%;
 }
 
-.course-info :deep(.arco-tag) {
+.course-info :deep(.ant-tag) {
   margin-right: 0;
   padding: 0 4px;
   height: 20px;
@@ -474,13 +474,6 @@ onMounted(async () => {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  text-orientation: mixed !important;
-  writing-mode: horizontal-tb !important;
-  -webkit-writing-mode: horizontal-tb !important;
-  -ms-writing-mode: lr-tb !important;
-  direction: ltr !important;
-  unicode-bidi: normal !important;
-  transform: none !important;
 }
 
 .course-stats {
@@ -552,7 +545,7 @@ onMounted(async () => {
   }
   
   /* 在极小屏幕上减小卡片内标签的大小 */
-  .course-info :deep(.arco-tag) {
+  .course-info :deep(.ant-tag) {
     font-size: 10px;
     height: 18px;
     line-height: 16px;

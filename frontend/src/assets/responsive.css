@@ -70,30 +70,16 @@
 }
 
 /* 强制文本水平显示 - 最高优先级 */
-body, div, span, p, h1, h2, h3, h4, h5, h6, a, button, input, textarea, 
+body, div, span, p, h1, h2, h3, h4, h5, h6, a, button, input, textarea,
 select, option, label, li, td, th, pre, code,
-.arco-tag, .arco-button, .direction-tag, .course-title, .filter-label, 
-.arco-radio-button, .arco-menu-item, .arco-dropdown-option {
+.direction-tag, .course-title, .filter-label {
   text-orientation: mixed !important;
   writing-mode: horizontal-tb !important;
   -webkit-writing-mode: horizontal-tb !important;
   -ms-writing-mode: lr-tb !important;
-  transform: none !important; /* 防止文本旋转变换 */
-  direction: ltr !important; /* 确保左到右的文字方向 */
-  unicode-bidi: normal !important; /* 控制文本嵌入方向 */
-}
-
-/* Arco Design组件通用修复 */
-.arco-card, .arco-tag, .arco-radio-button, .arco-menu-item, 
-.arco-dropdown-option, .arco-select-option, .arco-form-item {
-  /* 防止内容向左偏移 */
-  position: relative !important;
-  left: 0 !important;
-  right: auto !important;
-  /* 确保不会超出容器 */
-  overflow: visible !important;
-  /* 恢复正常流布局 */
-  float: none !important;
+  transform: none !important;
+  direction: ltr !important;
+  unicode-bidi: normal !important;
 }
 
 /* 卡片布局修复 */
@@ -115,26 +101,10 @@ select, option, label, li, td, th, pre, code,
   box-sizing: border-box !important;
 }
 
-/* 修复栅格系统 */
-.arco-row {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  box-sizing: border-box !important;
-  margin-right: -12px !important;
-  margin-left: -12px !important;
-}
-
-.arco-col {
-  position: relative !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  min-height: 1px !important;
-}
-
 /* 移动端优化 */
 @media (max-width: 768px) {
   /* 确保图标和文本保持水平方向 */
-  .arco-tag, .arco-button, .direction-tag {
+  .direction-tag {
     text-orientation: mixed !important;
     writing-mode: horizontal-tb !important;
     transform: none !important;
@@ -142,65 +112,18 @@ select, option, label, li, td, th, pre, code,
     align-items: center !important;
     justify-content: center !important;
   }
-  
+
   /* 优化移动端滚动 */
-  .filter-content, .arco-radio-group {
+  .filter-content {
     -webkit-overflow-scrolling: touch;
-    /* 确保不会溢出容器 */
     max-width: 100% !important;
     overflow-x: auto !important;
   }
-  
+
   /* 修复可能的溢出问题 */
   img, svg {
     max-width: 100%;
     height: auto;
-  }
-  
-  /* 卡片项对齐问题修复 */
-  .course-list .arco-row {
-    margin-left: -8px !important;
-    margin-right: -8px !important;
-  }
-  
-  .course-list .arco-col {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-    float: none !important;
-    flex: 0 0 auto !important;
-  }
-  
-  /* 修复在点击筛选后卡片布局崩溃的问题 */
-  .arco-col-xs-24, .arco-col-sm-12, .arco-col-md-8, .arco-col-lg-6 {
-    width: 100% !important;
-    flex: 0 0 100% !important;
-    max-width: 100% !important;
-    float: none !important;
-    left: 0 !important;
-  }
-  
-  @media (min-width: 576px) {
-    .arco-col-sm-12 {
-      width: 50% !important;
-      flex: 0 0 50% !important;
-      max-width: 50% !important;
-    }
-  }
-  
-  @media (min-width: 768px) {
-    .arco-col-md-8 {
-      width: 33.33333% !important;
-      flex: 0 0 33.33333% !important;
-      max-width: 33.33333% !important;
-    }
-  }
-  
-  @media (min-width: 992px) {
-    .arco-col-lg-6 {
-      width: 25% !important;
-      flex: 0 0 25% !important;
-      max-width: 25% !important;
-    }
   }
 }
 
@@ -210,20 +133,7 @@ select, option, label, li, td, th, pre, code,
   .card-content {
     padding: 10px !important;
   }
-  
-  /* 保证小标签在极小屏幕上的可读性 */
-  .arco-tag {
-    font-size: 10px !important;
-    padding: 0 4px !important;
-    height: auto !important;
-    min-height: 18px !important;
-    margin-bottom: 4px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    max-width: 100% !important;
-  }
-  
+
   /* 修复卡片布局问题 */
   .course-card {
     margin-bottom: 16px !important;
@@ -236,8 +146,7 @@ select, option, label, li, td, th, pre, code,
 
 /* 修复Safari特定的文本方向问题 */
 @supports (-webkit-touch-callout: none) {
-  .direction-tag, .arco-tag, .course-title, .filter-label, .course-info,
-  .arco-radio-button, .arco-menu-item, .arco-dropdown-option {
+  .direction-tag, .course-title, .filter-label, .course-info {
     text-orientation: mixed !important;
     writing-mode: horizontal-tb !important;
     -webkit-writing-mode: horizontal-tb !important;
@@ -247,7 +156,7 @@ select, option, label, li, td, th, pre, code,
     position: relative !important;
     left: 0 !important;
   }
-  
+
   /* Safari特别修复卡片溢出问题 */
   .course-card {
     transform: none !important;
@@ -255,11 +164,3 @@ select, option, label, li, td, th, pre, code,
     position: relative !important;
   }
 }
-
-/* 修复Arco Design的Radio Button在点击后影响布局的问题 */
-.arco-radio-checked, .arco-radio-button.arco-radio-checked {
-  transform: none !important;
-  position: relative !important;
-  left: 0 !important;
-  float: none !important;
-} 

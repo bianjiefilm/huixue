@@ -408,7 +408,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/classroom/TrainingWorkspace.vue'),
         meta: {
           title: '实训工作区',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -417,7 +418,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/classroom/BiTrainingWorkspace.vue'),
         meta: {
           title: 'BI 实训工作区',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -426,7 +428,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/visual/bi-designer.vue'),
         meta: {
           title: 'BI 设计器',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -499,7 +502,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/visual/bi-designer.vue'),
         meta: {
           title: 'BI 设计器',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -508,7 +512,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/ml/ai-designer.vue'),
         meta: {
           title: 'AI 设计器',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -517,7 +522,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/project/jupyter-training.vue'),
         meta: {
           title: 'Jupyter 编辑器',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -526,7 +532,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/project/jupyter-training.vue'),
         meta: {
           title: 'Jupyter编码式实训',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -535,7 +542,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/visual/bi-designer.vue'),
         meta: {
           title: '可视化分析实训',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {

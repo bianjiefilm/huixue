@@ -11,24 +11,3 @@ a {
   color: inherit;
   transition: 0.3s;
 }
-
-/* 全局响应式样式 */
-@media screen and (max-width: 1440px) {
-  /* 大屏幕响应式样式 */
-}
-
-@media screen and (max-width: 1200px) {
-  /* 桌面响应式样式 */
-}
-
-@media screen and (max-width: 992px) {
-  /* 平板响应式样式 */
-}
-
-@media screen and (max-width: 768px) {
-  /* 小平板响应式样式 */
-}
-
-@media screen and (max-width: 576px) {
-  /* 手机响应式样式 */
-}
