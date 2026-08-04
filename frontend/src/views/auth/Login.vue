@@ -126,30 +126,35 @@ const handleLogin = async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f0f2f5;
+  padding: var(--hx-space-5);
+  background: var(--hx-color-bg-layout);
+  box-sizing: border-box;
 }
 
 .login-card {
-  width: 400px;
-  padding: 40px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+  padding: var(--hx-space-6) var(--hx-space-5);
+  background: var(--hx-color-bg-container);
+  border-radius: var(--hx-radius-lg);
+  box-shadow: var(--hx-shadow-md);
+  border: 1px solid var(--hx-color-border-muted);
 }
 
 .logo-area {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: var(--hx-space-6);
 }
 
 .logo {
   height: 64px;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .platform-title {
-  font-size: 24px;
-  color: rgba(0, 0, 0, 0.85);
+  font-size: var(--hx-font-size-xl);
+  font-weight: 600;
+  color: var(--hx-color-text-primary);
   margin: 0;
 }
 
@@ -166,7 +171,7 @@ const handleLogin = async () => {
 }
 
 .register-link {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
   text-align: center;
 }
 </style> 
