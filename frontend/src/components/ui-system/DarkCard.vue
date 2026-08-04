@@ -68,7 +68,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .dark-card--glow:hover {
-  box-shadow: 0 0 30px rgba(0, 217, 255, 0.4);
+  box-shadow: var(--copilot-shadow-glow-cyan);
 }
 
 .dark-card__header {
