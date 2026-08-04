@@ -1,4 +1,28 @@
 <template>
+  <PageShell max-width="wide" class="project-detail-shell">
+    <PageHeaderBar
+      :title="projectDetail?.title || '实训详情'"
+      :subtitle="detailSubtitle"
+      show-back
+      back-to="/project"
+    >
+      <template #actions>
+        <a-button
+          v-if="primaryEnterAction"
+          type="primary"
+          @click="primaryEnterAction.handler"
+        >
+          {{ primaryEnterAction.label }}
+        </a-button>
+        <a-button
+          v-if="userStore.isLoggedIn && (userStore.userInfo?.role === 'teacher' || userStore.userInfo?.role === 'admin')"
+          @click="showAddToClassroomModal = true"
+        >
+          <PlusOutlined /> 添加至课堂
+        </a-button>
+      </template>
+    </PageHeaderBar>
+
   <div class="project-detail-page">
     <a-spin :spinning="loading" tip="加载中...">
       <template v-if="projectDetail">
@@ -21,12 +45,9 @@
           </div>
         </div>
 
-        <!-- 面包屑导航 -->
+        <!-- 元信息条 -->
         <div class="breadcrumb-section">
           <div class="breadcrumb-container">
-            <a-button type="link" @click="goBack" class="back-btn">
-              <ArrowLeftOutlined /> 返回项目实训列表
-            </a-button>
             <div class="breadcrumb-items">
               <span class="breadcrumb-item">
                 <span class="breadcrumb-label">难易程度</span>
@@ -57,7 +78,7 @@
 
         <!-- 主要内容区域 -->
         <div class="detail-container">
-          <a-row :gutter="24">
+          <a-row :gutter="[16, 16]">
             <!-- 左侧内容区域 -->
             <a-col :xs="24" :lg="18">
               <!-- 实训手册内容 -->
@@ -317,6 +338,7 @@
       </div>
     </a-modal>
   </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -324,7 +346,6 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import {
-  ArrowLeftOutlined,
   TeamOutlined,
   ClockCircleOutlined,
   CheckCircleOutlined,
@@ -349,6 +370,8 @@ import { useUserStore } from '@/stores/user';
 import { useHandbookParser } from '@/composables/useHandbookParser';
 import type { TOCNode } from '@/composables/useHandbookParser';
 import TOCTree from '@/components/common/TOCTree.vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -409,6 +432,27 @@ const isTeacherRole = computed(() => {
 
 const canViewTraining = computed(() => {
   return ['BI', 'AI', 'JUPYTER'].includes(projectDetail.value?.designer_type || '');
+});
+
+const detailSubtitle = computed(() => {
+  if (!projectDetail.value) return '项目实训详情';
+  const parts = [
+    getDifficultyName(projectDetail.value.difficulty),
+    getIndustryName(projectDetail.value.industry),
+    getTrainingTypeName(projectDetail.value.trainingType),
+  ].filter(Boolean);
+  return parts.join(' · ') || '项目实训详情';
+});
+
+/** Header 单一 primary：优先编程实训，否则进入设计器/Jupyter */
+const primaryEnterAction = computed(() => {
+  if (codeTasks.value.length > 0) {
+    return { label: '进入实训', handler: openFirstCodeTask };
+  }
+  if (canViewTraining.value) {
+    return { label: '进入实训', handler: handleViewTraining };
+  }
+  return null;
 });
 
 const gradeStatusOptions = [
@@ -897,11 +941,15 @@ const handleScroll = () => {
   gap: 12px;
 }
 
+.project-detail-shell {
+  min-height: 100%;
+}
+
 .back-btn {
   padding: 0;
   height: auto;
   font-size: 14px;
-  color: #1890ff;
+  color: #1677ff;
 }
 
 .breadcrumb-items {
@@ -940,9 +988,9 @@ const handleScroll = () => {
 
 /* ==================== 主要内容区域 ==================== */
 .detail-container {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0;
 }
 
 .code-grades-card {

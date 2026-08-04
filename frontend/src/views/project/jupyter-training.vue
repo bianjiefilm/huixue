@@ -585,11 +585,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 全高 shell：与 exam-take / TrainingWorkspace 一致，无外层 padding 24 */
 .jupyter-training-page {
-  height: 100vh;
+  height: calc(100vh - var(--hx-header-height));
   display: flex;
   flex-direction: column;
-  background: #fafafa;
+  background: var(--hx-color-bg-layout, #fafafa);
+  overflow: hidden;
 }
 
 /* 顶部状态栏 */

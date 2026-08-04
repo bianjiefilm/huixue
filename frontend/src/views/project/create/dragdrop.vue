@@ -1,20 +1,11 @@
 <template>
-  <div class="page-container">
-    <div class="page-header">
-      <a-breadcrumb class="breadcrumb">
-        <a-breadcrumb-item>
-          <router-link to="/project">项目实训</router-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          <router-link to="/project/create">新建实训</router-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>新建拖拽式实训</a-breadcrumb-item>
-      </a-breadcrumb>
-      <h1>新建拖拽式实训</h1>
-      <p class="page-description">
-        拖拽式实训中使用 bigdata-huigoo可视化分析平台与 bigdata-huigoo机器学习开发平台作为实训工具
-      </p>
-    </div>
+  <PageShell max-width="wide" class="create-dragdrop-page">
+    <PageHeaderBar
+      title="新建拖拽式实训"
+      subtitle="使用可视化分析与机器学习平台作为拖拽式实训工具"
+      show-back
+      back-to="/project/create"
+    />
 
     <a-card class="form-card">
       <a-steps
@@ -297,7 +288,7 @@
         </a-button>
       </div>
     </a-card>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -305,6 +296,8 @@ import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { message, Form } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const router = useRouter();
 const formRef = ref();
@@ -520,33 +513,12 @@ const handleSaveDraft = async () => {
 </script>
 
 <style scoped>
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.breadcrumb {
-  margin-bottom: 16px;
-}
-
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.page-description {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
+.create-dragdrop-page {
+  min-height: 100%;
 }
 
 .form-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .steps {

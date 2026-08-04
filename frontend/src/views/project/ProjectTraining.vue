@@ -256,10 +256,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 全高 shell：无 PageShell padding，iframe 填满视口剩余高度 */
 .project-training {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - var(--hx-header-height));
+  overflow: hidden;
 }
 
 .float-buttons {

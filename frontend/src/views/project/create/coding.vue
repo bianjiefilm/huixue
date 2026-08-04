@@ -1,20 +1,11 @@
 <template>
-  <div class="page-container">
-    <div class="page-header">
-      <a-breadcrumb class="breadcrumb">
-        <a-breadcrumb-item>
-          <router-link to="/project">项目实训</router-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          <router-link to="/project/create">新建实训</router-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>新建编码式实训</a-breadcrumb-item>
-      </a-breadcrumb>
-      <h1>新建编码式实训</h1>
-      <p class="page-description">
-        编码式实训 Jupyter notebook 作为实训工具，支持创建在线编码式的实训课程
-      </p>
-    </div>
+  <PageShell max-width="wide" class="create-coding-page">
+    <PageHeaderBar
+      title="新建编码式实训"
+      subtitle="编码式实训以 Jupyter notebook 为工具，支持创建在线编码实训课程"
+      show-back
+      back-to="/project/create"
+    />
 
     <a-card class="form-card">
       <a-steps
@@ -351,7 +342,7 @@
         </a-button>
       </div>
     </a-card>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -359,6 +350,8 @@ import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { message, Form } from 'ant-design-vue';
 import { PlusOutlined, InboxOutlined } from '@ant-design/icons-vue';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const router = useRouter();
 const formRef = ref();
@@ -616,33 +609,12 @@ const handleSaveDraft = async () => {
 </script>
 
 <style scoped>
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.breadcrumb {
-  margin-bottom: 16px;
-}
-
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.page-description {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
+.create-coding-page {
+  min-height: 100%;
 }
 
 .form-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .steps {

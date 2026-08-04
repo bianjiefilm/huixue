@@ -1,21 +1,13 @@
 <template>
-  <div class="page-container">
-    <!-- 页面标题 -->
-    <div class="page-header-title">
-      <h1>项目实训</h1>
-      <p class="page-description">
-        以实际工作场景为背景的项目实训，帮助学生掌握实际技能并了解行业需求
-      </p>
-    </div>
-
-    <!-- 顶部横幅 -->
-    <div class="page-banner">
-      <img src="https://picsum.photos/1200/300?random=banner" alt="项目实训">
-    </div>
+  <PageShell max-width="wide" class="project-page">
+    <PageHeaderBar
+      title="项目实训"
+      subtitle="以实际工作场景为背景的项目实训，帮助学生掌握实际技能并了解行业需求"
+    />
 
     <!-- 实训类型推荐 -->
     <div class="training-recommendation">
-      <a-row :gutter="24">
+      <a-row :gutter="[16, 16]">
         <a-col :span="8">
           <div class="training-card">
             <h3>JupyterLite 实训</h3>
@@ -48,19 +40,17 @@
 
     <!-- 筛选区域 -->
     <div class="filter-section">
-      <!-- 行业筛选 -->
       <div class="filter-row">
         <div class="filter-title">行业：</div>
         <div class="filter-content">
           <a-radio-group v-model:value="filters.industry" button-style="solid">
-            <a-radio-button v-for="item in industries" :value="item.value">
+            <a-radio-button v-for="item in industries" :key="item.value" :value="item.value">
               {{ item.name }}
             </a-radio-button>
           </a-radio-group>
         </div>
       </div>
 
-      <!-- 模式筛选 -->
       <div class="filter-row">
         <div class="filter-title">模式：</div>
         <div class="filter-content">
@@ -72,12 +62,11 @@
         </div>
       </div>
 
-      <!-- 难度筛选 -->
       <div class="filter-row">
         <div class="filter-title">难度：</div>
         <div class="filter-content">
           <a-radio-group v-model:value="filters.difficulty" button-style="solid">
-            <a-radio-button v-for="item in difficultyLevels" :value="item.value">
+            <a-radio-button v-for="item in difficultyLevels" :key="item.value" :value="item.value">
               {{ item.name }}
             </a-radio-button>
           </a-radio-group>
@@ -87,8 +76,12 @@
 
     <!-- 项目列表 -->
     <a-spin :spinning="loading" tip="加载中...">
-      <div class="project-list">
-        <a-row :gutter="[24, 24]">
+      <EmptyStateBlock
+        v-if="!loading && filteredProjects.length === 0"
+        description="暂无符合条件的项目实训"
+      />
+      <div v-else class="project-list">
+        <a-row :gutter="[16, 16]">
           <a-col :xs="24" :sm="12" :md="8" :lg="6" v-for="project in filteredProjects" :key="project.id">
             <router-link :to="`/project/${project.id}`" target="_blank">
               <a-card class="project-card" hoverable>
@@ -135,8 +128,7 @@
       </div>
     </a-spin>
 
-    <!-- 分页控件 -->
-    <div class="pagination-container">
+    <div v-if="totalProjects > 0" class="pagination-container">
       <a-pagination
         v-model:current="currentPage"
         :total="totalProjects"
@@ -147,7 +139,7 @@
         @showSizeChange="handleSizeChange"
       />
     </div>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -157,6 +149,9 @@ import { useRouter } from 'vue-router';
 import { TeamOutlined, ClockCircleOutlined } from '@ant-design/icons-vue';
 import { getTrainingLibrary } from '../../api/training';
 import { useUserStore } from '../../stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
+import EmptyStateBlock from '@/components/common/EmptyStateBlock.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -295,76 +290,46 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-  background-color: #fff;
-  border-radius: 4px;
-}
-
-.page-header-title {
-  margin-bottom: 24px;
-}
-
-.page-header-title h1 {
-  font-size: 24px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: rgba(0, 0, 0, 0.85);
-}
-
-.page-description {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.45);
-  margin-bottom: 0;
-}
-
-.page-banner {
-  margin-bottom: 24px;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.page-banner img {
-  width: 100%;
-  display: block;
+.project-page {
+  min-height: 100%;
 }
 
 .training-recommendation {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .training-card {
-  background: #fff;
-  padding: 24px;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  background: var(--hx-color-bg-container, #fff);
+  padding: var(--hx-space-5);
+  border-radius: var(--hx-radius-md, 10px);
+  border: 1px solid var(--hx-color-border, #f0f0f0);
   text-align: center;
+  height: 100%;
 }
 
 .training-card h3 {
-  font-size: 18px;
-  margin-bottom: 12px;
-  color: rgba(0, 0, 0, 0.85);
+  font-size: var(--hx-font-size-lg, 18px);
+  margin-bottom: var(--hx-space-3);
+  color: var(--hx-color-text-primary);
 }
 
 .training-card p {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
-  margin-bottom: 16px;
+  font-size: var(--hx-font-size-base, 14px);
+  color: var(--hx-color-text-secondary);
+  margin-bottom: var(--hx-space-4);
 }
 
 .filter-section {
-  background-color: #fafafa;
-  padding: 16px;
-  margin-bottom: 24px;
-  border-radius: 4px;
+  background: var(--hx-color-bg-container, #fff);
+  padding: var(--hx-space-4);
+  margin-bottom: var(--hx-space-5);
+  border-radius: var(--hx-radius-md, 10px);
+  border: 1px solid var(--hx-color-border, #f0f0f0);
 }
 
 .filter-row {
   display: flex;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
   align-items: center;
 }
 
@@ -376,15 +341,16 @@ onMounted(() => {
   width: 80px;
   flex-shrink: 0;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--hx-color-text-primary);
 }
 
 .filter-content {
   flex: 1;
+  overflow-x: auto;
 }
 
 .project-list {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 
 .project-card {
@@ -422,7 +388,7 @@ onMounted(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   margin-bottom: 10px;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--hx-color-text-secondary);
 }
 
 .card-info {
@@ -435,7 +401,7 @@ onMounted(() => {
 
 .card-meta-info {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--hx-color-text-tertiary, rgba(0, 0, 0, 0.45));
 }
 
 .card-meta-item {
@@ -449,7 +415,7 @@ onMounted(() => {
 }
 
 .pagination-container {
-  margin-top: 24px;
+  margin-top: var(--hx-space-5);
   text-align: center;
 }
 </style> 

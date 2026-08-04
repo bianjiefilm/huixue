@@ -1,24 +1,18 @@
 <template>
-  <div class="page-container">
-    <div class="page-header">
-      <a-breadcrumb class="breadcrumb">
-        <a-breadcrumb-item>
-          <router-link to="/project">项目实训</router-link>
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>我创建的实训</a-breadcrumb-item>
-      </a-breadcrumb>
-      <h1>我创建的实训</h1>
-      <p class="page-description">
-        管理您创建的所有实训项目，包括公开发布的和草稿状态的实训
-      </p>
-
-      <div class="header-actions">
+  <PageShell max-width="wide" class="myprojects-page">
+    <PageHeaderBar
+      title="我创建的实训"
+      subtitle="管理您创建的所有实训项目，包括公开发布的和草稿状态的实训"
+      show-back
+      back-to="/project"
+    >
+      <template #actions>
         <a-button type="primary" @click="handleCreateNew">
           <plus-outlined />
           新建实训
         </a-button>
-      </div>
-    </div>
+      </template>
+    </PageHeaderBar>
 
     <a-card class="projects-card">
       <a-tabs v-model:activeKey="activeTab">
@@ -120,7 +114,7 @@
         </a-tab-pane>
       </a-tabs>
     </a-card>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
@@ -135,6 +129,8 @@ import {
 } from '@ant-design/icons-vue';
 import { fetchMyTrainings, deleteTrainingById, publishTraining, unpublishTraining, type TrainingItem, type TrainingStatusType } from '@/api/training';
 import { useUserStore } from '@/stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const router = useRouter();
 const loading = ref(false);
@@ -409,38 +405,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.breadcrumb {
-  margin-bottom: 16px;
-}
-
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.page-description {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-.header-actions {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
+.myprojects-page {
+  min-height: 100%;
 }
 
 .projects-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
 }
 </style> 

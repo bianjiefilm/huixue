@@ -1,18 +1,18 @@
 <template>
-  <div class="page-container">
-    <div class="page-header">
-      <h1>新建实训项目</h1>
-      <p class="page-description">
-        教师用户可根据教学安排，创建自己的实训项目。新增的实训项目公开发布后将显示在【项目实训】资源库中，所有教师用户均可查看并使用。
-      </p>
-    </div>
+  <PageShell max-width="wide" class="create-project-page">
+    <PageHeaderBar
+      title="新建实训项目"
+      subtitle="教师用户可根据教学安排创建实训项目；公开发布后将显示在项目实训资源库中"
+      show-back
+      back-to="/project"
+    />
 
     <a-card class="select-card">
       <h2>选择实训类型</h2>
       <p>请选择要创建的实训类型</p>
 
       <div class="training-type-container">
-        <a-row :gutter="24">
+        <a-row :gutter="[16, 16]">
           <a-col :span="12">
             <a-card hoverable class="type-card" @click="goToDragDropTraining">
               <template #cover>
@@ -42,12 +42,14 @@
         </a-row>
       </div>
     </a-card>
-  </div>
+  </PageShell>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../../../stores/user';
+import PageShell from '@/components/common/PageShell.vue';
+import PageHeaderBar from '@/components/common/PageHeaderBar.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -84,52 +86,32 @@ const goToCodingTraining = () => {
 </script>
 
 <style scoped>
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.page-header {
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.page-header h1 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.page-description {
-  font-size: 16px;
-  color: rgba(0, 0, 0, 0.65);
-  max-width: 800px;
-  margin: 0 auto;
+.create-project-page {
+  min-height: 100%;
 }
 
 .select-card {
-  margin-bottom: 24px;
+  margin-bottom: var(--hx-space-5);
   text-align: center;
 }
 
 .select-card h2 {
-  font-size: 24px;
-  margin-bottom: 12px;
+  font-size: var(--hx-font-size-lg, 18px);
+  margin-bottom: var(--hx-space-3);
 }
 
 .training-type-container {
-  margin-top: 24px;
+  margin-top: var(--hx-space-5);
 }
 
 .type-card {
   height: 100%;
   transition: all 0.3s;
-  margin-bottom: 16px;
+  margin-bottom: var(--hx-space-4);
 }
 
 .type-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.09);
 }
 
@@ -139,6 +121,6 @@ const goToCodingTraining = () => {
 }
 
 .btn-select {
-  margin-top: 16px;
+  margin-top: var(--hx-space-4);
 }
 </style> 

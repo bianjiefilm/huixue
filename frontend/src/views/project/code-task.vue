@@ -277,41 +277,59 @@ onMounted(loadTask);
 </script>
 
 <style scoped>
+/* 全高 shell：与 exam-take / TrainingWorkspace 一致，无外层 padding 24 */
 .training-code-page {
-  min-height: 100vh;
-  padding: 16px 24px 28px;
-  background: #f5f7fb;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--hx-header-height));
+  padding: var(--hx-space-3) var(--hx-space-4);
+  background: var(--hx-color-bg-layout, #f5f7fb);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .topbar {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: var(--hx-space-4);
+  margin-bottom: var(--hx-space-3);
 }
 
 .title-block h1 {
   margin: 0;
-  font-size: 22px;
+  font-size: var(--hx-font-size-lg, 18px);
   line-height: 1.35;
 }
 
 .meta {
-  color: #667085;
+  color: var(--hx-color-text-secondary, #667085);
   font-size: 13px;
 }
 
+.training-code-page :deep(.ant-spin-nested-loading),
+.training-code-page :deep(.ant-spin-container) {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .workspace {
+  flex: 1 1 auto;
+  min-height: 0;
   align-items: stretch;
+  height: 100%;
 }
 
 .panel {
-  height: calc(100vh - 118px);
-  min-height: 560px;
-  padding: 16px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  height: 100%;
+  min-height: 0;
+  padding: var(--hx-space-4);
+  background: var(--hx-color-bg-container, #fff);
+  border: 1px solid var(--hx-color-border, #e5e7eb);
+  border-radius: var(--hx-radius-md, 8px);
   overflow: auto;
 }
 
