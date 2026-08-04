@@ -1359,7 +1359,7 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
   align-items: center;
   gap: 4px;
   padding: 4px 12px;
-  border-radius: 4px;
+  border-radius: var(--hx-radius-sm);
   font-size: 14px;
 }
 
@@ -1670,7 +1670,7 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
   margin-left: auto;
   background-color: var(--hx-color-bg-layout);
   color: var(--hx-color-text-secondary);
-  border-radius: 10px;
+  border-radius: var(--hx-radius-md);
   font-size: var(--hx-font-size-xs);
   padding: 0 6px;
 }
@@ -1696,7 +1696,7 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 
 .filter-tab {
   cursor: pointer;
-  padding: 5px 0;
+  padding: var(--hx-space-1) 0;
   font-size: 14px;
   color: var(--copilot-text-secondary, #a0a0a0);
   border-bottom: 2px solid transparent;
@@ -1704,8 +1704,8 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 }
 
 .filter-tab.active {
-  color: var(--copilot-brand-primary, #00c6ff);
-  border-bottom-color: var(--copilot-brand-primary, #00c6ff);
+  color: var(--hx-color-primary);
+  border-bottom-color: var(--hx-color-primary);
 }
 
 .course-items {
@@ -1716,9 +1716,9 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 
 /* 实践类课程样式 - 简洁显示 */
 .course-item.simple-practice-course {
-  padding: 12px 15px;
+  padding: var(--hx-space-3) var(--hx-space-4);
   border: 1px solid var(--copilot-border-default, #e8e8e8);
-  border-radius: 4px;
+  border-radius: var(--hx-radius-sm);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1727,9 +1727,9 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 }
 
 .course-item.simple-practice-course:hover {
-  box-shadow: 0 4px 12px rgba(0, 198, 255, 0.1);
+  box-shadow: var(--hx-shadow-md);
   background-color: var(--copilot-bg-hover, rgba(255, 255, 255, 0.05));
-  border-color: var(--copilot-border-highlight, rgba(0, 198, 255, 0.3));
+  border-color: var(--copilot-border-highlight);
 }
 
 .course-header {
@@ -1749,8 +1749,8 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 
 .course-number {
   color: var(--copilot-text-muted, #606060);
-  margin-right: 5px;
-  min-width: 25px;
+  margin-right: var(--hx-space-1);
+  min-width: 24px;
 }
 
 .course-tags {
@@ -1781,8 +1781,8 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 }
 
 .course-status.learning {
-  background-color: rgba(0, 198, 255, 0.15);
-  color: var(--copilot-brand-primary, #00c6ff);
+  background-color: var(--hx-color-primary-dim);
+  color: var(--hx-color-primary);
 }
 
 .course-status.unpublished {
@@ -1913,7 +1913,7 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
   margin-bottom: 8px;
   padding: 8px;
   background: var(--copilot-bg-tertiary, #fafafa);
-  border-radius: 4px;
+  border-radius: var(--hx-radius-sm);
 }
 
 .credential-item .label {
@@ -1926,8 +1926,8 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
   flex: 1;
   font-family: monospace;
   font-size: 14px;
-  color: var(--copilot-brand-primary, #00c6ff);
-  background: rgba(0, 198, 255, 0.1);
+  color: var(--hx-color-primary);
+  background: var(--hx-color-primary-dim);
   padding: 2px 6px;
   border-radius: 2px;
   margin-right: 8px;
@@ -1954,17 +1954,17 @@ watch(() => classroomStore.currentClassroom, (newClassroom) => {
 
 /* Ant Design 组件深色覆盖 */
 .copilot-theme :deep(.ant-btn-primary) {
-  background: var(--copilot-brand-primary, #00c6ff);
-  border-color: var(--copilot-brand-primary, #00c6ff);
+  background: var(--hx-color-primary);
+  border-color: var(--hx-color-primary);
 }
 
 .copilot-theme :deep(.ant-btn-primary:hover) {
-  background: var(--copilot-brand-hover, #00e1ff);
-  border-color: var(--copilot-brand-hover, #00e1ff);
+  background: var(--hx-color-primary-hover);
+  border-color: var(--hx-color-primary-hover);
 }
 
 .copilot-theme :deep(.ant-btn-link) {
-  color: var(--copilot-brand-primary, #00c6ff);
+  color: var(--hx-color-primary);
 }
 
 .copilot-theme :deep(.ant-modal-content) {

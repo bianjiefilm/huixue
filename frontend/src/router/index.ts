@@ -17,7 +17,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/visual/preview.vue'),
     meta: {
       title: 'BI 预览',
-      requiresAuth: true
+      requiresAuth: true,
+      hideFooter: true
     }
   },
   {
@@ -350,7 +351,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/classroom/exam-take.vue'),
         meta: {
           title: '考试作答',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -483,7 +485,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/project/code-task.vue'),
         meta: {
           title: '编程实训',
-          requiresAuth: true
+          requiresAuth: true,
+          hideFooter: true
         }
       },
       {
@@ -551,7 +554,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/visual/preview.vue'),
         meta: {
           title: '可视化分析预览',
-          requiresAuth: true // 需要登录才能访问
+          requiresAuth: true, // 需要登录才能访问
+          hideFooter: true
         }
       },
       {
@@ -857,6 +861,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/visual/TempoBIEmbed.vue'),
     meta: {
       title: 'BI 设计器',
+      hideFooter: true,
       // requiresAuth: true // iframe has its own postMessage initialization
     }
   },
@@ -866,7 +871,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/ml/ai-designer.vue'),
     meta: {
       title: 'AI 建模设计器',
-      requiresAuth: true
+      requiresAuth: true,
+      hideFooter: true
     }
   },
   // 重定向路由，用于无刷新重载当前页面

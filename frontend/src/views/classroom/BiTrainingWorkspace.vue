@@ -859,7 +859,7 @@ onUnmounted(() => {
     .save-status {
       font-size: 13px;
       padding: 4px 12px;
-      border-radius: 4px;
+      border-radius: var(--hx-radius-sm);
 
       &.status-saving {
         color: var(--hx-color-primary);
@@ -982,7 +982,7 @@ onUnmounted(() => {
           pre {
             background: var(--hx-color-bg-layout);
             padding: var(--hx-space-3);
-            border-radius: 4px;
+            border-radius: var(--hx-radius-sm);
             overflow-x: auto;
 
             code {
@@ -994,7 +994,7 @@ onUnmounted(() => {
           img {
             max-width: 100%;
             height: auto;
-            border-radius: 4px;
+            border-radius: var(--hx-radius-sm);
           }
 
           table {
@@ -1085,7 +1085,7 @@ onUnmounted(() => {
       max-width: 100%;
       max-height: 200px;
       border: 1px solid #e8e8e8;
-      border-radius: 4px;
+      border-radius: var(--hx-radius-sm);
     }
   }
 
@@ -1107,9 +1107,9 @@ onUnmounted(() => {
 
     .file-info {
       margin-top: 12px;
-      padding: 10px 12px;
+      padding: var(--hx-space-2) var(--hx-space-3);
       background: #fff;
-      border-radius: 4px;
+      border-radius: var(--hx-radius-sm);
       border: 1px solid #e8e8e8;
       display: flex;
       justify-content: space-between;
@@ -1164,7 +1164,7 @@ onUnmounted(() => {
         }
 
         &.score-good {
-          color: #1890ff;
+          color: var(--hx-color-primary);
         }
 
         &.score-pass {
@@ -1180,7 +1180,7 @@ onUnmounted(() => {
         margin-top: 8px;
         padding: 8px;
         background: #f5f5f5;
-        border-radius: 4px;
+        border-radius: var(--hx-radius-sm);
         color: #595959;
         line-height: 1.6;
       }
