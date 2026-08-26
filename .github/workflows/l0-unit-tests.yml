@@ -9,7 +9,7 @@ on:
 jobs:
   l0:
     name: L0 Pure Function Tests
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 10
 
     steps:
